@@ -10,20 +10,16 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; transition: all 0.3s ease; }
-        /* Tema */
         body.theme-cyber { background: radial-gradient(circle at top right, #1e1b4b, #0f172a, #020617); color: #f1f5f9; }
         body.theme-light { background: radial-gradient(circle at top right, #f8fafc, #f1f5f9, #e2e8f0); color: #0f172a; }
         
-        /* Glassmorphism */
         .glass-card { background: rgba(30, 41, 59, 0.4); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); }
         body.theme-light .glass-card { background: rgba(255, 255, 255, 0.7); border: 1px solid rgba(0, 0, 0, 0.1); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
         
-        /* Light Mode Text Fixes */
         body.theme-light .text-white { color: #0f172a; }
         body.theme-light .text-slate-400 { color: #475569; }
         body.theme-light input, body.theme-light select { background-color: #ffffff; color: #0f172a; border-color: #cbd5e1; }
         
-        /* Alarm Budget */
         .budget-alert { animation: blink 1.5s infinite; border: 1.5px solid #f43f5e !important; }
         @keyframes blink { 50% { box-shadow: 0 0 15px rgba(244, 63, 94, 0.4); } }
     </style>
@@ -74,7 +70,17 @@
                             <option value="income">🟢 Pemasukan (+)</option>
                             <option value="expense">🔴 Pengeluaran (-)</option>
                         </select>
-                        <input type="number" id="tx-amount" required placeholder="Nominal (Rp)" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white outline-none">
+                        
+                        <div>
+                            <input type="number" id="tx-amount" required placeholder="Nominal (Rp)" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white outline-none mb-1.5">
+                            <div class="flex flex-wrap gap-1">
+                                <button type="button" onclick="quickAmount(20000)" class="px-2 py-0.5 bg-slate-800/80 hover:bg-slate-700 text-[10px] text-slate-300 rounded-md cursor-pointer">+20k</button>
+                                <button type="button" onclick="quickAmount(50000)" class="px-2 py-0.5 bg-slate-800/80 hover:bg-slate-700 text-[10px] text-slate-300 rounded-md cursor-pointer">+50k</button>
+                                <button type="button" onclick="quickAmount(100000)" class="px-2 py-0.5 bg-slate-800/80 hover:bg-slate-700 text-[10px] text-slate-300 rounded-md cursor-pointer">+100k</button>
+                                <button type="button" onclick="quickAmount(0, true)" class="px-2 py-0.5 bg-rose-950/60 hover:bg-rose-900 text-[10px] text-rose-400 rounded-md cursor-pointer">Clear</button>
+                            </div>
+                        </div>
+
                         <input type="text" id="tx-cat" required placeholder="Kategori (Makan, Gaji)" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white outline-none">
                         <button type="submit" class="w-full bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-bold py-2.5 rounded-xl text-xs cursor-pointer shadow-lg shadow-indigo-500/20">Simpan</button>
                     </form>
@@ -111,17 +117,26 @@
                     <div class="text-center sm:text-left">
                         <h2 class="text-lg font-bold text-white mb-2">Analisis Keuangan</h2>
                         <p class="text-xs text-slate-400 max-w-xs">Grafik visual dari perbandingan total pemasukan dan pengeluaran kamu bulan ini.</p>
+                        <button onclick="clearData()" class="mt-4 text-xs bg-rose-950/40 text-rose-400 border border-rose-900/30 px-3 py-1.5 rounded-lg hover:bg-rose-900/40 cursor-pointer transition-all"><i class="fa-regular fa-trash-can"></i> Reset Semua Data</button>
                     </div>
                 </div>
 
                 <div class="glass-card rounded-2xl p-6">
-                    <div class="flex justify-between items-center mb-4">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4">
                         <h2 class="font-bold text-white text-sm"><i class="fa-solid fa-list-ul text-indigo-400"></i> Riwayat Terakhir</h2>
+                        
+                        <select id="filter-type" onchange="updateUI()" class="bg-slate-900 border border-slate-700 rounded-xl px-3 py-1.5 text-xs text-white outline-none min-w-[120px]">
+                            <option value="all">📁 Semua Tipe</option>
+                            <option value="income">🟢 Pemasukan</option>
+                            <option value="expense">🔴 Pengeluaran</option>
+                        </select>
                     </div>
+                    
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-xs">
                             <thead>
                                 <tr class="border-b border-slate-700/50 text-slate-400">
+                                    <th class="p-3 font-semibold">Tanggal</th>
                                     <th class="p-3 font-semibold">Tipe</th>
                                     <th class="p-3 font-semibold">Kategori</th>
                                     <th class="p-3 font-semibold">Nominal</th>
@@ -154,6 +169,13 @@
             updateUI();
         }
 
+        // FITUR BARU: Logika Shortcut Nominal
+        function quickAmount(val, clear = false) {
+            const input = document.getElementById('tx-amount');
+            if (clear) { input.value = ''; } 
+            else { input.value = (parseInt(input.value) || 0) + val; }
+        }
+
         function calc(val) {
             const disp = document.getElementById('calc-display');
             if (val === 'C') disp.value = '';
@@ -179,9 +201,12 @@
             const type = document.getElementById('tx-type').value;
             const amount = parseInt(document.getElementById('tx-amount').value);
             const cat = document.getElementById('tx-cat').value;
+            
+            // FITUR BARU: Membuat Label Tanggal Otomatis
+            const dateStr = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
 
             if (amount > 0) {
-                txs.push({ id: Date.now(), type, amount, cat });
+                txs.push({ id: Date.now(), type, amount, cat, date: dateStr });
                 localStorage.setItem('fintrack_data', JSON.stringify(txs));
                 document.getElementById('form-tx').reset();
                 if ("vibrate" in navigator) navigator.vibrate(100);
@@ -195,16 +220,28 @@
             updateUI();
         }
 
+        function clearData() {
+            if (confirm("Yakin hapus semua data?")) { txs = []; localStorage.setItem('fintrack_data', '[]'); updateUI(); }
+        }
+
         function updateUI() {
             let inc = 0, exp = 0;
             const tbody = document.getElementById('history-body');
+            const filterValue = document.getElementById('filter-type').value;
             tbody.innerHTML = '';
 
-            txs.slice().reverse().forEach(tx => {
+            // Hitung total global untuk statistik card & chart
+            txs.forEach(tx => {
                 if (tx.type === 'income') inc += tx.amount; else exp += tx.amount;
-                
+            });
+
+            // Filter riwayat saat rendering tabel
+            txs.slice().reverse().forEach(tx => {
+                if (filterValue !== 'all' && tx.type !== filterValue) return;
+
                 tbody.innerHTML += `
                     <tr class="border-b border-slate-700/30 hover:bg-slate-800/20 transition-colors text-white">
+                        <td class="p-3 opacity-70">${tx.date || '-'}</td>
                         <td class="p-3">${tx.type === 'income' ? '<span class="text-emerald-400"><i class="fa-solid fa-arrow-down mr-1"></i>Masuk</span>' : '<span class="text-rose-400"><i class="fa-solid fa-arrow-up mr-1"></i>Keluar</span>'}</td>
                         <td class="p-3 font-medium">${tx.cat}</td>
                         <td class="p-3 font-mono font-bold ${tx.type === 'income' ? 'text-emerald-400' : 'text-rose-400'}">${fmtRp(tx.amount)}</td>
