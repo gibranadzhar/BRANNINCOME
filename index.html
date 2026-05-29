@@ -221,9 +221,9 @@
     </div>
 
     <script>
-        const STORAGE_KEY = 'fintrack_elite_v2';
-        const GOAL_KEY = 'fintrack_goal_elite_v2';
-        const SENSOR_KEY = 'fintrack_sensor_v2';
+        const STORAGE_KEY = 'fintrack_v3_stable';
+        const GOAL_KEY = 'fintrack_goal_v3_stable';
+        const SENSOR_KEY = 'fintrack_sensor_v3_stable';
         
         let dataTransaksi = [];
         let dataGoal = { name: "Belum Ditentukan", target: 0 };
@@ -271,6 +271,21 @@
             }
         }
 
+        // Hitung Saldo Saat Ini Secara Real-Time untuk Validasi Fitur Getar
+        function hitungSaldoSekarang() {
+            let saldo = { cash: 0, bank: 0, wallet: 0 };
+            dataTransaksi.forEach(tx => {
+                let nom = Number(tx.nominal) || 0;
+                if(tx.tipe === 'masuk') saldo[tx.wadah] += nom;
+                else if(tx.tipe === 'keluar') saldo[tx.wadah] -= nom;
+                else if(tx.tipe === 'transfer') {
+                    saldo[tx.dari] -= nom;
+                    saldo[tx.ke] += nom;
+                }
+            });
+            return saldo;
+        }
+
         function simpanData(e) {
             e.preventDefault();
             
@@ -280,16 +295,40 @@
 
             if (nominal <= 0) return alert("Harap masukkan nilai dana yang valid!");
 
-            if(tipe === 'transfer') {
+            let saldoSaatIni = hitungSaldoSekarang();
+
+            // ⚠️ FEATURE 3 LOGIC (AMU): Deteksi Saldo Kritis / Kurang Berujung Getar HP
+            if (tipe === 'keluar') {
+                const wadah = document.getElementById('input-wadah').value;
+                if (nominal > saldoSaatIni[wadah]) {
+                    if (navigator.vibrate) {
+                        navigator.vibrate([200, 100, 200]); // Pola getar pendek 2 kali
+                    }
+                    return alert(`Transaksi Ditolak! Saldo di wadah tersebut tidak mencukupi.`);
+                }
+            } else if (tipe === 'transfer') {
                 const dari = document.getElementById('input-dari').value;
                 const ke = document.getElementById('input-ke').value;
-                if(dari === ke) return alert("Wadah asal dan tujuan tidak boleh sama!");
+                if (dari === ke) return alert("Wadar asal dan tujuan tidak boleh sama!");
+                
+                if (nominal > saldoSaatIni[dari]) {
+                    if (navigator.vibrate) {
+                        navigator.vibrate([200, 100, 200]);
+                    }
+                    return alert(`Transaksi Ditolak! Saldo asal tidak mencukupi untuk ditransfer.`);
+                }
                 
                 dataTransaksi.push({ tipe, dari, ke, nominal, ket });
-            } else {
-                const wadah = document.getElementById('input-wadah').value;
-                dataTransaksi.push({ tipe, wadah, nominal, ket });
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(dataTransaksi));
+                document.getElementById('tx-form').reset();
+                handleTipeChange();
+                renderUI();
+                return;
             }
+
+            // Simpan Transaksi Normal
+            const wadah = document.getElementById('input-wadah').value;
+            dataTransaksi.push({ tipe, wadah, nominal, ket });
 
             localStorage.setItem(STORAGE_KEY, JSON.stringify(dataTransaksi));
             document.getElementById('tx-form').reset();
@@ -320,43 +359,4 @@
             if(dataTransaksi.length === 0) return alert("Tidak ada data transaksi!");
             let isiCSV = "Alokasi,Arus Transaksi,Keterangan,Nominal Mutasi\n";
             dataTransaksi.forEach(tx => {
-                let infoWadah = tx.tipe === 'transfer' ? `${tx.dari.toUpperCase()} -> ${tx.ke.toUpperCase()}` : tx.wadah.toUpperCase();
-                isiCSV += `"${infoWadah}","${tx.tipe.toUpperCase()}","${tx.ket.replace(/"/g, '""')}",${tx.nominal}\n`;
-            });
-            const blob = new Blob([isiCSV], { type: 'text/csv;charset=utf-8;' });
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement("a");
-            link.setAttribute("href", url);
-            link.setAttribute("download", "Laporan_FinTrack_Elite.csv");
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-
-        function hapusSemua() {
-            if(confirm("Apakah Anda yakin ingin menghapus seluruh log?")) {
-                dataTransaksi = [];
-                dataGoal = { name: "Belum Ditentukan", target: 0 };
-                localStorage.setItem(STORAGE_KEY, '[]');
-                localStorage.setItem(GOAL_KEY, JSON.stringify(dataGoal));
-                renderUI();
-            }
-        }
-
-        function renderUI() {
-            let totalSemua = 0;
-            let saldoPerWadah = { cash: 0, bank: 0, wallet: 0 };
-            const tbody = document.getElementById('tabel-body');
-            if(tbody) tbody.innerHTML = '';
-
-            dataTransaksi.forEach(tx => {
-                let nom = Number(tx.nominal) || 0;
-                if(tx.tipe === 'masuk') {
-                    totalSemua += nom;
-                    saldoPerWadah[tx.wadah] += nom;
-                } else if(tx.tipe === 'keluar') {
-                    totalSemua -= nom;
-                    saldoPerWadah[tx.wadah] -= nom;
-                } else if(tx.tipe === 'transfer') {
-                    saldoPerWadah[tx.dari] -= nom;
-                
+                let infoWadah = tx.tipe === 'transfer' ? `${
