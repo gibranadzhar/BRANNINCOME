@@ -2,92 +2,82 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BrannTrack Pro — Ultimate Massive Edition</title>
+    <title>BrannTrack Ultimate Infinity</title>
     <style>
         :root { --glass: rgba(255, 255, 255, 0.05); --primary: #6366f1; --danger: #f43f5e; --success: #10b981; --bg: #050505; }
         * { box-sizing: border-box; font-family: 'Inter', sans-serif; }
         body { background: var(--bg); color: #e2e8f0; padding: 20px; display: flex; justify-content: center; }
         .container { width: 100%; max-width: 600px; }
-        .glass { background: var(--glass); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); border-radius: 24px; padding: 25px; margin-bottom: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.5); }
-        h1 { font-size: 24px; color: #fff; text-align: center; margin-bottom: 25px; text-transform: uppercase; letter-spacing: 2px; }
+        .glass { background: var(--glass); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); border-radius: 24px; padding: 20px; margin-bottom: 15px; }
+        h1 { font-size: 18px; text-align: center; margin-bottom: 20px; letter-spacing: 2px; }
         
-        /* Stats Styling */
-        .balance-main { font-size: 40px; font-weight: 800; text-align: center; margin: 10px 0; color: #fff; }
-        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 20px; }
-        .wallet-box { background: rgba(0,0,0,0.3); padding: 15px; border-radius: 16px; text-align: center; border: 1px solid #1e293b; }
+        .balance-val { font-size: 38px; font-weight: 800; text-align: center; margin: 10px 0; }
+        .grid-wallets { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 15px; }
+        .w-box { background: rgba(0,0,0,0.3); padding: 10px; border-radius: 12px; text-align: center; font-size: 11px; }
         
-        /* Goal Styling */
-        .progress-bg { height: 10px; background: #1e293b; border-radius: 5px; margin: 15px 0; overflow: hidden; }
-        .progress-fill { height: 100%; background: var(--primary); width: 0%; transition: 1s; box-shadow: 0 0 10px var(--primary); }
+        .progress-bg { height: 8px; background: #1e293b; border-radius: 4px; margin: 10px 0; }
+        .progress-fill { height: 100%; background: var(--primary); width: 0%; border-radius: 4px; transition: 0.5s; }
         
-        /* Input Styling */
-        input, select { width: 100%; padding: 15px; background: #111; border: 1px solid #333; border-radius: 14px; color: #fff; margin-bottom: 10px; }
-        button { width: 100%; padding: 15px; background: var(--primary); border: none; border-radius: 14px; color: #fff; font-weight: 700; cursor: pointer; }
-        .btn-secondary { background: #333; margin-top: 10px; }
+        input, select { width: 100%; padding: 12px; background: #111; border: 1px solid #333; border-radius: 10px; color: white; margin-bottom: 8px; }
+        button { padding: 12px; border-radius: 10px; border: none; background: var(--primary); color: white; cursor: pointer; font-weight: bold; width: 100%; }
+        .btn-sec { background: #333; margin-top: 5px; }
         
-        /* Table Styling */
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        td { padding: 15px; border-bottom: 1px solid #1e293b; font-size: 14px; }
-        .badge { font-size: 10px; padding: 4px 8px; background: #2d3748; border-radius: 6px; }
-        .del-btn { color: var(--danger); cursor: pointer; font-weight: bold; }
+        table { width: 100%; border-collapse: collapse; }
+        td { padding: 10px 0; border-bottom: 1px solid #1e293b; font-size: 13px; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>BRANNTRACK PRO</h1>
-    
-    <!-- Dashboard -->
+    <h1>BRANNTRACK INFINITY</h1>
+
     <div class="glass">
-        <div style="font-size: 12px; color: #64748b; text-align: center;">TOTAL SALDO BERSIH</div>
-        <div class="balance-main" id="total-saldo">Rp 0</div>
-        <div class="grid-3">
-            <div class="wallet-box">💵<br><b id="w-cash">0</b></div>
-            <div class="wallet-box">🏛️<br><b id="w-bank">0</b></div>
-            <div class="wallet-box">📱<br><b id="w-wallet">0</b></div>
+        <div style="font-size:10px; text-align:center; color:#64748b;">TOTAL SALDO</div>
+        <div class="balance-val" id="total-saldo">Rp 0</div>
+        <div class="grid-wallets">
+            <div class="w-box">💵 Tunai<br><b id="w-cash">0</b></div>
+            <div class="w-box">🏛️ Bank<br><b id="w-bank">0</b></div>
+            <div class="w-box">📱 E-Wallet<br><b id="w-wallet">0</b></div>
+        </div>
+        <div class="grid-wallets">
+            <div class="w-box">Pemasukan<br><b id="sum-in" style="color:var(--success)">0</b></div>
+            <div class="w-box">Pengeluaran<br><b id="sum-out" style="color:var(--danger)">0</b></div>
+            <div class="w-box">Avg. Keluar<br><b id="st-avg">0</b></div>
         </div>
     </div>
 
-    <!-- Goal -->
     <div class="glass">
-        <div id="lbl-goal" style="font-size: 14px; font-weight:600;">🎯 Target: Belum di-set</div>
+        <div id="lbl-goal" style="font-size:12px; font-weight:600;">🎯 Target: Belum di-set</div>
         <div class="progress-bg"><div id="bar-goal" class="progress-fill"></div></div>
-        <div style="display: flex; gap: 10px;">
-            <input type="text" id="in-goal-name" placeholder="Nama Target">
+        <div style="display:flex; gap:5px;">
+            <input type="text" id="in-goal-name" placeholder="Target">
             <input type="number" id="in-goal-target" placeholder="Nominal">
-            <button onclick="setGoal()" style="width: 80px;">Set</button>
+            <button onclick="setGoal()" style="width:60px;">Set</button>
         </div>
     </div>
 
-    <!-- Form Input -->
     <div class="glass">
+        <input type="text" id="search" placeholder="🔍 Cari transaksi..." onkeyup="render()">
         <form id="form-tx" onsubmit="addTx(event)">
-            <select id="in-tipe"><option value="masuk">🟢 Pemasukan (+)</option><option value="keluar">🔴 Pengeluaran (-)</option></select>
+            <select id="in-tipe"><option value="masuk">🟢 Masuk</option><option value="keluar">🔴 Keluar</option></select>
             <select id="in-wadah"><option value="cash">💵 Tunai</option><option value="bank">🏛️ Bank</option><option value="wallet">📱 E-Wallet</option></select>
-            <select id="in-kat">
-                <option value="Makan">🍔 Makan</option><option value="Transport">🚗 Transport</option>
-                <option value="Hiburan">🎮 Hiburan</option><option value="Lainnya">📦 Lainnya</option>
-            </select>
-            <input type="number" id="in-nom" placeholder="Nominal (Rp)" required>
-            <input type="text" id="in-ket" placeholder="Keterangan singkat" required>
+            <select id="in-kat"><option value="Makan">🍔 Makan</option><option value="Transport">🚗 Transport</option><option value="Hiburan">🎮 Hiburan</option></select>
+            <input type="number" id="in-nom" placeholder="Nominal" required>
+            <input type="text" id="in-ket" placeholder="Keterangan" required>
             <button type="submit">Konfirmasi Transaksi</button>
         </form>
-        <button class="btn-secondary" onclick="exportData()">📥 Export Data (TXT)</button>
-        <button class="btn-secondary" style="background:#7f1d1d;" onclick="resetAll()">Reset Semua Data</button>
+        <button class="btn-sec" onclick="exportData()">📥 Export Data</button>
+        <button class="btn-sec" style="background:#991b1b" onclick="resetAll()">Reset Semua</button>
     </div>
 
-    <!-- History -->
     <div class="glass">
-        <h2 style="font-size: 16px;">Log Transaksi Terbaru</h2>
-        <table id="tbl-hist">
-            <tbody id="tbl-body"></tbody>
-        </table>
+        <h2 style="font-size:14px;">Log Transaksi</h2>
+        <table id="tbl-body"></table>
     </div>
 </div>
 
 <script>
-    let txs = JSON.parse(localStorage.getItem('brann_data')) || [];
+    let txs = JSON.parse(localStorage.getItem('brann_all')) || [];
     let goal = JSON.parse(localStorage.getItem('brann_goal')) || {name: "Target", target: 0};
 
     function addTx(e) {
@@ -96,63 +86,54 @@
         const tipe = document.getElementById('in-tipe').value;
         const wadah = document.getElementById('in-wadah').value;
         
-        // Anti-Minus Logic
-        let currentSaldo = {cash:0, bank:0, wallet:0};
-        txs.forEach(t => currentSaldo[t.wadah] += (t.tipe === 'masuk' ? t.nominal : -t.nominal));
-        if (tipe === 'keluar' && nom > currentSaldo[wadah]) return alert("⚠️ Saldo tidak cukup!");
+        let s = {cash:0, bank:0, wallet:0};
+        txs.forEach(t => s[t.wadah] += (t.tipe === 'masuk' ? t.nominal : -t.nominal));
+        if (tipe === 'keluar' && nom > s[wadah]) return alert("⚠️ Saldo tidak cukup!");
 
-        txs.push({
-            tipe, wadah, 
-            kategori: document.getElementById('in-kat').value,
-            nominal: nom,
-            ket: document.getElementById('in-ket').value,
-            date: new Date().toLocaleDateString('id-ID')
-        });
-        localStorage.setItem('brann_data', JSON.stringify(txs));
+        txs.push({tipe, wadah, kategori: document.getElementById('in-kat').value, nominal: nom, ket: document.getElementById('in-ket').value, date: new Date().toLocaleDateString()});
+        localStorage.setItem('brann_all', JSON.stringify(txs));
         document.getElementById('form-tx').reset();
         render();
     }
 
     function render() {
-        let total = 0, s = {cash:0, bank:0, wallet:0};
+        const query = document.getElementById('search').value.toLowerCase();
+        let total = 0, s = {cash:0, bank:0, wallet:0}, sumIn=0, sumOut=0, countOut=0;
         const body = document.getElementById('tbl-body');
         body.innerHTML = '';
         
         txs.slice().reverse().forEach((t, i) => {
-            const val = (t.tipe === 'masuk' ? t.nominal : -t.nominal);
-            total += val;
-            s[t.wadah] += val;
-            body.innerHTML += `<tr>
-                <td><span class="badge">${t.kategori}</span><br><b>${t.ket}</b><br><small>${t.date} | ${t.wadah}</small></td>
-                <td style="text-align:right; color:${t.tipe==='masuk'?'var(--success)':'var(--danger)'}">
-                    ${t.tipe==='masuk'?'+':'-'}${t.nominal.toLocaleString()}<br>
-                    <span class="del-btn" onclick="del(${txs.length - 1 - i})">Hapus</span>
-                </td>
-            </tr>`;
+            if(t.ket.toLowerCase().includes(query) || t.kategori.toLowerCase().includes(query)) {
+                const val = (t.tipe === 'masuk' ? t.nominal : -t.nominal);
+                total += val; s[t.wadah] += val;
+                if(t.tipe === 'masuk') sumIn += t.nominal;
+                else { sumOut += t.nominal; countOut++; }
+                
+                body.innerHTML += `<tr>
+                    <td><b>${t.ket}</b><br><small>${t.kategori} • ${t.date}</small></td>
+                    <td style="text-align:right; color:${t.tipe==='masuk'?'var(--success)':'var(--danger)'}">
+                        ${t.tipe==='masuk'?'+':'-'}${t.nominal.toLocaleString()}<br>
+                        <small style="color:#64748b" onclick="del(${txs.length-1-i})">Hapus</small>
+                    </td>
+                </tr>`;
+            }
         });
-
         document.getElementById('total-saldo').innerText = "Rp " + total.toLocaleString();
         document.getElementById('w-cash').innerText = s.cash.toLocaleString();
         document.getElementById('w-bank').innerText = s.bank.toLocaleString();
         document.getElementById('w-wallet').innerText = s.wallet.toLocaleString();
-        
+        document.getElementById('sum-in').innerText = sumIn.toLocaleString();
+        document.getElementById('sum-out').innerText = sumOut.toLocaleString();
+        document.getElementById('st-avg').innerText = countOut > 0 ? Math.floor(sumOut/countOut).toLocaleString() : 0;
         let pct = goal.target > 0 ? Math.min(100, (total / goal.target) * 100) : 0;
         document.getElementById('bar-goal').style.width = pct + "%";
         document.getElementById('lbl-goal').innerText = `🎯 Target: ${goal.name}`;
     }
 
-    function setGoal() {
-        goal = { name: document.getElementById('in-goal-name').value, target: parseInt(document.getElementById('in-goal-target').value) };
-        localStorage.setItem('brann_goal', JSON.stringify(goal));
-        render();
-    }
-
-    function del(i) { txs.splice(i, 1); localStorage.setItem('brann_data', JSON.stringify(txs)); render(); }
-    function resetAll() { if(confirm("Hapus total?")) { txs = []; localStorage.setItem('brann_data', '[]'); render(); } }
-    function exportData() {
-        const blob = new Blob([JSON.stringify(txs)], {type: "text/plain"});
-        const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = "data.txt"; a.click();
-    }
+    function setGoal() { goal = {name: document.getElementById('in-goal-name').value, target: parseInt(document.getElementById('in-goal-target').value)}; localStorage.setItem('brann_goal', JSON.stringify(goal)); render(); }
+    function del(i) { txs.splice(i,1); localStorage.setItem('brann_all', JSON.stringify(txs)); render(); }
+    function resetAll() { if(confirm("Hapus semua?")) { txs = []; localStorage.setItem('brann_all', '[]'); render(); } }
+    function exportData() { const blob = new Blob([JSON.stringify(txs)], {type: "text/plain"}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = "data.txt"; a.click(); }
     render();
 </script>
 </body>
