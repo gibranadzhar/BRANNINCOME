@@ -3,43 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BrannTrack Pro — Ultimate Edition</title>
+    <title>BrannTrack Ultimate Master</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
-        body { background: #090d16; color: #f1f5f9; padding: 20px; min-height: 100vh; display: flex; justify-content: center; }
+        body { background: #090d16; color: #f1f5f9; padding: 20px; display: flex; justify-content: center; min-height: 100vh; }
         .container { width: 100%; max-width: 680px; }
-        .glass { background: linear-gradient(135deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.7)); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 24px; padding: 25px; margin-bottom: 20px; }
         
-        /* Typography & UI */
-        h1 { font-size: 28px; font-weight: 800; background: linear-gradient(135deg, #a5b4fc, #6366f1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-align: center; margin-bottom: 20px; }
-        .balance-val { font-size: 36px; font-weight: 700; color: #fff; margin: 10px 0; }
-        .sub-wallet { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-        .w-card { background: rgba(15, 23, 42, 0.5); padding: 12px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.03); font-size: 11px; }
-        .w-card strong { display: block; font-size: 14px; margin-top: 5px; }
+        /* Glassmorphism */
+        .glass { background: linear-gradient(135deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.7)); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 24px; padding: 25px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        
+        h1 { font-size: 26px; font-weight: 800; background: linear-gradient(135deg, #a5b4fc, #6366f1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-align: center; margin-bottom: 20px; }
+        .balance-val { font-size: 34px; font-weight: 700; color: #fff; margin: 10px 0; }
+        
+        /* Wallets & Progress */
+        .sub-wallet { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 15px; }
+        .w-card { background: rgba(15, 23, 42, 0.6); padding: 12px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.05); font-size: 10px; color: #94a3b8; }
+        .w-card strong { display: block; font-size: 13px; color: #fff; margin-top: 4px; }
+        .progress-bar { height: 8px; background: #1e293b; border-radius: 4px; overflow: hidden; display: flex; margin-bottom: 20px; }
+        .bar-seg { height: 100%; transition: width 0.4s; }
         
         /* Inputs & Buttons */
-        input, select, button { width: 100%; padding: 14px; margin: 8px 0; border-radius: 12px; border: 1px solid #1e293b; background: #0f172a; color: white; outline: none; }
-        button { background: linear-gradient(135deg, #6366f1, #4f46e5); cursor: pointer; font-weight: 600; border: none; }
-        .btn-sm { padding: 10px; width: auto; font-size: 12px; }
+        input, select, button { width: 100%; padding: 12px; margin: 6px 0; border-radius: 12px; border: 1px solid #1e293b; background: #0f172a; color: white; outline: none; }
+        button { background: #6366f1; cursor: pointer; font-weight: 600; border: none; }
+        .btn-row { display: flex; gap: 8px; }
         
-        /* Status Colors */
-        .text-green { color: #10b981; } .text-red { color: #f43f5e; }
+        /* Visual Warnings */
         .text-minus { color: #f43f5e !important; }
         .w-card-minus { border: 1px solid #f43f5e !important; }
+        .text-green { color: #10b981; } .text-red { color: #f43f5e; }
         
-        /* Filters & Table */
-        .filter-nav { display: flex; gap: 8px; margin-bottom: 15px; overflow-x: auto; }
-        .filter-btn { background: rgba(255,255,255,0.05); padding: 8px 12px; border-radius: 8px; font-size: 12px; border: none; color: #fff; cursor: pointer; }
+        /* Table & Filters */
+        .filter-nav { display: flex; gap: 6px; margin-bottom: 15px; }
+        .filter-btn { padding: 6px 12px; font-size: 11px; width: auto; background: rgba(255,255,255,0.05); }
         .filter-btn.active { background: #6366f1; }
         table { width: 100%; border-collapse: collapse; }
-        td { padding: 12px 10px; border-bottom: 1px solid rgba(255,255,255,0.03); font-size: 13px; }
-        .badge-wadah { background: rgba(255,255,255,0.05); padding: 2px 6px; border-radius: 4px; font-size: 10px; }
+        td { padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.03); font-size: 13px; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>BrannTrack Pro</h1>
+    <h1>BrannTrack Ultimate</h1>
     
     <div class="glass">
         <div class="balance-val" id="total-saldo">Rp 0</div>
@@ -48,15 +52,10 @@
             <div class="w-card" id="card-bank">Bank<strong id="w-bank">Rp 0</strong></div>
             <div class="w-card" id="card-wallet">E-Wallet<strong id="w-wallet">Rp 0</strong></div>
         </div>
+        <div class="progress-bar" id="pb-container"></div>
     </div>
 
     <div class="glass">
-        <div style="margin-bottom:15px;">
-            <strong id="lbl-goal-name">Target: -</strong>
-            <input type="text" id="input-goal-name" placeholder="Nama Target" style="padding:8px;">
-            <input type="text" id="input-goal-target" placeholder="Target Dana" style="padding:8px;">
-            <button onclick="setNewGoal()" class="btn-sm">Set Target</button>
-        </div>
         <form id="tx-form" onsubmit="simpanData(event)">
             <select id="input-tipe"><option value="masuk">Pemasukan (+)</option><option value="keluar">Pengeluaran (-)</option></select>
             <select id="input-wadah"><option value="cash">Tunai</option><option value="bank">Bank</option><option value="wallet">E-Wallet</option></select>
@@ -67,21 +66,23 @@
     </div>
 
     <div class="glass">
-        <div class="filter-nav">
+        <div class="filter-nav" id="filter-box">
             <button class="filter-btn active" onclick="gantiFilter('all', this)">Semua</button>
             <button class="filter-btn" onclick="gantiFilter('cash', this)">Tunai</button>
             <button class="filter-btn" onclick="gantiFilter('bank', this)">Bank</button>
             <button class="filter-btn" onclick="gantiFilter('wallet', this)">E-Wallet</button>
         </div>
-        <table id="tabel-body"></table>
-        <button onclick="hapusSemua()" style="background:#ef444433; color:#ef4444; margin-top:10px;">Reset Semua</button>
+        <table><tbody id="tabel-body"></tbody></table>
+        <div class="btn-row" style="margin-top:15px;">
+            <button onclick="eksporCSV()" style="background:#334155;">CSV</button>
+            <button onclick="hapusSemua()" style="background:#ef444433; color:#f43f5e;">Reset</button>
+        </div>
     </div>
 </div>
 
 <script>
-    let dataTransaksi = JSON.parse(localStorage.getItem('fintrack_ultimate')) || [];
-    let dataGoal = JSON.parse(localStorage.getItem('fintrack_goal')) || { name: "-", target: 0 };
-    let filterAktif = 'all';
+    let data = JSON.parse(localStorage.getItem('brann_ultimate')) || [];
+    let filter = 'all';
 
     const inputNominal = document.getElementById('input-nominal');
     inputNominal.addEventListener('input', (e) => {
@@ -92,52 +93,46 @@
     function simpanData(e) {
         e.preventDefault();
         const nominal = parseInt(inputNominal.value.replace(/\./g, '')) || 0;
-        const tipe = document.getElementById('input-tipe').value;
-        const wadah = document.getElementById('input-wadah').value;
-        const ket = document.getElementById('input-ket').value;
-        dataTransaksi.push({ tipe, wadah, nominal, ket });
-        localStorage.setItem('fintrack_ultimate', JSON.stringify(dataTransaksi));
+        data.push({ tipe: document.getElementById('input-tipe').value, wadah: document.getElementById('input-wadah').value, nominal, ket: document.getElementById('input-ket').value });
+        localStorage.setItem('brann_ultimate', JSON.stringify(data));
         document.getElementById('tx-form').reset();
         inputNominal.focus();
         renderUI();
     }
 
-    function setNewGoal() {
-        dataGoal = { name: document.getElementById('input-goal-name').value, target: parseInt(document.getElementById('input-goal-target').value.replace(/\D/g,'')) || 0 };
-        localStorage.setItem('fintrack_goal', JSON.stringify(dataGoal));
-        renderUI();
-    }
-
     function gantiFilter(f, el) {
-        filterAktif = f;
+        filter = f;
         document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
         el.classList.add('active');
         renderUI();
     }
 
+    function eksporCSV() {
+        let csv = "Wadah,Keterangan,Nominal\n" + data.map(i => `${i.wadah},${i.ket},${i.nominal}`).join("\n");
+        let blob = new Blob([csv], {type: 'text/csv'});
+        let a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'data.csv'; a.click();
+    }
+
+    function hapusSemua() { if(confirm("Reset semua?")) { data=[]; localStorage.removeItem('brann_ultimate'); renderUI(); } }
+
     function renderUI() {
-        let total = 0, sWadah = { cash: 0, bank: 0, wallet: 0 };
-        dataTransaksi.forEach(tx => {
-            if(tx.tipe === 'masuk') { total += tx.nominal; sWadah[tx.wadah] += tx.nominal; }
-            else { total -= tx.nominal; sWadah[tx.wadah] -= tx.nominal; }
+        let total = 0, s = { cash: 0, bank: 0, wallet: 0 };
+        data.forEach(t => { 
+            let n = t.tipe === 'masuk' ? t.nominal : -t.nominal;
+            total += n; s[t.wadah] += n; 
         });
 
-        ['cash', 'bank', 'wallet'].forEach(w => {
-            const el = document.getElementById('w-' + w);
-            const card = document.getElementById('card-' + w);
-            el.innerText = "Rp " + sWadah[w].toLocaleString('id-ID');
-            sWadah[w] < 0 ? (el.classList.add('text-minus'), card.classList.add('w-card-minus')) : (el.classList.remove('text-minus'), card.classList.remove('w-card-minus'));
+        ['cash','bank','wallet'].forEach(w => {
+            const el = document.getElementById('w-'+w);
+            el.innerText = "Rp " + s[w].toLocaleString('id-ID');
+            document.getElementById('card-'+w).className = 'w-card ' + (s[w] < 0 ? 'w-card-minus' : '');
+            el.className = s[w] < 0 ? 'text-minus' : '';
         });
 
         document.getElementById('total-saldo').innerText = "Rp " + total.toLocaleString('id-ID');
-        document.getElementById('lbl-goal-name').innerText = `Target: ${dataGoal.name} (${Math.floor((total/dataGoal.target)*100 || 0)}%)`;
-        
-        let html = '';
-        dataTransaksi.slice().reverse().forEach((tx, i) => {
-            if (filterAktif !== 'all' && tx.wadah !== filterAktif) return;
-            html += `<tr><td><span class="badge-wadah">${tx.wadah.toUpperCase()}</span></td><td>${tx.ket}</td><td class="${tx.tipe === 'masuk' ? 'text-green' : 'text-red'}">${tx.tipe === 'masuk' ? '+' : '-'}${tx.nominal.toLocaleString('id-ID')}</td></tr>`;
-        });
-        document.getElementById('tabel-body').innerHTML = html;
+        document.getElementById('tabel-body').innerHTML = data.slice().reverse()
+            .filter(t => filter === 'all' || t.wadah === filter)
+            .map(t => `<tr><td>${t.wadah.toUpperCase()}</td><td>${t.ket}</td><td class="${t.tipe === 'masuk' ? 'text-green' : 'text-red'}">${t.tipe === 'masuk' ? '+' : '-'}${t.nominal.toLocaleString('id-ID')}</td></tr>`).join('');
     }
     renderUI();
 </script>
