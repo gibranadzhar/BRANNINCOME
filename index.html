@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BrannTrack Pro — Elite Command Center</title>
+    <title>BrannTrack Pro — Classic Edition</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif; }
         body { background: #090d16; color: #f1f5f9; padding: 40px 20px; min-height: 100vh; display: flex; justify-content: center; }
@@ -29,23 +29,24 @@
         .goal-bar { background: linear-gradient(90deg, #6366f1, #a5b4fc); height: 100%; width: 0%; transition: width 0.4s ease; }
         .goal-inputs { display: flex; gap: 10px; }
         .goal-inputs input { padding: 10px; font-size: 13px; }
-        .btn-sm { width: auto; padding: 10px 16px; font-size: 13px; white-space: nowrap; cursor: pointer; border: none; border-radius: 8px; color: #cbd5e1; background: rgba(255,255,255,0.05); }
+        .btn-sm { width: auto; padding: 10px 16px; font-size: 13px; white-space: nowrap; }
         .form-box { background: rgba(30, 41, 59, 0.4); padding: 25px; border-radius: 24px; margin-bottom: 25px; border: 1px solid rgba(255, 255, 255, 0.04); }
         h3 { font-size: 16px; font-weight: 600; color: #cbd5e1; margin-bottom: 18px; display: flex; align-items: center; gap: 8px; }
         .form-group { display: flex; flex-direction: column; gap: 14px; }
         select, input { width: 100%; padding: 14px 16px; background: #0f172a; border: 1px solid #1e293b; border-radius: 12px; color: #fff; font-size: 15px; transition: all 0.2s; outline: none; }
+        select:focus, input:focus { border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15); }
         button { width: 100%; padding: 14px; background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: #fff; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; font-size: 15px; transition: all 0.2s; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2); }
-        button:hover { opacity: 0.95; transform: translateY(-1px); }
+        button:hover { opacity: 0.95; transform: translateY(-1px); box-shadow: 0 6px 16px rgba(99, 102, 241, 0.3); }
         .action-footer-btns { display: flex; gap: 10px; margin-top: 12px; }
-        .btn-secondary { background: rgba(255,255,255,0.05); color: #cbd5e1; border: 1px solid rgba(255,255,255,0.05); }
-        .btn-danger { background: transparent; border: 1px solid rgba(239, 68, 68, 0.2); color: #ef4444; }
+        .btn-secondary { background: rgba(255,255,255,0.05); color: #cbd5e1; border: 1px solid rgba(255,255,255,0.05); box-shadow: none; }
+        .btn-danger { background: transparent; border: 1px solid rgba(239, 68, 68, 0.2); color: #ef4444; box-shadow: none; }
         .filter-nav { display: flex; gap: 8px; margin-bottom: 15px; overflow-x: auto; padding-bottom: 5px; }
-        .filter-btn { background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255,255,255,0.04); padding: 8px 14px; border-radius: 8px; color: #94a3b8; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
-        .filter-btn.active { background: #6366f1; color: #fff; }
+        .filter-btn { background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255,255,255,0.04); padding: 8px 14px; border-radius: 8px; color: #94a3b8; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+        .filter-btn.active, .filter-btn:hover { background: #6366f1; color: #fff; border-color: #6366f1; }
         .table-box { background: rgba(30, 41, 59, 0.4); padding: 25px; border-radius: 24px; border: 1px solid rgba(255, 255, 255, 0.04); }
-        table { width: 100%; border-collapse: collapse; }
+        table { width: 100%; border-collapse: collapse; text-align: left; }
         th, td { padding: 14px; border-bottom: 1px solid rgba(255, 255, 255, 0.03); font-size: 14px; }
-        th { color: #64748b; text-transform: uppercase; font-size: 11px; }
+        th { color: #64748b; font-weight: 600; text-transform: uppercase; font-size: 11px; }
         .text-green { color: #10b981; font-weight: 600; } .text-red { color: #f43f5e; font-weight: 600; }
         .badge-wadah { background: rgba(255,255,255,0.05); padding: 4px 8px; border-radius: 6px; font-size: 12px; color: #94a3b8; }
     </style>
@@ -58,22 +59,30 @@
             <p>Elite Premium Ledger Experience</p>
         </header>
 
-        <!-- (Bagian Main Box, Goal Box, dan Filter tetap sama) -->
         <div class="main-box">
+            <div class="balance-header"><span class="balance-title">Total Kompilasi Saldo</span></div>
             <div class="balance-val" id="total-saldo">Rp 0</div>
             <div class="sub-wallet">
                 <div class="w-card" style="border-left: 3px solid #f59e0b;">💵 Tunai<strong id="w-cash">Rp 0</strong></div>
                 <div class="w-card" style="border-left: 3px solid #3b82f6;">🏛️ Bank<strong id="w-bank">Rp 0</strong></div>
                 <div class="w-card" style="border-left: 3px solid #10b981;">📱 E-Wallet<strong id="w-wallet">Rp 0</strong></div>
             </div>
+            <div class="progress-container">
+                <div id="bar-cash" class="progress-bar-segment bg-cash" style="width: 0%"></div>
+                <div id="bar-bank" class="progress-bar-segment bg-bank" style="width: 0%"></div>
+                <div id="bar-wallet" class="progress-bar-segment bg-wallet" style="width: 0%"></div>
+            </div>
         </div>
 
         <div class="goal-box">
-            <div class="goal-header"><div class="goal-title">🎯 Target: <span id="lbl-goal-name">Atur Target</span></div><div class="goal-progress-text" id="lbl-goal-progress">0%</div></div>
+            <div class="goal-header">
+                <div class="goal-title">🎯 Target: <span id="lbl-goal-name">Atur Target</span></div>
+                <div class="goal-progress-text" id="lbl-goal-progress">0% Terpenuhi</div>
+            </div>
             <div class="goal-track"><div id="bar-goal" class="goal-bar"></div></div>
             <div class="goal-inputs">
-                <input type="text" id="input-goal-name" placeholder="Nama">
-                <input type="number" id="input-goal-target" placeholder="Target">
+                <input type="text" id="input-goal-name" placeholder="Nama Target">
+                <input type="number" id="input-goal-target" placeholder="Target Dana">
                 <button onclick="setNewGoal()" class="btn-sm">Set</button>
             </div>
         </div>
@@ -83,51 +92,123 @@
             <form id="tx-form" onsubmit="simpanData(event)" class="form-group">
                 <select id="input-tipe"><option value="masuk">🟢 Masuk (+)</option><option value="keluar">🔴 Keluar (-)</option></select>
                 <select id="input-wadah"><option value="cash">💵 Tunai</option><option value="bank">🏛️ Bank</option><option value="wallet">📱 E-Wallet</option></select>
-                <input type="text" id="input-nominal" placeholder="Nominal (Rp)" required>
-                <input type="text" id="input-ket" placeholder="Keterangan..." oninput="smartDetect(this.value)" required>
-                <!-- Quick Chips -->
-                <div style="display: flex; gap: 8px;">
-                    <button type="button" class="btn-sm" onclick="addChip('Makan', 'cash')">🍔 Makan</button>
-                    <button type="button" class="btn-sm" onclick="addChip('Gaji', 'bank')">💼 Gaji</button>
-                    <button type="button" class="btn-sm" onclick="addChip('Dana', 'wallet')">📱 Dana</button>
-                </div>
+                <input type="number" id="input-nominal" placeholder="Nominal (Rp)" required>
+                <input type="text" id="input-ket" placeholder="Keterangan" required>
                 <button type="submit">Konfirmasi</button>
             </form>
             <div class="action-footer-btns">
-                <button onclick="eksporJSON()" class="btn-secondary">💾 Backup JSON</button>
+                <button onclick="eksporCSV()" class="btn-secondary">📥 Ekspor CSV</button>
                 <button onclick="hapusSemua()" class="btn-danger">Reset Semua</button>
             </div>
         </div>
 
         <div class="table-box">
+            <h3><span>✦ Log Riwayat</span></h3>
             <div class="filter-nav">
                 <button class="filter-btn active" onclick="gantiFilter('all', this)">🌍 Semua</button>
                 <button class="filter-btn" onclick="gantiFilter('cash', this)">💵 Tunai</button>
                 <button class="filter-btn" onclick="gantiFilter('bank', this)">🏛️ Bank</button>
+                <button class="filter-btn" onclick="gantiFilter('wallet', this)">📱 E-Wallet</button>
             </div>
-            <table><tbody id="tabel-body"></tbody></table>
+            <table>
+                <thead><tr><th>Wadah</th><th>Keterangan</th><th style="text-align: right;">Nominal</th><th>Aksi</th></tr></thead>
+                <tbody id="tabel-body"></tbody>
+            </table>
         </div>
     </div>
 
     <script>
         const STORAGE_KEY = 'fintrack_classic_v1';
-        let data = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+        const GOAL_KEY = 'fintrack_goal_classic_v1';
+        let dataTransaksi = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+        let dataGoal = JSON.parse(localStorage.getItem(GOAL_KEY)) || { name: "Belum Ditentukan", target: 0 };
+        let filterAktif = 'all';
 
-        // Fitur Tambahan
-        function vibrate() { if(navigator.vibrate) navigator.vibrate(50); }
-        function smartDetect(v) {
-            const w = document.getElementById('input-wadah');
-            if(v.toLowerCase().includes('makan')) w.value = 'cash';
-            else if(v.toLowerCase().includes('gaji')) w.value = 'bank';
-            else if(v.toLowerCase().includes('dana')) w.value = 'wallet';
+        function formatRupiah(angka) { return "Rp " + Number(angka).toLocaleString('id-ID'); }
+
+        function simpanData(e) {
+            e.preventDefault();
+            const tipe = document.getElementById('input-tipe').value;
+            const wadah = document.getElementById('input-wadah').value;
+            const nominal = parseInt(document.getElementById('input-nominal').value) || 0;
+            const ket = document.getElementById('input-ket').value;
+            if (nominal <= 0) return alert("Masukkan nominal yang valid!");
+            dataTransaksi.push({ tipe, wadah, nominal, ket });
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(dataTransaksi));
+            document.getElementById('tx-form').reset();
+            renderUI();
         }
-        function addChip(k, w) { document.getElementById('input-ket').value = k; document.getElementById('input-wadah').value = w; smartDetect(k); }
-        function eksporJSON() { const a = document.createElement('a'); a.href = "data:text/json;charset=utf-8,"+encodeURIComponent(JSON.stringify(data)); a.download="Backup.json"; a.click(); }
 
-        // Fitur Asli Tetap Ada
-        function simpanData(e) { e.preventDefault(); vibrate(); const n = parseInt(document.getElementById('input-nominal').value.replace(/\D/g,'')); data.push({tipe:document.getElementById('input-tipe').value, wadah:document.getElementById('input-wadah').value, nominal:n, ket:document.getElementById('input-ket').value}); localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); renderUI(); }
-        function renderUI() { /* (Logika render tetap sama) */ }
-        document.getElementById('input-nominal').addEventListener('input', e => e.target.value = e.target.value.replace(/\D/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, "."));
+        function hapusSatu(indexAsli) {
+            if(confirm("Hapus transaksi ini?")) {
+                dataTransaksi.splice(indexAsli, 1);
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(dataTransaksi));
+                renderUI();
+            }
+        }
+
+        function setNewGoal() {
+            const name = document.getElementById('input-goal-name').value;
+            const target = parseInt(document.getElementById('input-goal-target').value) || 0;
+            if(!name || target <= 0) return alert("Isi target dengan benar!");
+            dataGoal = { name, target };
+            localStorage.setItem(GOAL_KEY, JSON.stringify(dataGoal));
+            renderUI();
+        }
+
+        function gantiFilter(tipeWadah, elemen) {
+            filterAktif = tipeWadah;
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            elemen.classList.add('active');
+            renderUI();
+        }
+
+        function hapusSemua() {
+            if(confirm("Hapus seluruh log?")) {
+                dataTransaksi = [];
+                localStorage.setItem(STORAGE_KEY, '[]');
+                renderUI();
+            }
+        }
+
+        function renderUI() {
+            let totalSemua = 0, saldoWadah = { cash: 0, bank: 0, wallet: 0 };
+            const tbody = document.getElementById('tabel-body');
+            tbody.innerHTML = '';
+            dataTransaksi.forEach(tx => {
+                if(tx.tipe === 'masuk') { totalSemua += tx.nominal; saldoWadah[tx.wadah] += tx.nominal; }
+                else { totalSemua -= tx.nominal; saldoWadah[tx.wadah] -= tx.nominal; }
+            });
+            
+            // Loop terbalik untuk menampilkan yang terbaru di atas
+            dataTransaksi.slice().reverse().forEach((tx, i) => {
+                if (filterAktif !== 'all' && tx.wadah !== filterAktif) return;
+                const indexAsli = dataTransaksi.length - 1 - i;
+                const sign = tx.tipe === 'masuk' ? '+' : '-';
+                tbody.innerHTML += `<tr>
+                    <td><span class="badge-wadah">${tx.wadah.toUpperCase()}</span></td>
+                    <td>${tx.ket}</td>
+                    <td class="${tx.tipe === 'masuk' ? 'text-green' : 'text-red'}" style="text-align: right;">${sign}${formatRupiah(tx.nominal)}</td>
+                    <td style="text-align:center;"><button onclick="hapusSatu(${indexAsli})" style="background:none; border:none; color:#64748b; cursor:pointer;">🗑️</button></td>
+                </tr>`;
+            });
+
+            document.getElementById('total-saldo').innerText = formatRupiah(totalSemua);
+            document.getElementById('w-cash').innerText = formatRupiah(saldoWadah.cash);
+            document.getElementById('w-bank').innerText = formatRupiah(saldoWadah.bank);
+            document.getElementById('w-wallet').innerText = formatRupiah(saldoWadah.wallet);
+            
+            const totalAbs = Math.abs(saldoWadah.cash) + Math.abs(saldoWadah.bank) + Math.abs(saldoWadah.wallet);
+            if(totalAbs > 0) {
+                document.getElementById('bar-cash').style.width = (Math.max(0, saldoWadah.cash) / totalAbs * 100) + '%';
+                document.getElementById('bar-bank').style.width = (Math.max(0, saldoWadah.bank) / totalAbs * 100) + '%';
+                document.getElementById('bar-wallet').style.width = (Math.max(0, saldoWadah.wallet) / totalAbs * 100) + '%';
+            }
+            document.getElementById('lbl-goal-name').innerText = dataGoal.name;
+            const pct = dataGoal.target > 0 ? Math.min(100, Math.max(0, (totalSemua / dataGoal.target) * 100)) : 0;
+            document.getElementById('bar-goal').style.width = pct + '%';
+            document.getElementById('lbl-goal-progress').innerText = `${Math.floor(pct)}% Terpenuhi`;
+        }
         renderUI();
     </script>
 </body>
