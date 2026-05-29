@@ -40,8 +40,8 @@
         .goal-progress-text { font-size: 13px; color: #94a3b8; }
         .goal-track { background: rgba(15, 23, 42, 0.6); height: 8px; border-radius: 99px; overflow: hidden; margin-bottom: 12px; }
         .goal-bar { background: linear-gradient(90deg, #6366f1, #a5b4fc); height: 100%; width: 0%; transition: width 0.4s ease; }
-        .goal-inputs { display: flex; gap: 10px; flex-wrap: wrap; }
-        .goal-inputs input { padding: 10px; font-size: 13px; flex: 1; }
+        .goal-inputs { display: flex; gap: 10px; }
+        .goal-inputs input { padding: 10px; font-size: 13px; }
         .btn-sm { width: auto; padding: 10px 16px; font-size: 13px; white-space: nowrap; }
 
         /* Elegant Form Container */
@@ -57,7 +57,7 @@
         button { width: 100%; padding: 14px; background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: #fff; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; font-size: 15px; transition: all 0.2s; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2); }
         button:hover { opacity: 0.95; transform: translateY(-1px); box-shadow: 0 6px 16px rgba(99, 102, 241, 0.3); }
         
-        .action-footer-btns { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
+        .action-footer-btns { display: flex; gap: 10px; margin-top: 12px; }
         .btn-secondary { background: rgba(255,255,255,0.05); color: #cbd5e1; border: 1px solid rgba(255,255,255,0.05); box-shadow: none; }
         .btn-secondary:hover { background: rgba(255,255,255,0.1); transform: translateY(-1px); }
         .btn-danger { background: transparent; border: 1px solid rgba(239, 68, 68, 0.2); color: #ef4444; box-shadow: none; }
@@ -80,19 +80,6 @@
         .text-green { color: #10b981; font-weight: 600; }
         .text-red { color: #f43f5e; font-weight: 600; }
         .badge-wadah { background: rgba(255,255,255,0.05); padding: 4px 8px; border-radius: 6px; font-size: 12px; color: #94a3b8; }
-        
-        /* Action Buttons in Table */
-        .action-icons { display: flex; gap: 8px; }
-        .edit-icon, .delete-icon { cursor: pointer; padding: 4px 8px; border-radius: 6px; transition: all 0.2s; font-size: 14px; }
-        .edit-icon:hover { background: rgba(99, 102, 241, 0.2); color: #a5b4fc; }
-        .delete-icon:hover { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
-        
-        /* Modal */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); z-index: 1000; justify-content: center; align-items: center; }
-        .modal-content { background: #1e293b; padding: 30px; border-radius: 24px; max-width: 400px; width: 90%; border: 1px solid rgba(255,255,255,0.1); }
-        .modal-content h4 { margin-bottom: 20px; color: #f1f5f9; }
-        .modal-content input, .modal-content select { margin-bottom: 12px; }
-        .modal-buttons { display: flex; gap: 10px; margin-top: 20px; }
     </style>
 </head>
 <body>
@@ -175,7 +162,11 @@
             <div class="table-wrapper">
                 <table>
                     <thead>
-                        <tr><th>Alokasi</th><th>Keterangan</th><th style="text-align: right;">Nominal Mutasi</th><th style="text-align: center;">Aksi</th></tr>
+                        <tr>
+                            <th>Alokasi</th>
+                            <th>Keterangan</th>
+                            <th style="text-align: right;">Nominal Mutasi</th>
+                        </tr>
                     </thead>
                     <tbody id="tabel-body"></tbody>
                 </table>
@@ -183,185 +174,165 @@
         </div>
     </div>
 
-    <!-- Modal Edit -->
-    <div id="editModal" class="modal">
-        <div class="modal-content">
-            <h4>✏️ Edit Transaksi</h4>
-            <select id="edit-tipe">
-                <option value="masuk">🟢 Pemasukan (+)</option>
-                <option value="keluar">🔴 Pengeluaran (-)</option>
-            </select>
-            <select id="edit-wadah">
-                <option value="cash">💵 Uang Tunai</option>
-                <option value="bank">🏛️ Rekening Bank</option>
-                <option value="wallet">📱 E-Wallet</option>
-            </select>
-            <input type="number" id="edit-nominal" placeholder="Nominal">
-            <input type="text" id="edit-ket" placeholder="Deskripsi">
-            <div class="modal-buttons">
-                <button onclick="saveEdit()" class="btn-sm">Simpan</button>
-                <button onclick="closeModal()" class="btn-sm btn-secondary">Batal</button>
-            </div>
-        </div>
-    </div>
-
     <script>
-        // ============ CONSTANTS & GLOBALS ============
-        const STORAGE_KEY = 'fintrack_classic_v2';
-        const GOAL_KEY = 'fintrack_goal_classic_v2';
+        const STORAGE_KEY = 'fintrack_classic_v1';
+        const GOAL_KEY = 'fintrack_goal_classic_v1';
         
         let dataTransaksi = [];
         let dataGoal = { name: "Belum Ditentukan", target: 0 };
         let filterAktif = 'all';
-        let editIndex = null;
 
-        // DOM Elements (cached)
-        const dom = {
-            totalSaldo: document.getElementById('total-saldo'),
-            wCash: document.getElementById('w-cash'),
-            wBank: document.getElementById('w-bank'),
-            wWallet: document.getElementById('w-wallet'),
-            barCash: document.getElementById('bar-cash'),
-            barBank: document.getElementById('bar-bank'),
-            barWallet: document.getElementById('bar-wallet'),
-            lblGoalName: document.getElementById('lbl-goal-name'),
-            lblGoalProgress: document.getElementById('lbl-goal-progress'),
-            barGoal: document.getElementById('bar-goal'),
-            tabelBody: document.getElementById('tabel-body')
+        // Load Memori Bawaan
+        try {
+            dataTransaksi = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+            if(!Array.isArray(dataTransaksi)) dataTransaksi = [];
+            dataGoal = JSON.parse(localStorage.getItem(GOAL_KEY)) || { name: "Belum Ditentukan", target: 0 };
+        } catch(e) {
+            dataTransaksi = [];
+            dataGoal = { name: "Belum Ditentukan", target: 0 };
+        }
+
+        const formatRupiah = (angka) => {
+            return "Rp " + Number(angka).toLocaleString('id-ID');
         };
 
-        // ============ UTILITIES ============
-        const formatRupiah = (angka) => "Rp " + Number(angka).toLocaleString('id-ID');
-        
-        const getTimestamp = () => new Date().toISOString().slice(0,19).replace(/:/g, '-');
+        function simpanData(e) {
+            e.preventDefault();
+            
+            const tipe = document.getElementById('input-tipe').value;
+            const wadah = document.getElementById('input-wadah').value;
+            const nominal = parseInt(document.getElementById('input-nominal').value) || 0;
+            const ket = document.getElementById('input-ket').value;
 
-        // Load data from localStorage
-        function loadData() {
-            try {
-                const stored = localStorage.getItem(STORAGE_KEY);
-                dataTransaksi = stored ? JSON.parse(stored) : [];
-                if (!Array.isArray(dataTransaksi)) dataTransaksi = [];
-                
-                const storedGoal = localStorage.getItem(GOAL_KEY);
-                dataGoal = storedGoal ? JSON.parse(storedGoal) : { name: "Belum Ditentukan", target: 0 };
-            } catch(e) {
-                console.error("Load error:", e);
+            if (nominal <= 0) return alert("Harap masukkan nilai dana yang valid!");
+
+            dataTransaksi.push({ tipe, wadah, nominal, ket });
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(dataTransaksi));
+            
+            document.getElementById('tx-form').reset();
+            renderUI();
+        }
+
+        function setNewGoal() {
+            const name = document.getElementById('input-goal-name').value;
+            const target = parseInt(document.getElementById('input-goal-target').value) || 0;
+            if(!name || target <= 0) return alert("Harap isi target dengan benar!");
+
+            dataGoal = { name, target };
+            localStorage.setItem(GOAL_KEY, JSON.stringify(dataGoal));
+            
+            document.getElementById('input-goal-name').value = '';
+            document.getElementById('input-goal-target').value = '';
+            renderUI();
+        }
+
+        function gantiFilter(tipeWadah, elemenTombol) {
+            filterAktif = tipeWadah;
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            elemenTombol.classList.add('active');
+            renderUI();
+        }
+
+        function eksporCSV() {
+            if(dataTransaksi.length === 0) return alert("Tidak ada data transaksi!");
+            let isiCSV = "Alokasi,Arus Transaksi,Keterangan,Nominal Mutasi\n";
+            dataTransaksi.forEach(tx => {
+                isiCSV += `"${tx.wadah.toUpperCase()}","${tx.tipe.toUpperCase()}","${tx.ket.replace(/"/g, '""')}",${tx.nominal}\n`;
+            });
+            const blob = new Blob([isiCSV], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.setAttribute("href", url);
+            link.setAttribute("download", "Laporan_FinTrack_Classic.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function hapusSemua() {
+            if(confirm("Apakah Anda yakin ingin menghapus seluruh log?")) {
                 dataTransaksi = [];
                 dataGoal = { name: "Belum Ditentukan", target: 0 };
+                localStorage.setItem(STORAGE_KEY, '[]');
+                localStorage.setItem(GOAL_KEY, JSON.stringify(dataGoal));
+                renderUI();
             }
         }
 
-        // Save to localStorage
-        function saveToLocal() {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(dataTransaksi));
-            localStorage.setItem(GOAL_KEY, JSON.stringify(dataGoal));
-        }
-
-        // ============ CORE BUSINESS LOGIC ============
-        function hitungTotalDanSaldo() {
+        function renderUI() {
             let totalSemua = 0;
             let saldoPerWadah = { cash: 0, bank: 0, wallet: 0 };
-            
+            const tbody = document.getElementById('tabel-body');
+            if(tbody) tbody.innerHTML = '';
+
             dataTransaksi.forEach(tx => {
                 let nom = Number(tx.nominal) || 0;
-                if (tx.tipe === 'masuk') {
+                if(tx.tipe === 'masuk') {
                     totalSemua += nom;
                     saldoPerWadah[tx.wadah] += nom;
-                } else {
+                } else if(tx.tipe === 'keluar') {
                     totalSemua -= nom;
                     saldoPerWadah[tx.wadah] -= nom;
                 }
             });
-            
-            return { totalSemua, saldoPerWadah };
-        }
 
-        function updateBalanceUI(totalSemua, saldoPerWadah) {
-            if (dom.totalSaldo) dom.totalSaldo.innerText = formatRupiah(totalSemua);
-            if (dom.wCash) dom.wCash.innerText = formatRupiah(saldoPerWadah.cash);
-            if (dom.wBank) dom.wBank.innerText = formatRupiah(saldoPerWadah.bank);
-            if (dom.wWallet) dom.wWallet.innerText = formatRupiah(saldoPerWadah.wallet);
-        }
+            dataTransaksi.slice().reverse().forEach(tx => {
+                if (filterAktif !== 'all' && tx.wadah !== filterAktif) return;
 
-        function updateProgressBar(saldoPerWadah) {
-            // Hanya saldo positif untuk progress bar
-            const cashPos = Math.max(0, saldoPerWadah.cash);
-            const bankPos = Math.max(0, saldoPerWadah.bank);
-            const walletPos = Math.max(0, saldoPerWadah.wallet);
-            const totalPos = cashPos + bankPos + walletPos;
-            
+                if(tbody) {
+                    let nom = Number(tx.nominal) || 0;
+                    let kelasNominal = 'text-green';
+                    let tanda = '+ ';
+                    let labelWadah = tx.wadah === 'bank' ? 'Bank' : tx.wadah === 'wallet' ? 'E-Wallet' : 'Tunai';
+
+                    if(tx.tipe === 'keluar') {
+                        kelasNominal = 'text-red';
+                        tanda = '- ';
+                    }
+
+                    tbody.innerHTML += `
+                        <tr>
+                            <td><span class="badge-wadah">${labelWadah}</span></td>
+                            <td style="font-weight: 500;">${tx.ket}</td>
+                            <td class="${kelasNominal}" style="text-align: right;">${tanda}${formatRupiah(nom)}</td>
+                        </tr>
+                    `;
+                }
+            });
+
+            if(document.getElementById('total-saldo')) document.getElementById('total-saldo').innerText = formatRupiah(totalSemua);
+            if(document.getElementById('w-cash')) document.getElementById('w-cash').innerText = formatRupiah(saldoPerWadah.cash);
+            if(document.getElementById('w-bank')) document.getElementById('w-bank').innerText = formatRupiah(saldoPerWadah.bank);
+            if(document.getElementById('w-wallet')) document.getElementById('w-wallet').innerText = formatRupiah(saldoPerWadah.wallet);
+
+            let jumlahAbsolut = Math.abs(saldoPerWadah.cash) + Math.abs(saldoPerWadah.bank) + Math.abs(saldoPerWadah.wallet);
             let pctCash = 0, pctBank = 0, pctWallet = 0;
-            if (totalPos > 0) {
-                pctCash = (cashPos / totalPos) * 100;
-                pctBank = (bankPos / totalPos) * 100;
-                pctWallet = (walletPos / totalPos) * 100;
+            if(jumlahAbsolut > 0) {
+                pctCash = (Math.max(0, saldoPerWadah.cash) / jumlahAbsolut) * 100;
+                pctBank = (Math.max(0, saldoPerWadah.bank) / jumlahAbsolut) * 100;
+                pctWallet = (Math.max(0, saldoPerWadah.wallet) / jumlahAbsolut) * 100;
             }
-            
-            if (dom.barCash) dom.barCash.style.width = pctCash + '%';
-            if (dom.barBank) dom.barBank.style.width = pctBank + '%';
-            if (dom.barWallet) dom.barWallet.style.width = pctWallet + '%';
-        }
+            document.getElementById('bar-cash').style.width = pctCash + '%';
+            document.getElementById('bar-bank').style.width = pctBank + '%';
+            document.getElementById('bar-wallet').style.width = pctWallet + '%';
 
-        function updateGoalUI(totalSemua) {
-            if (!dom.lblGoalName) return;
-            
-            dom.lblGoalName.innerText = dataGoal.name;
-            
+            document.getElementById('lbl-goal-name').innerText = dataGoal.name;
             if (dataGoal.target > 0) {
-                let persen = Math.floor((totalSemua / dataGoal.target) * 100);
-                persen = Math.min(100, Math.max(0, persen));
-                dom.barGoal.style.width = persen + '%';
-                dom.lblGoalProgress.innerText = `${persen}% Terpenuhi (${formatRupiah(totalSemua)} / ${formatRupiah(dataGoal.target)})`;
+                let hitungPersenGoal = Math.floor((totalSemua / dataGoal.target) * 100);
+                if(hitungPersenGoal < 0) hitungPersenGoal = 0;
+                if(hitungPersenGoal > 100) hitungPersenGoal = 100;
+
+                document.getElementById('bar-goal').style.width = hitungPersenGoal + '%';
+                document.getElementById('lbl-goal-progress').innerText = `${hitungPersenGoal}% Terpenuhi (${formatRupiah(totalSemua)} / ${formatRupiah(dataGoal.target)})`;
             } else {
-                dom.barGoal.style.width = '0%';
-                dom.lblGoalProgress.innerText = '0% Terpenuhi';
+                document.getElementById('bar-goal').style.width = '0%';
+                document.getElementById('lbl-goal-progress').innerText = '0% Terpenuhi';
             }
         }
 
-        function renderTransactionTable() {
-            if (!dom.tabelBody) return;
-            
-            dom.tabelBody.innerHTML = '';
-            
-            // Filter dan reverse untuk menampilkan yang terbaru di atas
-            const filtered = [...dataTransaksi].reverse().filter(tx => {
-                return filterAktif === 'all' || tx.wadah === filterAktif;
-            });
-            
-            filtered.forEach((tx, idx) => {
-                // Index asli dari data asli (perlu untuk edit/hapus)
-                const originalIndex = dataTransaksi.length - 1 - idx;
-                const nom = Number(tx.nominal) || 0;
-                const kelasNominal = tx.tipe === 'masuk' ? 'text-green' : 'text-red';
-                const tanda = tx.tipe === 'masuk' ? '+ ' : '- ';
-                const labelWadah = tx.wadah === 'bank' ? 'Bank' : tx.wadah === 'wallet' ? 'E-Wallet' : 'Tunai';
-                
-                const row = dom.tabelBody.insertRow();
-                row.innerHTML = `
-                    <td><span class="badge-wadah">${labelWadah}</span></td>
-                    <td style="font-weight: 500;">${escapeHtml(tx.ket)}</td>
-                    <td class="${kelasNominal}" style="text-align: right;">${tanda}${formatRupiah(nom)}</td>
-                    <td style="text-align: center;">
-                        <div class="action-icons">
-                            <span class="edit-icon" onclick="openEditModal(${originalIndex})">✏️</span>
-                            <span class="delete-icon" onclick="hapusTransaksi(${originalIndex})">🗑️</span>
-                        </div>
-                    </td>
-                `;
-            });
-        }
-
-        // Helper untuk mencegah XSS
-        function escapeHtml(str) {
-            if (!str) return '';
-            return str.replace(/[&<>]/g, function(m) {
-                if (m === '&') return '&amp;';
-                if (m === '<') return '&lt;';
-                if (m === '>') return '&gt;';
-                return m;
-            });
-        }
-
-        // ============ MAIN RENDER ============
-        function renderUI() {
-            const { totalSemua, saldoPerWadah } = hitungTotalDanSa
+        window.addEventListener('DOMContentLoaded', () => {
+            renderUI();
+        });
+    </script>
+</body>
+</html>
