@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FinTrack Pro — Ultimate Premium Edition</title>
+    <title>FinTrack Pro — Elite Edition</title>
     <style>
         /* Reset & Base Premium Theme */
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif; }
@@ -17,7 +17,13 @@
         
         /* Glassmorphic Balance Dashboard Card */
         .main-box { background: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.7) 100%); border: 1px solid rgba(255, 255, 255, 0.06); padding: 30px; border-radius: 24px; margin-bottom: 25px; backdrop-filter: blur(12px); box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
+        .balance-header { display: flex; justify-content: space-between; align-items: center; }
         .balance-title { font-size: 13px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+        
+        /* Feature 2: Eye Button Toggle Incognito */
+        .btn-eye { background: transparent; border: none; color: #64748b; cursor: pointer; font-size: 18px; padding: 5px; transition: color 0.2s; width: auto; box-shadow: none; }
+        .btn-eye:hover { color: #a5b4fc; transform: none; }
+        
         .balance-val { font-size: 38px; font-weight: 700; margin: 8px 0 20px 0; color: #ffffff; letter-spacing: -1px; }
         
         /* Sub Wallets Grid */
@@ -25,14 +31,14 @@
         .w-card { background: rgba(15, 23, 42, 0.5); padding: 14px; border-radius: 14px; text-align: left; font-size: 12px; color: #94a3b8; border: 1px solid rgba(255, 255, 255, 0.03); }
         .w-card strong { display: block; font-size: 16px; margin-top: 6px; color: #f8fafc; font-weight: 600; }
         
-        /* Feature 1: Visual Progress Bar Multi-Wadah */
+        /* Progress Bar Multi-Wadah */
         .progress-container { background: rgba(15, 23, 42, 0.6); height: 10px; border-radius: 99px; display: flex; overflow: hidden; border: 1px solid rgba(255,255,255,0.02); }
         .progress-bar-segment { height: 100%; transition: width 0.4s ease; }
         .bg-cash { background: #f59e0b; }
         .bg-bank { background: #3b82f6; }
         .bg-wallet { background: #10b981; }
         
-        /* Feature 4: Target Celengan Styling */
+        /* Target Celengan Styling */
         .goal-box { background: rgba(30, 41, 59, 0.3); padding: 20px; border-radius: 20px; margin-bottom: 25px; border: 1px solid rgba(255, 255, 255, 0.04); }
         .goal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
         .goal-title { font-size: 14px; font-weight: 600; color: #cbd5e1; }
@@ -45,9 +51,17 @@
 
         /* Elegant Form Container */
         .form-box { background: rgba(30, 41, 59, 0.4); padding: 25px; border-radius: 24px; margin-bottom: 25px; border: 1px solid rgba(255, 255, 255, 0.04); }
-        h3 { font-size: 16px; font-weight: 600; color: #cbd5e1; margin-bottom: 18px; display: flex; align-items: center; gap: 8px; justify-content: space-between; }
+        h3 { font-size: 16px; font-weight: 600; color: #cbd5e1; margin-bottom: 18px; display: flex; align-items: center; gap: 8px; }
         .form-group { display: flex; flex-direction: column; gap: 14px; }
         
+        /* Feature 4: Mutasi Layout Utility */
+        .transfer-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        
+        /* Feature 1: Quick Nominal Shortcuts */
+        .shortcut-group { display: flex; gap: 8px; flex-wrap: wrap; margin-top: -4px; }
+        .btn-shortcut { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); padding: 6px 12px; border-radius: 8px; color: #cbd5e1; font-size: 12px; cursor: pointer; width: auto; box-shadow: none; font-weight: 500; }
+        .btn-shortcut:hover { background: rgba(99, 102, 241, 0.15); border-color: #6366f1; color: #a5b4fc; transform: none; }
+
         /* Input Styling */
         select, input { width: 100%; padding: 14px 16px; background: #0f172a; border: 1px solid #1e293b; border-radius: 12px; color: #fff; font-size: 15px; transition: all 0.2s; outline: none; }
         select:focus, input:focus { border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15); }
@@ -62,7 +76,7 @@
         .btn-danger { background: transparent; border: 1px solid rgba(239, 68, 68, 0.2); color: #ef4444; box-shadow: none; }
         .btn-danger:hover { background: rgba(239, 68, 68, 0.06); border-color: #ef4444; transform: none; box-shadow: none; }
         
-        /* Feature 2: Filter Nav System */
+        /* Filter Nav System */
         .filter-nav { display: flex; gap: 8px; margin-bottom: 15px; overflow-x: auto; padding-bottom: 5px; }
         .filter-btn { background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255,255,255,0.04); padding: 8px 14px; border-radius: 8px; color: #94a3b8; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
         .filter-btn.active, .filter-btn:hover { background: #6366f1; color: #fff; border-color: #6366f1; }
@@ -78,6 +92,7 @@
         /* Typography Status Utility */
         .text-green { color: #10b981; font-weight: 600; }
         .text-red { color: #f43f5e; font-weight: 600; }
+        .text-blue { color: #3b82f6; font-weight: 600; }
         .badge-wadah { background: rgba(255,255,255,0.05); padding: 4px 8px; border-radius: 6px; font-size: 12px; color: #94a3b8; }
     </style>
 </head>
@@ -87,12 +102,16 @@
         <!-- Header Section -->
         <header>
             <h1>FinTrack Pro</h1>
-            <p>Ultimate Premium Ledger Experience</p>
+            <p>Elite Premium Ledger Experience</p>
         </header>
 
-        <!-- Dynamic Financial Balance Cards & Segment Progress -->
+        <!-- Financial Balance Cards & Segment Progress -->
         <div class="main-box">
-            <span class="balance-title">Total Kompilasi Saldo</span>
+            <div class="balance-header">
+                <span class="balance-title">Total Kompilasi Saldo</span>
+                <!-- Feature 2: Sensor Toggle Button -->
+                <button onclick="toggleSensor()" class="btn-eye" id="eye-icon" title="Mode Samaran">👁️</button>
+            </div>
             <div class="balance-val" id="total-saldo">Rp 0</div>
             
             <div class="sub-wallet">
@@ -101,7 +120,7 @@
                 <div class="w-card" style="border-left: 3px solid #10b981;">📱 E-Wallet<strong id="w-wallet">Rp 0</strong></div>
             </div>
 
-            <!-- Feature 1: Visual Alokasi Bar -->
+            <!-- Visual Alokasi Bar -->
             <div class="progress-container">
                 <div id="bar-cash" class="progress-bar-segment bg-cash" style="width: 0%"></div>
                 <div id="bar-bank" class="progress-bar-segment bg-bank" style="width: 0%"></div>
@@ -109,7 +128,7 @@
             </div>
         </div>
 
-        <!-- Feature 4: Target Tabungan / Celengan Component -->
+        <!-- Target Tabungan / Celengan Component -->
         <div class="goal-box">
             <div class="goal-header">
                 <div class="goal-title">🎯 Target Celengan: <span id="lbl-goal-name">Atur Target Tabungan</span></div>
@@ -129,34 +148,62 @@
         <div class="form-box">
             <h3><span>✦ Alokasikan Transaksi Baru</span></h3>
             <form id="tx-form" onsubmit="simpanData(event)" class="form-group">
-                <select id="input-tipe">
+                <!-- Dropdown Utama -->
+                <select id="input-tipe" onchange="handleTipeChange()">
                     <option value="masuk">🟢 Arus Pemasukan (+)</option>
                     <option value="keluar">🔴 Arus Pengeluaran (-)</option>
+                    <!-- Feature 4: Opsi Mutasi Baru -->
+                    <option value="transfer">🔄 Transfer Antar Wadah</option>
                 </select>
                 
-                <select id="input-wadah">
-                    <option value="cash">💵 Tempatkan di Uang Tunai</option>
-                    <option value="bank">🏛️ Tempatkan di Rekening Bank</option>
-                    <option value="wallet">📱 Tempatkan di E-Wallet</option>
-                </select>
+                <!-- Input Dompet Dinamis -->
+                <div id="wadah-normal-container">
+                    <select id="input-wadah">
+                        <option value="cash">💵 Tempatkan di Uang Tunai</option>
+                        <option value="bank">🏛️ Tempatkan di Rekening Bank</option>
+                        <option value="wallet">📱 Tempatkan di E-Wallet</option>
+                    </select>
+                </div>
                 
-                <input type="number" id="input-nominal" placeholder="Nominal Dana (Rp)" required>
+                <!-- Feature 4: Form Input Khusus Mutasi (Tersembunyi Awalnya) -->
+                <div id="wadah-transfer-container" class="transfer-row" style="display: none;">
+                    <select id="input-dari">
+                        <option value="cash">💵 Dari Uang Tunai</option>
+                        <option value="bank">🏛️ Dari Rekening Bank</option>
+                        <option value="wallet">📱 Dari E-Wallet</option>
+                    </select>
+                    <select id="input-ke">
+                        <option value="bank">🏛️ Ke Rekening Bank</option>
+                        <option value="cash" selected>💵 Ke Uang Tunai</option>
+                        <option value="wallet">📱 Ke E-Wallet</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <input type="number" id="input-nominal" placeholder="Nominal Dana (Rp)" required>
+                    <!-- Feature 1: Quick Shortcut Nominal Buttons -->
+                    <div class="shortcut-group" style="margin-top: 8px;">
+                        <button type="button" class="btn-shortcut" onclick="tambahNominal(10000)">+10k</button>
+                        <button type="button" class="btn-shortcut" onclick="tambahNominal(20000)">+20k</button>
+                        <button type="button" class="btn-shortcut" onclick="tambahNominal(50000)">+50k</button>
+                        <button type="button" class="btn-shortcut" onclick="tambahNominal(100000)">+100k</button>
+                    </div>
+                </div>
+                
                 <input type="text" id="input-ket" placeholder="Kategori / Deskripsi Catatan" required>
                 
                 <button type="submit">Konfirmasi Data Keuangan</button>
             </form>
             <div class="action-footer-btns">
-                <!-- Feature 3: Tombol Ekspor CSV -->
                 <button onclick="eksporCSV()" class="btn-secondary">📥 Ekspor File Excel (CSV)</button>
                 <button onclick="hapusSemua()" class="btn-danger">Reset Semua</button>
             </div>
         </div>
 
-        <!-- Minimalist Master Ledger Table & Filters -->
+        <!-- Master Ledger Table & Filters -->
         <div class="table-box">
             <h3><span>✦ Log Alur Alokasi Riwayat</span></h3>
             
-            <!-- Feature 2: Filter Nav Bar Buttons -->
             <div class="filter-nav">
                 <button class="filter-btn active" onclick="gantiFilter('all', this)">🌍 Semua</button>
                 <button class="filter-btn" onclick="gantiFilter('cash', this)">💵 Tunai</button>
@@ -180,58 +227,98 @@
     </div>
 
     <script>
-        const STORAGE_KEY = 'fintrack_ultimate_v1';
-        const GOAL_KEY = 'fintrack_goal_v1';
+        const STORAGE_KEY = 'fintrack_elite_v1';
+        const GOAL_KEY = 'fintrack_goal_elite_v1';
+        const SENSOR_KEY = 'fintrack_sensor_v1';
         
         let dataTransaksi = [];
         let dataGoal = { name: "Belum Ditentukan", target: 0 };
         let filterAktif = 'all';
+        let isSensored = false; // Feature 2 State
 
-        // Load Memori Aman
+        // Load Memori
         try {
             dataTransaksi = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
             if(!Array.isArray(dataTransaksi)) dataTransaksi = [];
             dataGoal = JSON.parse(localStorage.getItem(GOAL_KEY)) || { name: "Belum Ditentukan", target: 0 };
+            isSensored = JSON.parse(localStorage.getItem(SENSOR_KEY)) || false;
         } catch(e) {
             dataTransaksi = [];
             dataGoal = { name: "Belum Ditentukan", target: 0 };
+            isSensored = false;
         }
 
-        const formatRupiah = (angka) => "Rp " + Number(angka).toLocaleString('id-ID');
+        // Feature 2: Sensor Toggle Logic
+        function toggleSensor() {
+            isSensored = !isSensored;
+            localStorage.setItem(SENSOR_KEY, isSensored);
+            document.getElementById('eye-icon').innerText = isSensored ? '🙈' : '👁️';
+            renderUI();
+        }
+
+        const formatRupiah = (angka) => {
+            if(isSensored) return "•••••";
+            return "Rp " + Number(angka).toLocaleString('id-ID');
+        };
+
+        // Feature 1: Shortcut Button Injector
+        function tambahNominal(nilai) {
+            const input = document.getElementById('input-nominal');
+            let valSekarang = parseInt(input.value) || 0;
+            input.value = valSekarang + nilai;
+        }
+
+        // Feature 4: Form View Switcher
+        function handleTipeChange() {
+            const tipe = document.getElementById('input-tipe').value;
+            if(tipe === 'transfer') {
+                document.getElementById('wadah-normal-container').style.display = 'none';
+                document.getElementById('wadah-transfer-container').style.display = 'grid';
+            } else {
+                document.getElementById('wadah-normal-container').style.display = 'block';
+                document.getElementById('wadah-transfer-container').style.display = 'none';
+            }
+        }
 
         function simpanData(e) {
             e.preventDefault();
             
             const tipe = document.getElementById('input-tipe').value;
-            const wadah = document.getElementById('input-wadah').value;
             const nominal = parseInt(document.getElementById('input-nominal').value) || 0;
             const ket = document.getElementById('input-ket').value;
 
             if (nominal <= 0) return alert("Harap masukkan nilai dana yang valid!");
 
-            dataTransaksi.push({ tipe, wadah, nominal, ket });
+            // Feature 4: Save Logic Handler untuk Transfer
+            if(tipe === 'transfer') {
+                const dari = document.getElementById('input-dari').value;
+                const ke = document.getElementById('input-ke').value;
+                if(dari === ke) return alert("Wadah asal dan tujuan tidak boleh sama!");
+                
+                dataTransaksi.push({ tipe, dari, ke, nominal, ket });
+            } else {
+                const wadah = document.getElementById('input-wadah').value;
+                dataTransaksi.push({ tipe, wadah, nominal, ket });
+            }
+
             localStorage.setItem(STORAGE_KEY, JSON.stringify(dataTransaksi));
-            
             document.getElementById('tx-form').reset();
+            handleTipeChange(); // Balikkan form view ke mode standard
             renderUI();
         }
 
-        // Feature 4: Simpan Aturan Target Tabungan Baru
         function setNewGoal() {
             const name = document.getElementById('input-goal-name').value;
             const target = parseInt(document.getElementById('input-goal-target').value) || 0;
-
-            if(!name || target <= 0) return alert("Harap isi nama target dan nominal target dana!");
+            if(!name || target <= 0) return alert("Harap isi target dengan benar!");
 
             dataGoal = { name, target };
             localStorage.setItem(GOAL_KEY, JSON.stringify(dataGoal));
-            
             document.getElementById('input-goal-name').value = '';
             document.getElementById('input-goal-target').value = '';
             renderUI();
         }
 
-        // Feature 2: Logika Mengganti Filter Riwayat Tabel
         function gantiFilter(tipeWadah, elemenTombol) {
             filterAktif = tipeWadah;
             document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
@@ -239,30 +326,25 @@
             renderUI();
         }
 
-        // Feature 3: Logika Ekspor Data ke File .CSV (Bisa Dibuka di Excel)
         function eksporCSV() {
-            if(dataTransaksi.length === 0) return alert("Tidak ada data transaksi untuk diekspor!");
-            
-            let isiCSV = "Alokasi Dompet,Arus Transaksi,Keterangan,Nominal Mutasi\n";
+            if(dataTransaksi.length === 0) return alert("Tidak ada data transaksi!");
+            let isiCSV = "Alokasi,Arus Transaksi,Keterangan,Nominal Mutasi\n";
             dataTransaksi.forEach(tx => {
-                let namaWadah = tx.wadah === 'bank' ? 'Bank' : tx.wadah === 'wallet' ? 'E-Wallet' : 'Tunai';
-                let tipeArus = tx.tipe === 'masuk' ? 'Pemasukan (+)' : 'Pengeluaran (-)';
-                isiCSV += `"${namaWadah}","${tipeArus}","${tx.ket.replace(/"/g, '""')}",${tx.nominal}\n`;
+                let infoWadah = tx.tipe === 'transfer' ? `${tx.dari.toUpperCase()} -> ${tx.ke.toUpperCase()}` : tx.wadah.toUpperCase();
+                isiCSV += `"${infoWadah}","${tx.tipe.toUpperCase()}","${tx.ket.replace(/"/g, '""')}",${tx.nominal}\n`;
             });
-
             const blob = new Blob([isiCSV], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement("a");
             const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
             link.setAttribute("href", url);
-            link.setAttribute("download", "Laporan_Keuangan_FinTrack.csv");
-            link.style.visibility = 'hidden';
+            link.setAttribute("download", "Laporan_FinTrack_Elite.csv");
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
         }
 
         function hapusSemua() {
-            if(confirm("Apakah Anda yakin ingin menghapus seluruh riwayat dan target finansial?")) {
+            if(confirm("Apakah Anda yakin ingin menghapus seluruh log?")) {
                 dataTransaksi = [];
                 dataGoal = { name: "Belum Ditentukan", target: 0 };
                 localStorage.setItem(STORAGE_KEY, '[]');
@@ -271,83 +353,4 @@
             }
         }
 
-        function renderUI() {
-            let totalSemua = 0;
-            let saldoPerWadah = { cash: 0, bank: 0, wallet: 0 };
-            
-            const tbody = document.getElementById('tabel-body');
-            if(tbody) tbody.innerHTML = '';
-
-            // Engine Kalkulasi Akumulasi Mutasi Murni
-            dataTransaksi.forEach(tx => {
-                let nom = Number(tx.nominal) || 0;
-                if (tx.tipe === 'masuk') {
-                    totalSemua += nom;
-                    saldoPerWadah[tx.wadah] += nom;
-                } else {
-                    totalSemua -= nom;
-                    saldoPerWadah[tx.wadah] -= nom;
-                }
-            });
-
-            // Render isi Tabel Berdasarkan Filter Aktif (Ditampilkan Terbalik / Reverse Log)
-            dataTransaksi.slice().reverse().forEach(tx => {
-                if (filterAktif !== 'all' && tx.wadah !== filterAktif) return;
-
-                if(tbody) {
-                    let nom = Number(tx.nominal) || 0;
-                    const kelasNominal = tx.tipe === 'masuk' ? 'text-green' : 'text-red';
-                    const tanda = tx.tipe === 'masuk' ? '+ ' : '- ';
-                    const labelWadah = tx.wadah === 'bank' ? 'Bank' : tx.wadah === 'wallet' ? 'E-Wallet' : 'Tunai';
-
-                    tbody.innerHTML += `
-                        <tr>
-                            <td><span class="badge-wadah">${labelWadah}</span></td>
-                            <td style="font-weight: 500;">${tx.ket}</td>
-                            <td class="${kelasNominal}" style="text-align: right;">${tanda}${formatRupiah(nom)}</td>
-                        </tr>
-                    `;
-                }
-            });
-
-            // Update Semua Komponen Angka Dashboard Utama
-            if(document.getElementById('total-saldo')) document.getElementById('total-saldo').innerText = formatRupiah(totalSemua);
-            if(document.getElementById('w-cash')) document.getElementById('w-cash').innerText = formatRupiah(saldoPerWadah.cash);
-            if(document.getElementById('w-bank')) document.getElementById('w-bank').innerText = formatRupiah(saldoPerWadah.bank);
-            if(document.getElementById('w-wallet')) document.getElementById('w-wallet').innerText = formatRupiah(saldoPerWadah.wallet);
-
-            // Perhitungan Persentase Pembagian Progress Bar Multi-Wadah (Feature 1)
-            let jumlahAbsolut = Math.abs(saldoPerWadah.cash) + Math.abs(saldoPerWadah.bank) + Math.abs(saldoPerWadah.wallet);
-            let pctCash = 0, pctBank = 0, pctWallet = 0;
-            
-            if(jumlahAbsolut > 0) {
-                pctCash = (Math.max(0, saldoPerWadah.cash) / jumlahAbsolut) * 100;
-                pctBank = (Math.max(0, saldoPerWadah.bank) / jumlahAbsolut) * 100;
-                pctWallet = (Math.max(0, saldoPerWadah.wallet) / jumlahAbsolut) * 100;
-            }
-            
-            document.getElementById('bar-cash').style.width = pctCash + '%';
-            document.getElementById('bar-bank').style.width = pctBank + '%';
-            document.getElementById('bar-wallet').style.width = pctWallet + '%';
-
-            // Perhitungan Progress Target Celengan Tabungan (Feature 4)
-            document.getElementById('lbl-goal-name').innerText = dataGoal.name;
-            if (dataGoal.target > 0) {
-                let hitungPersenGoal = Math.floor((totalSemua / dataGoal.target) * 100);
-                if(hitungPersenGoal < 0) hitungPersenGoal = 0;
-                if(hitungPersenGoal > 100) hitungPersenGoal = 100;
-
-                document.getElementById('bar-goal').style.width = hitungPersenGoal + '%';
-                document.getElementById('lbl-goal-progress').innerText = `${hitungPersenGoal}% Terpenuhi (${formatRupiah(totalSemua)} / ${formatRupiah(dataGoal.target)})`;
-            } else {
-                document.getElementById('bar-goal').style.width = '0%';
-                document.getElementById('lbl-goal-progress').innerText = '0% Terpenuhi (Belum ada target)';
-            }
-        }
-
-        window.addEventListener('DOMContentLoaded', () => {
-            renderUI();
-        });
-    </script>
-</body>
-</html>
+ 
