@@ -3,111 +3,123 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FinTrack Pro - Simpel & Anti-Crash</title>
+    <title>FinTrack Pro — Premium Edition</title>
     <style>
-        /* CSS Dasar Baku & Rapi */
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
-        body { background: #0f172a; color: #f8fafc; padding: 20px; }
-        .container { max-width: 700px; margin: 0 auto; }
+        /* Reset & Base Premium Theme */
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif; }
+        body { background: #090d16; color: #f1f5f9; padding: 40px 20px; min-height: 100vh; display: flex; justify-content: center; }
+        .container { width: 100%; max-width: 680px; margin: 0 auto; }
         
-        header { text-align: center; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 2px solid #334155; }
-        h1 { color: #818cf8; }
+        /* Premium Header */
+        header { text-align: center; margin-bottom: 35px; position: relative; }
+        header h1 { font-size: 32px; font-weight: 800; letter-spacing: -0.5px; background: linear-gradient(135deg, #a5b4fc 0%, #6366f1 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        header p { font-size: 13px; color: #64748b; margin-top: 6px; letter-spacing: 1px; text-transform: uppercase; }
         
-        /* Kartu Tampilan Saldo */
-        .main-box { background: #1e293b; padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #475569; }
-        .balance-title { font-size: 14px; color: #94a3b8; text-transform: uppercase; }
-        .balance-val { font-size: 32px; font-weight: bold; margin: 10px 0; color: #ffffff; }
+        /* Glassmorphic Balance Dashboard Card */
+        .main-box { background: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.7) 100%); border: 1px solid rgba(255, 255, 255, 0.06); padding: 30px; border-radius: 24px; margin-bottom: 25px; backdrop-filter: blur(12px); box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
+        .balance-title { font-size: 13px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+        .balance-val { font-size: 38px; font-weight: 700; margin: 8px 0 20px 0; color: #ffffff; letter-spacing: -1px; }
         
-        .sub-wallet { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px; }
-        .w-card { background: #0f172a; padding: 10px; border-radius: 8px; text-align: center; font-size: 13px; border: 1px solid #334155; }
-        .w-card strong { display: block; font-size: 15px; margin-top: 5px; color: #38bdf8; }
+        /* Sub Wallets Grid */
+        .sub-wallet { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; border-top: 1px solid rgba(255, 255, 255, 0.05); padding-top: 20px; }
+        .w-card { background: rgba(15, 23, 42, 0.5); padding: 14px; border-radius: 14px; text-align: left; font-size: 12px; color: #94a3b8; border: 1px solid rgba(255, 255, 255, 0.03); transition: transform 0.2s; }
+        .w-card:hover { transform: translateY(-2px); border-color: rgba(99, 102, 241, 0.2); }
+        .w-card strong { display: block; font-size: 16px; margin-top: 6px; color: #f8fafc; font-weight: 600; }
         
-        /* Form Input */
-        .form-box { background: #1e293b; padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #475569; }
-        h3 { margin-bottom: 15px; font-size: 18px; color: #cbd5e1; }
+        /* Elegant Form Container */
+        .form-box { background: rgba(30, 41, 59, 0.4); padding: 25px; border-radius: 24px; margin-bottom: 25px; border: 1px solid rgba(255, 255, 255, 0.04); }
+        h3 { font-size: 16px; font-weight: 600; color: #cbd5e1; margin-bottom: 18px; display: flex; align-items: center; gap: 8px; }
         
-        .form-group { display: flex; flex-direction: column; gap: 12px; }
-        select, input { width: 100%; padding: 12px; background: #0f172a; border: 1px solid #475569; border-radius: 8px; color: #fff; font-size: 15px; }
+        .form-group { display: flex; flex-direction: column; gap: 14px; }
         
-        button { width: 100%; padding: 12px; background: #6366f1; color: #fff; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 15px; }
-        button:hover { background: #4f46e5; }
+        /* Input Styling */
+        select, input { width: 100%; padding: 14px 16px; background: #0f172a; border: 1px solid #1e293b; border-radius: 12px; color: #fff; font-size: 15px; transition: all 0.2s; outline: none; }
+        select:focus, input:focus { border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15); }
         
-        .btn-danger { background: #ef4444; margin-top: 10px; padding: 8px; font-size: 13px; }
-        .btn-danger:hover { background: #dc2626; }
+        /* Luxury Buttons */
+        button { width: 100%; padding: 14px; background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: #fff; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; font-size: 15px; transition: all 0.2s; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2); }
+        button:hover { opacity: 0.95; transform: translateY(-1px); box-shadow: 0 6px 16px rgba(99, 102, 241, 0.3); }
         
-        /* Tabel Riwayat */
-        .table-box { background: #1e293b; padding: 20px; border-radius: 12px; border: 1px solid #475569; overflow-x: auto; }
+        .btn-danger { background: transparent; border: 1px solid rgba(239, 68, 68, 0.2); color: #ef4444; margin-top: 12px; padding: 10px; font-size: 13px; font-weight: 500; box-shadow: none; }
+        .btn-danger:hover { background: rgba(239, 68, 68, 0.06); border-color: #ef4444; transform: none; box-shadow: none; }
+        
+        /* Minimalist Modern Table */
+        .table-box { background: rgba(30, 41, 59, 0.4); padding: 25px; border-radius: 24px; border: 1px solid rgba(255, 255, 255, 0.04); }
+        .table-wrapper { overflow-x: auto; margin-top: 10px; }
         table { width: 100%; border-collapse: collapse; text-align: left; }
-        th, td { padding: 12px; border-bottom: 1px solid #334155; font-size: 14px; }
-        th { color: #94a3b8; }
+        th, td { padding: 14px; border-bottom: 1px solid rgba(255, 255, 255, 0.03); font-size: 14px; }
+        th { color: #64748b; font-weight: 600; text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px; }
+        td { color: #cbd5e1; }
         
-        .text-green { color: #10b981; font-weight: bold; }
-        .text-red { color: #f43f5e; font-weight: bold; }
+        /* Typography Status Utility */
+        .text-green { color: #10b981; font-weight: 600; }
+        .text-red { color: #f43f5e; font-weight: 600; }
+        .badge-wadah { background: rgba(255,255,255,0.05); padding: 4px 8px; border-radius: 6px; font-size: 12px; color: #94a3b8; }
     </style>
 </head>
 <body>
 
     <div class="container">
         <header>
-            <h1>FinTrack PRO</h1>
-            <p style="font-size: 12px; color: #94a3b8;">Versi Super Stabil & Ringan</p>
+            <h1>FinTrack Pro</h1>
+            <p>Premium Ledger Experience</p>
         </header>
 
         <div class="main-box">
-            <span class="balance-title">Total Saldo Bersih</span>
+            <span class="balance-title">Total Kompilasi Saldo</span>
             <div class="balance-val" id="total-saldo">Rp 0</div>
             
             <div class="sub-wallet">
-                <div class="w-card">💵 Tunai<strong id="w-cash">Rp 0</strong></div>
-                <div class="w-card">🏛️ Bank<strong id="w-bank">Rp 0</strong></div>
+                <div class="w-card">💵 Uang Tunai<strong id="w-cash">Rp 0</strong></div>
+                <div class="w-card">🏛️ Saldo Bank<strong id="w-bank">Rp 0</strong></div>
                 <div class="w-card">📱 E-Wallet<strong id="w-wallet">Rp 0</strong></div>
             </div>
         </div>
 
         <div class="form-box">
-            <h3>Input Transaksi Baru</h3>
+            <h3><span style="color: #6366f1;">✦</span> Alokasikan Transaksi Baru</h3>
             <form id="tx-form" onsubmit="simpanData(event)" class="form-group">
                 <select id="input-tipe">
-                    <option value="masuk">🟢 Pemasukan (+)</option>
-                    <option value="keluar">🔴 Pengeluaran (-)</option>
+                    <option value="masuk">🟢 Arus Pemasukan (+)</option>
+                    <option value="keluar">🔴 Arus Pengeluaran (-)</option>
                 </select>
                 
                 <select id="input-wadah">
-                    <option value="cash">💵 Kantong Tunai</option>
-                    <option value="bank">🏛️ Rekening Bank</option>
-                    <option value="wallet">📱 Saldo E-Wallet</option>
+                    <option value="cash">💵 Tempatkan di Uang Tunai</option>
+                    <option value="bank">🏛️ Tempatkan di Rekening Bank</option>
+                    <option value="wallet">📱 Tempatkan di E-Wallet</option>
                 </select>
                 
-                <input type="number" id="input-nominal" placeholder="Nominal Angka (Contoh: 50000)" required>
-                <input type="text" id="input-ket" placeholder="Keterangan / Kategori (Contoh: Gaji, Makan)" required>
+                <input type="number" id="input-nominal" placeholder="Nominal Dana (Rp)" required>
+                <input type="text" id="input-ket" placeholder="Kategori / Deskripsi Catatan" required>
                 
-                <button type="submit">Simpan Transaksi</button>
+                <button type="submit">Konfirmasi Data Keuangan</button>
             </form>
-            <button onclick="hapusSemua()" class="btn-danger">Hapus/Reset Semua Memori</button>
+            <button onclick="hapusSemua()" class="btn-danger">Reset Seluruh Log Memori</button>
         </div>
 
         <div class="table-box">
-            <h3>Riwayat Transaksi</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Dompet</th>
-                        <th>Tipe</th>
-                        <th>Keterangan</th>
-                        <th>Nominal</th>
-                    </tr>
-                </thead>
-                <tbody id="tabel-body"></tbody>
-            </table>
+            <h3><span style="color: #6366f1;">✦</span> Log Alur Alokasi Riwayat</h3>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Alokasi</th>
+                            <th>Keterangan</th>
+                            <th style="text-align: right;">Nominal Mutasi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabel-body"></tbody>
+                </table>
+            </div>
         </div>
     </div>
 
     <script>
-        // Menggunakan Key Storage Baru agar bersih dari sisa data eror sebelumnya
-        const STORAGE_KEY = 'fintrack_clean_v1';
+        const STORAGE_KEY = 'fintrack_premium_v1';
         let dataTransaksi = [];
 
-        // Memuat data aman saat pertama kali halaman dibuka
+        // Validasi Load Data
         try {
             dataTransaksi = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
             if(!Array.isArray(dataTransaksi)) dataTransaksi = [];
@@ -125,24 +137,17 @@
             const nominal = parseInt(document.getElementById('input-nominal').value) || 0;
             const ket = document.getElementById('input-ket').value;
 
-            if (nominal <= 0) {
-                alert("Masukkan nominal angka yang benar!");
-                return;
-            }
+            if (nominal <= 0) return alert("Harap masukkan nilai dana yang valid!");
 
-            // Tambahkan data baru ke array
             dataTransaksi.push({ tipe, wadah, nominal, ket });
             localStorage.setItem(STORAGE_KEY, JSON.stringify(dataTransaksi));
             
-            // Reset form input
             document.getElementById('tx-form').reset();
-            
-            // Perbarui tampilan
             renderUI();
         }
 
         function hapusSemua() {
-            if(confirm("Apakah Anda yakin ingin menghapus seluruh riwayat saldo?")) {
+            if(confirm("Apakah Anda yakin ingin melakukan pembersihan total data log finansial?")) {
                 dataTransaksi = [];
                 localStorage.setItem(STORAGE_KEY, '[]');
                 renderUI();
@@ -156,8 +161,8 @@
             const tbody = document.getElementById('tabel-body');
             if(tbody) tbody.innerHTML = '';
 
-            // Hitung akumulasi kalkulasi saldo murni
-            dataTransaksi.forEach(tx => {
+            // Engine Kalkulasi & Render Struktur Elemen
+            dataTransaksi.slice().reverse().forEach(tx => {
                 let nom = Number(tx.nominal) || 0;
                 if (tx.tipe === 'masuk') {
                     totalSemua += nom;
@@ -167,36 +172,44 @@
                     saldoPerWadah[tx.wadah] -= nom;
                 }
 
-                // Masukkan baris data ke dalam tabel riwayat
                 if(tbody) {
-                    const labelTipe = tx.tipe === 'masuk' ? '<span class="text-green">Masuk</span>' : '<span class="text-red">Keluar</span>';
                     const kelasNominal = tx.tipe === 'masuk' ? 'text-green' : 'text-red';
                     const tanda = tx.tipe === 'masuk' ? '+ ' : '- ';
-                    const labelWadah = tx.wadah === 'bank' ? '🏛️ Bank' : tx.wadah === 'wallet' ? '📱 E-Wallet' : '💵 Tunai';
+                    const labelWadah = tx.wadah === 'bank' ? 'Bank' : tx.wadah === 'wallet' ? 'E-Wallet' : 'Tunai';
 
                     tbody.innerHTML += `
                         <tr>
-                            <td>${labelWadah}</td>
-                            <td>${labelTipe}</td>
-                            <td>${tx.ket}</td>
-                            <td class="${kelasNominal}">${tanda}${formatRupiah(nom)}</td>
+                            <td><span class="badge-wadah">${labelWadah}</span></td>
+                            <td>style="font-weight: 500;">${tx.ket}</td>
+                            <td class="${kelasNominal}" style="text-align: right;">${tanda}${formatRupiah(nom)}</td>
                         </tr>
                     `;
                 }
             });
 
-            // Pasang hasil kalkulasi ke elemen teks HTML secara presisi
-            if(document.getElementById('total-saldo')) document.getElementById('total-saldo').innerText = formatRupiah(totalSemua);
-            if(document.getElementById('w-cash')) document.getElementById('w-cash').innerText = formatRupiah(saldoPerWadah.cash);
-            if(document.getElementById('w-bank')) document.getElementById('w-bank').innerText = formatRupiah(saldoPerWadah.bank);
-            if(document.getElementById('w-wallet')) document.getElementById('w-wallet').innerText = formatRupiah(saldoPerWadah.wallet);
+            // Sinkronisasi data kembali ke header (karena render dibalik urutannya, hitung ulang total murni dari awal)
+            let totalReal = 0;
+            let wadahReal = { cash: 0, bank: 0, wallet: 0 };
+            dataTransaksi.forEach(tx => {
+                let nom = Number(tx.nominal) || 0;
+                if (tx.tipe === 'masuk') {
+                    totalReal += nom;
+                    wadahReal[tx.wadah] += nom;
+                } else {
+                    totalReal -= nom;
+                    wadahReal[tx.wadah] -= nom;
+                }
+            });
+
+            if(document.getElementById('total-saldo')) document.getElementById('total-saldo').innerText = formatRupiah(totalReal);
+            if(document.getElementById('w-cash')) document.getElementById('w-cash').innerText = formatRupiah(wadahReal.cash);
+            if(document.getElementById('w-bank')) document.getElementById('w-bank').innerText = formatRupiah(wadahReal.bank);
+            if(document.getElementById('w-wallet')) document.getElementById('w-wallet').innerText = formatRupiah(wadahReal.wallet);
         }
 
-        // Jalankan UI segera setelah halaman selesai memuat komponen HTML
         window.addEventListener('DOMContentLoaded', () => {
             renderUI();
         });
     </script>
 </body>
 </html>
-
