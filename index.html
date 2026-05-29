@@ -3,44 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BrannTrack Pro — Ultimate Edition</title>
+    <title>BrannTrack Pro — Ultimate Massive Edition</title>
     <style>
-        :root { 
-            --glass: rgba(255, 255, 255, 0.05); 
-            --primary: #6366f1; 
-            --danger: #f43f5e; 
-            --success: #10b981;
-            --bg: #050505;
-        }
-        * { box-sizing: border-box; font-family: 'Inter', system-ui; }
+        :root { --glass: rgba(255, 255, 255, 0.05); --primary: #6366f1; --danger: #f43f5e; --success: #10b981; --bg: #050505; }
+        * { box-sizing: border-box; font-family: 'Inter', sans-serif; }
         body { background: var(--bg); color: #e2e8f0; padding: 20px; display: flex; justify-content: center; }
-        .container { width: 100%; max-width: 500px; }
+        .container { width: 100%; max-width: 600px; }
+        .glass { background: var(--glass); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); border-radius: 24px; padding: 25px; margin-bottom: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.5); }
+        h1 { font-size: 24px; color: #fff; text-align: center; margin-bottom: 25px; text-transform: uppercase; letter-spacing: 2px; }
         
-        /* Glassmorphism Design */
-        .glass { background: var(--glass); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); border-radius: 24px; padding: 20px; margin-bottom: 16px; box-shadow: 0 8px 32px rgba(0,0,0,0.5); }
+        /* Stats Styling */
+        .balance-main { font-size: 40px; font-weight: 800; text-align: center; margin: 10px 0; color: #fff; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 20px; }
+        .wallet-box { background: rgba(0,0,0,0.3); padding: 15px; border-radius: 16px; text-align: center; border: 1px solid #1e293b; }
         
-        /* Heading */
-        h1 { font-size: 18px; color: #fff; margin-bottom: 20px; text-align: center; letter-spacing: 1px; text-transform: uppercase; }
+        /* Goal Styling */
+        .progress-bg { height: 10px; background: #1e293b; border-radius: 5px; margin: 15px 0; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--primary); width: 0%; transition: 1s; box-shadow: 0 0 10px var(--primary); }
         
-        /* Dashboard Stats */
-        .balance-main { font-size: 42px; font-weight: 800; text-align: center; margin: 10px 0; background: linear-gradient(to right, #fff, #94a3b8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .grid-wallets { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-        .wallet-card { background: rgba(0,0,0,0.3); padding: 12px; border-radius: 16px; text-align: center; border: 1px solid #1e293b; }
-        .wallet-card b { display: block; font-size: 14px; margin-top: 5px; }
-        .low { border-color: var(--danger) !important; color: var(--danger); }
+        /* Input Styling */
+        input, select { width: 100%; padding: 15px; background: #111; border: 1px solid #333; border-radius: 14px; color: #fff; margin-bottom: 10px; }
+        button { width: 100%; padding: 15px; background: var(--primary); border: none; border-radius: 14px; color: #fff; font-weight: 700; cursor: pointer; }
+        .btn-secondary { background: #333; margin-top: 10px; }
         
-        /* Progress Bar */
-        .progress-bar { height: 8px; background: #1e293b; border-radius: 4px; margin: 15px 0; overflow: hidden; }
-        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--primary), #818cf8); width: 0%; transition: 0.8s; box-shadow: 0 0 10px var(--primary); }
-        
-        /* Form & Inputs */
-        input, select { width: 100%; padding: 14px; background: #111; border: 1px solid #333; border-radius: 14px; color: #fff; margin-bottom: 10px; }
-        button { width: 100%; padding: 14px; background: var(--primary); border: none; border-radius: 14px; color: #fff; font-weight: 700; cursor: pointer; }
-        
-        /* Table */
-        table { width: 100%; border-collapse: collapse; }
-        td { padding: 12px 5px; border-bottom: 1px solid #1e293b; font-size: 13px; }
-        .del-btn { color: #475569; background: none; border: none; cursor: pointer; font-size: 16px; }
+        /* Table Styling */
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        td { padding: 15px; border-bottom: 1px solid #1e293b; font-size: 14px; }
+        .badge { font-size: 10px; padding: 4px 8px; background: #2d3748; border-radius: 6px; }
+        .del-btn { color: var(--danger); cursor: pointer; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -48,110 +38,122 @@
 <div class="container">
     <h1>BRANNTRACK PRO</h1>
     
+    <!-- Dashboard -->
     <div class="glass">
-        <div style="font-size: 11px; color: #64748b; text-align: center;">TOTAL SALDO BERSIH</div>
+        <div style="font-size: 12px; color: #64748b; text-align: center;">TOTAL SALDO BERSIH</div>
         <div class="balance-main" id="total-saldo">Rp 0</div>
-        <div class="grid-wallets">
-            <div class="wallet-card" id="card-cash">💵<br><b id="w-cash">0</b></div>
-            <div class="wallet-card" id="card-bank">🏛️<br><b id="w-bank">0</b></div>
-            <div class="wallet-card" id="card-wallet">📱<br><b id="w-wallet">0</b></div>
+        <div class="grid-3">
+            <div class="wallet-box">💵<br><b id="w-cash">0</b></div>
+            <div class="wallet-box">🏛️<br><b id="w-bank">0</b></div>
+            <div class="wallet-box">📱<br><b id="w-wallet">0</b></div>
         </div>
     </div>
 
+    <!-- Goal -->
     <div class="glass">
-        <div id="lbl-goal-name" style="font-size: 12px; font-weight:600;">🎯 Target: Belum di-set</div>
-        <div class="progress-bar"><div id="bar-goal" class="progress-fill"></div></div>
-        <div style="display: flex; gap: 8px;">
-            <input type="text" id="input-goal-name" placeholder="Nama Target">
-            <input type="number" id="input-goal-target" placeholder="Nominal">
-            <button onclick="setNewGoal()" style="width: 60px;">Set</button>
+        <div id="lbl-goal" style="font-size: 14px; font-weight:600;">🎯 Target: Belum di-set</div>
+        <div class="progress-bg"><div id="bar-goal" class="progress-fill"></div></div>
+        <div style="display: flex; gap: 10px;">
+            <input type="text" id="in-goal-name" placeholder="Nama Target">
+            <input type="number" id="in-goal-target" placeholder="Nominal">
+            <button onclick="setGoal()" style="width: 80px;">Set</button>
         </div>
     </div>
 
+    <!-- Form Input -->
     <div class="glass">
-        <form onsubmit="simpanData(event)" id="form-tx">
-            <select id="input-tipe"><option value="masuk">🟢 Masuk</option><option value="keluar">🔴 Keluar</option></select>
-            <select id="input-wadah"><option value="cash">💵 Tunai</option><option value="bank">🏛️ Bank</option><option value="wallet">📱 E-Wallet</option></select>
-            <input type="number" id="input-nominal" placeholder="Nominal (Rp)" required>
-            <input type="text" id="input-ket" placeholder="Keterangan" required>
+        <form id="form-tx" onsubmit="addTx(event)">
+            <select id="in-tipe"><option value="masuk">🟢 Pemasukan (+)</option><option value="keluar">🔴 Pengeluaran (-)</option></select>
+            <select id="in-wadah"><option value="cash">💵 Tunai</option><option value="bank">🏛️ Bank</option><option value="wallet">📱 E-Wallet</option></select>
+            <select id="in-kat">
+                <option value="Makan">🍔 Makan</option><option value="Transport">🚗 Transport</option>
+                <option value="Hiburan">🎮 Hiburan</option><option value="Lainnya">📦 Lainnya</option>
+            </select>
+            <input type="number" id="in-nom" placeholder="Nominal (Rp)" required>
+            <input type="text" id="in-ket" placeholder="Keterangan singkat" required>
             <button type="submit">Konfirmasi Transaksi</button>
         </form>
+        <button class="btn-secondary" onclick="exportData()">📥 Export Data (TXT)</button>
+        <button class="btn-secondary" style="background:#7f1d1d;" onclick="resetAll()">Reset Semua Data</button>
     </div>
 
+    <!-- History -->
     <div class="glass">
-        <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-            <h2 style="font-size: 14px;">Log Riwayat</h2>
-            <button onclick="hapusSemua()" style="width: auto; padding: 5px 10px; background: #333; font-size: 10px;">Reset Data</button>
-        </div>
-        <table>
-            <tbody id="tabel-body"></tbody>
+        <h2 style="font-size: 16px;">Log Transaksi Terbaru</h2>
+        <table id="tbl-hist">
+            <tbody id="tbl-body"></tbody>
         </table>
     </div>
 </div>
 
 <script>
-    let dataTransaksi = JSON.parse(localStorage.getItem('fintrack_pro_data')) || [];
-    let dataGoal = JSON.parse(localStorage.getItem('fintrack_goal_pro')) || { name: "Target", target: 0 };
+    let txs = JSON.parse(localStorage.getItem('brann_data')) || [];
+    let goal = JSON.parse(localStorage.getItem('brann_goal')) || {name: "Target", target: 0};
 
-    function renderUI() {
-        let total = 0, saldo = { cash: 0, bank: 0, wallet: 0 };
-        const tbody = document.getElementById('tabel-body');
-        tbody.innerHTML = '';
+    function addTx(e) {
+        e.preventDefault();
+        const nom = parseInt(document.getElementById('in-nom').value);
+        const tipe = document.getElementById('in-tipe').value;
+        const wadah = document.getElementById('in-wadah').value;
         
-        dataTransaksi.slice().reverse().forEach((tx, i) => {
-            const val = (tx.tipe === 'masuk' ? tx.nominal : -tx.nominal);
-            total += val;
-            saldo[tx.wadah] += val;
+        // Anti-Minus Logic
+        let currentSaldo = {cash:0, bank:0, wallet:0};
+        txs.forEach(t => currentSaldo[t.wadah] += (t.tipe === 'masuk' ? t.nominal : -t.nominal));
+        if (tipe === 'keluar' && nom > currentSaldo[wadah]) return alert("⚠️ Saldo tidak cukup!");
 
-            tbody.innerHTML += `<tr>
-                <td style="color:#64748b">${tx.date}</td>
-                <td>${tx.ket}</td>
-                <td style="color:${tx.tipe==='masuk'?'var(--success)':'var(--danger)'}">${tx.tipe==='masuk'?'+':'-'}${tx.nominal.toLocaleString()}</td>
-                <td><button class="del-btn" onclick="hapusSatu(${dataTransaksi.length - 1 - i})">×</button></td>
+        txs.push({
+            tipe, wadah, 
+            kategori: document.getElementById('in-kat').value,
+            nominal: nom,
+            ket: document.getElementById('in-ket').value,
+            date: new Date().toLocaleDateString('id-ID')
+        });
+        localStorage.setItem('brann_data', JSON.stringify(txs));
+        document.getElementById('form-tx').reset();
+        render();
+    }
+
+    function render() {
+        let total = 0, s = {cash:0, bank:0, wallet:0};
+        const body = document.getElementById('tbl-body');
+        body.innerHTML = '';
+        
+        txs.slice().reverse().forEach((t, i) => {
+            const val = (t.tipe === 'masuk' ? t.nominal : -t.nominal);
+            total += val;
+            s[t.wadah] += val;
+            body.innerHTML += `<tr>
+                <td><span class="badge">${t.kategori}</span><br><b>${t.ket}</b><br><small>${t.date} | ${t.wadah}</small></td>
+                <td style="text-align:right; color:${t.tipe==='masuk'?'var(--success)':'var(--danger)'}">
+                    ${t.tipe==='masuk'?'+':'-'}${t.nominal.toLocaleString()}<br>
+                    <span class="del-btn" onclick="del(${txs.length - 1 - i})">Hapus</span>
+                </td>
             </tr>`;
         });
 
         document.getElementById('total-saldo').innerText = "Rp " + total.toLocaleString();
-        document.getElementById('w-cash').innerText = saldo.cash.toLocaleString();
-        document.getElementById('w-bank').innerText = saldo.bank.toLocaleString();
-        document.getElementById('w-wallet').innerText = saldo.wallet.toLocaleString();
+        document.getElementById('w-cash').innerText = s.cash.toLocaleString();
+        document.getElementById('w-bank').innerText = s.bank.toLocaleString();
+        document.getElementById('w-wallet').innerText = s.wallet.toLocaleString();
         
-        // Indikator saldo kritis (warna merah)
-        document.getElementById('card-cash').classList.toggle('low', saldo.cash < 50000);
-        document.getElementById('card-bank').classList.toggle('low', saldo.bank < 50000);
-        document.getElementById('card-wallet').classList.toggle('low', saldo.wallet < 50000);
-
-        let pct = dataGoal.target > 0 ? Math.min(100, (total / dataGoal.target) * 100) : 0;
+        let pct = goal.target > 0 ? Math.min(100, (total / goal.target) * 100) : 0;
         document.getElementById('bar-goal').style.width = pct + "%";
-        document.getElementById('lbl-goal-name').innerText = "🎯 Target: " + dataGoal.name;
+        document.getElementById('lbl-goal').innerText = `🎯 Target: ${goal.name}`;
     }
 
-    function simpanData(e) {
-        e.preventDefault();
-        const nominal = parseInt(document.getElementById('input-nominal').value);
-        const tipe = document.getElementById('input-tipe').value;
-        const wadah = document.getElementById('input-wadah').value;
-        
-        let saldo = { cash: 0, bank: 0, wallet: 0 };
-        dataTransaksi.forEach(t => saldo[t.wadah] += (t.tipe === 'masuk' ? t.nominal : -t.nominal));
-        
-        if (tipe === 'keluar' && nominal > saldo[wadah]) return alert("⚠️ Saldo " + wadah + " tidak cukup!");
-
-        dataTransaksi.push({ tipe, wadah, nominal, ket: document.getElementById('input-ket').value, date: new Date().toLocaleDateString('id-ID') });
-        localStorage.setItem('fintrack_pro_data', JSON.stringify(dataTransaksi));
-        document.getElementById('form-tx').reset();
-        renderUI();
+    function setGoal() {
+        goal = { name: document.getElementById('in-goal-name').value, target: parseInt(document.getElementById('in-goal-target').value) };
+        localStorage.setItem('brann_goal', JSON.stringify(goal));
+        render();
     }
 
-    function setNewGoal() {
-        dataGoal = { name: document.getElementById('input-goal-name').value, target: parseInt(document.getElementById('input-goal-target').value) };
-        localStorage.setItem('fintrack_goal_pro', JSON.stringify(dataGoal));
-        renderUI();
+    function del(i) { txs.splice(i, 1); localStorage.setItem('brann_data', JSON.stringify(txs)); render(); }
+    function resetAll() { if(confirm("Hapus total?")) { txs = []; localStorage.setItem('brann_data', '[]'); render(); } }
+    function exportData() {
+        const blob = new Blob([JSON.stringify(txs)], {type: "text/plain"});
+        const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = "data.txt"; a.click();
     }
-    function hapusSatu(i) { dataTransaksi.splice(i, 1); localStorage.setItem('fintrack_pro_data', JSON.stringify(dataTransaksi)); renderUI(); }
-    function hapusSemua() { if(confirm("Yakin ingin menghapus semua data?")) { dataTransaksi = []; localStorage.setItem('fintrack_pro_data', '[]'); renderUI(); } }
-    
-    renderUI();
+    render();
 </script>
 </body>
 </html>
