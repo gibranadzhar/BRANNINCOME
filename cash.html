@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinTrack Pro - Uang Tunai</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: radial-gradient(circle at top right, #064e3b, #0f172a, #020617); }
+        .glass-card { background: rgba(30, 41, 59, 0.4); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); }
+    </style>
+</head>
+<body class="text-slate-100 min-h-screen antialiased">
+    <div class="max-w-6xl mx-auto px-4 py-8">
+        <header class="mb-8 border-b border-slate-800/60 pb-6">
+            <h1 class="text-3xl font-bold text-emerald-400">💵 Kantong Uang Tunai (Cash)</h1>
+            <p class="text-slate-400 text-sm mt-1">Mengelola uang fisik di dompet.</p>
+        </header>
+
+        <!-- Menu Navigasi Halaman -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
+            <a href="index.html" class="p-4 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 bg-slate-900/50 text-slate-400 border border-slate-800/60 hover:text-white">
+                <i class="fa-solid fa-layer-group"></i> Ringkasan
+            </a>
+            <a href="cash.html" class="p-4 rounded-xl text-sm font-bold flex items-center justify-center gap-2 bg-emerald-600 text-white border border-emerald-500 shadow-md">
+                💵 Uang Tunai
+            </a>
+            <a href="bank.html" class="p-4 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 bg-slate-900/50 text-slate-400 border border-slate-800/60 hover:text-white">
+                🏛️ Rekening Bank
+            </a>
+            <a href="ewallet.html" class="p-4 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 bg-slate-900/50 text-slate-400 border border-slate-800/60 hover:text-white">
+                📱 E-Wallet
+            </a>
+        </div>
+
+        <!-- Dashboard Angka Kas Mandiri -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="glass-card rounded-2xl p-6"><p class="text-slate-400 text-xs font-semibold uppercase">Saldo Uang Tunai</p><h3 id="wallet-balance" class="text-3xl font-bold mt-3 text-white">Rp 0</h3></div>
+            <div class="glass-card rounded-2xl p-6 border-emerald-500/10"><p class="text-emerald-400 text-xs font-semibold uppercase">Pemasukan Tunai</p><h3 id="wallet-income" class="text-3xl font-bold mt-3 text-emerald-400">+ Rp 0</h3></div>
+            <div class="glass-card rounded-2xl p-6 border-rose-500/10"><p class="text-rose-400 text-xs font-semibold uppercase">Pengeluaran Tunai</p><h3 id="wallet-expense" class="text-3xl font-bold mt-3 text-rose-400">- Rp 0</h3></div>
+        </div>
+
+        <!-- Tabel Arsip Riwayat Khusus Cash -->
+        <div class="glass-card rounded-2xl p-6">
+            <h2 class="text-xl font-bold mb-4 text-white">Riwayat Khusus Kas Tunai</h2>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm text-slate-300">
+                    <thead class="text-xs uppercase bg-slate-900/40 text-slate-400 border-b border-slate-800">
+                        <tr><th class="px-4 py-3">Kategori</th><th class="px-4 py-3 text-right">Nominal</th><th class="px-4 py-3 text-center">Aksi</th></tr>
+                    </thead>
+                    <tbody id="tx-table-body"></tbody>
+                </table>
+                <div id="empty-state" class="text-center py-12 text-slate-500 hidden"><p class="text-xs">Belum ada transaksi tunai.</p></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let transactions = JSON.parse(localStorage.getItem('fintrack_ult_tx')) || [];
+        function formatRupiah(num) { return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(num); }
+
+        function updateDOM() {
+            const tbody = document.getElementById('tx-table-body');
+            tbody.innerHTML = '';
+            let income = 0, expense = 0;
+
+            const filtered = transactions.filter(tx => tx.wallet === 'cash');
+
+            if (filtered.length === 0) {
+                document.getElementById('empty-state').classList.remove('hidden');
+            } else {
+                document.getElementById('empty-state').classList.add('hidden');
+                [...filtered].reverse().forEach(tx => {
+                    let amt = parseInt(tx.amount);
+                    if (tx.type === 'income') income += amt; else expense += amt;
+
+                    const origIdx = transactions.findIndex(t => t === tx);
+                    const row = document.createElement('tr');
+                    row.className = "border-b border-slate-800/40 hover:bg-slate-800/10";
+                    row.innerHTML = `
+                        <td class="px-4 py-3 text-xs font-bold text-slate-200">${tx.category}</td>
+                        <td class="px-4 py-3 text-right font-bold ${tx.type === 'income' ? 'text-emerald-400' : 'text-rose-400'}">${tx.type === 'income'?'+':'-'} ${formatRupiah(tx.amount).replace('Rp','')}</td>
+                        <td class="px-4 py-3 text-center"><button onclick="deleteTx(${origIdx})" class="text-slate-600 hover:text-rose-400 cursor-pointer"><i class="fa-regular fa-trash-can"></i></button></td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            }
+            document.getElementById('wallet-balance').innerText = formatRupiah(income - expense);
+            document.getElementById('wallet-income').innerText = `+ ${formatRupiah(income)}`;
+            document.getElementById('wallet-expense').innerText = `- ${formatRupiah(expense)}`;
+        }
+
+        function deleteTx(idx) { if (idx > -1) { transactions.splice(idx, 1); localStorage.setItem('fintrack_ult_tx', JSON.stringify(transactions)); updateDOM(); } }
+        updateDOM();
+    </script>
+</body>
+</html>
