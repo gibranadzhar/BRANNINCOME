@@ -3,213 +3,125 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BrannTrack Pro — Classic Edition</title>
+    <title>BrannTrack Pro — Elite Edition</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif; }
-        body { background: #090d16; color: #f1f5f9; padding: 40px 20px; min-height: 100vh; display: flex; justify-content: center; }
-        .container { width: 100%; max-width: 680px; margin: 0 auto; }
-        header { text-align: center; margin-bottom: 35px; }
-        header h1 { font-size: 32px; font-weight: 800; letter-spacing: -0.5px; background: linear-gradient(135deg, #a5b4fc 0%, #6366f1 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        header p { font-size: 13px; color: #64748b; margin-top: 6px; letter-spacing: 1px; text-transform: uppercase; }
-        .main-box { background: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.7) 100%); border: 1px solid rgba(255, 255, 255, 0.06); padding: 30px; border-radius: 24px; margin-bottom: 25px; backdrop-filter: blur(12px); box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
-        .balance-header { display: flex; justify-content: space-between; align-items: center; }
-        .balance-title { font-size: 13px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
-        .balance-val { font-size: 38px; font-weight: 700; margin: 8px 0 20px 0; color: #ffffff; letter-spacing: -1px; }
-        .sub-wallet { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; border-top: 1px solid rgba(255, 255, 255, 0.05); padding-top: 20px; margin-bottom: 20px; }
-        .w-card { background: rgba(15, 23, 42, 0.5); padding: 14px; border-radius: 14px; text-align: left; font-size: 12px; color: #94a3b8; border: 1px solid rgba(255, 255, 255, 0.03); }
-        .w-card strong { display: block; font-size: 16px; margin-top: 6px; color: #f8fafc; font-weight: 600; }
-        .progress-container { background: rgba(15, 23, 42, 0.6); height: 10px; border-radius: 99px; display: flex; overflow: hidden; border: 1px solid rgba(255,255,255,0.02); }
-        .progress-bar-segment { height: 100%; transition: width 0.4s ease; }
-        .bg-cash { background: #f59e0b; } .bg-bank { background: #3b82f6; } .bg-wallet { background: #10b981; }
-        .goal-box { background: rgba(30, 41, 59, 0.3); padding: 20px; border-radius: 20px; margin-bottom: 25px; border: 1px solid rgba(255, 255, 255, 0.04); }
-        .goal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-        .goal-title { font-size: 14px; font-weight: 600; color: #cbd5e1; }
-        .goal-progress-text { font-size: 13px; color: #94a3b8; }
-        .goal-track { background: rgba(15, 23, 42, 0.6); height: 8px; border-radius: 99px; overflow: hidden; margin-bottom: 12px; }
-        .goal-bar { background: linear-gradient(90deg, #6366f1, #a5b4fc); height: 100%; width: 0%; transition: width 0.4s ease; }
-        .goal-inputs { display: flex; gap: 10px; }
-        .goal-inputs input { padding: 10px; font-size: 13px; }
-        .btn-sm { width: auto; padding: 10px 16px; font-size: 13px; white-space: nowrap; }
-        .form-box { background: rgba(30, 41, 59, 0.4); padding: 25px; border-radius: 24px; margin-bottom: 25px; border: 1px solid rgba(255, 255, 255, 0.04); }
-        h3 { font-size: 16px; font-weight: 600; color: #cbd5e1; margin-bottom: 18px; display: flex; align-items: center; gap: 8px; }
-        .form-group { display: flex; flex-direction: column; gap: 14px; }
-        select, input { width: 100%; padding: 14px 16px; background: #0f172a; border: 1px solid #1e293b; border-radius: 12px; color: #fff; font-size: 15px; transition: all 0.2s; outline: none; }
-        select:focus, input:focus { border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15); }
-        button { width: 100%; padding: 14px; background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: #fff; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; font-size: 15px; transition: all 0.2s; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2); }
-        button:hover { opacity: 0.95; transform: translateY(-1px); box-shadow: 0 6px 16px rgba(99, 102, 241, 0.3); }
-        .action-footer-btns { display: flex; gap: 10px; margin-top: 12px; }
-        .btn-secondary { background: rgba(255,255,255,0.05); color: #cbd5e1; border: 1px solid rgba(255,255,255,0.05); box-shadow: none; }
-        .btn-danger { background: transparent; border: 1px solid rgba(239, 68, 68, 0.2); color: #ef4444; box-shadow: none; }
-        .filter-nav { display: flex; gap: 8px; margin-bottom: 15px; overflow-x: auto; padding-bottom: 5px; }
-        .filter-btn { background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255,255,255,0.04); padding: 8px 14px; border-radius: 8px; color: #94a3b8; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
-        .filter-btn.active, .filter-btn:hover { background: #6366f1; color: #fff; border-color: #6366f1; }
-        .table-box { background: rgba(30, 41, 59, 0.4); padding: 25px; border-radius: 24px; border: 1px solid rgba(255, 255, 255, 0.04); }
-        table { width: 100%; border-collapse: collapse; text-align: left; }
-        th, td { padding: 14px; border-bottom: 1px solid rgba(255, 255, 255, 0.03); font-size: 14px; }
-        th { color: #64748b; font-weight: 600; text-transform: uppercase; font-size: 11px; }
-        .text-green { color: #10b981; font-weight: 600; } .text-red { color: #f43f5e; font-weight: 600; }
-        .badge-wadah { background: rgba(255,255,255,0.05); padding: 4px 8px; border-radius: 6px; font-size: 12px; color: #94a3b8; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+        body { background: #090d16; color: #f1f5f9; padding: 20px; min-height: 100vh; display: flex; justify-content: center; }
+        .container { width: 100%; max-width: 680px; }
+        header { text-align: center; margin-bottom: 25px; }
+        .main-box, .form-box, .table-box, .goal-box { background: rgba(30, 41, 59, 0.4); padding: 20px; border-radius: 20px; margin-bottom: 20px; border: 1px solid rgba(255, 255, 255, 0.05); }
+        .balance-val { font-size: 32px; font-weight: 700; color: #fff; margin: 10px 0; }
+        .sub-wallet { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 15px; }
+        .w-card { background: rgba(15, 23, 42, 0.5); padding: 12px; border-radius: 12px; font-size: 11px; }
+        .w-card strong { display: block; font-size: 14px; margin-top: 5px; }
+        input, select, button { width: 100%; padding: 12px; margin: 5px 0; border-radius: 10px; border: 1px solid #1e293b; background: #0f172a; color: white; }
+        button { background: #6366f1; cursor: pointer; font-weight: 600; border: none; }
+        .text-green { color: #10b981; } .text-red { color: #f43f5e; }
+        .text-minus { color: #f43f5e !important; }
+        .w-card-minus { border: 1px solid #f43f5e !important; }
+        .badge-wadah { background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px; font-size: 10px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { padding: 10px; border-bottom: 1px solid #1e293b; font-size: 13px; }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <header>
-            <h1>BrannTrack Pro</h1>
-            <p>Elite Premium Ledger Experience</p>
-        </header>
-
-        <div class="main-box">
-            <div class="balance-header"><span class="balance-title">Total Kompilasi Saldo</span></div>
-            <div class="balance-val" id="total-saldo">Rp 0</div>
-            <div class="sub-wallet">
-                <div class="w-card" style="border-left: 3px solid #f59e0b;">💵 Tunai<strong id="w-cash">Rp 0</strong></div>
-                <div class="w-card" style="border-left: 3px solid #3b82f6;">🏛️ Bank<strong id="w-bank">Rp 0</strong></div>
-                <div class="w-card" style="border-left: 3px solid #10b981;">📱 E-Wallet<strong id="w-wallet">Rp 0</strong></div>
-            </div>
-            <div class="progress-container">
-                <div id="bar-cash" class="progress-bar-segment bg-cash" style="width: 0%"></div>
-                <div id="bar-bank" class="progress-bar-segment bg-bank" style="width: 0%"></div>
-                <div id="bar-wallet" class="progress-bar-segment bg-wallet" style="width: 0%"></div>
-            </div>
-        </div>
-
-        <div class="goal-box">
-            <div class="goal-header">
-                <div class="goal-title">🎯 Target: <span id="lbl-goal-name">Atur Target</span></div>
-                <div class="goal-progress-text" id="lbl-goal-progress">0% Terpenuhi</div>
-            </div>
-            <div class="goal-track"><div id="bar-goal" class="goal-bar"></div></div>
-            <div class="goal-inputs">
-                <input type="text" id="input-goal-name" placeholder="Nama Target">
-                <input type="number" id="input-goal-target" placeholder="Target Dana">
-                <button onclick="setNewGoal()" class="btn-sm">Set</button>
-            </div>
-        </div>
-
-        <div class="form-box">
-            <h3><span>✦ Alokasikan Transaksi Baru</span></h3>
-            <form id="tx-form" onsubmit="simpanData(event)" class="form-group">
-                <select id="input-tipe"><option value="masuk">🟢 Masuk (+)</option><option value="keluar">🔴 Keluar (-)</option></select>
-                <select id="input-wadah"><option value="cash">💵 Tunai</option><option value="bank">🏛️ Bank</option><option value="wallet">📱 E-Wallet</option></select>
-                <input type="number" id="input-nominal" placeholder="Nominal (Rp)" required>
-                <input type="text" id="input-ket" placeholder="Keterangan" required>
-                <button type="submit">Konfirmasi</button>
-            </form>
-            <div class="action-footer-btns">
-                <button onclick="eksporCSV()" class="btn-secondary">📥 Ekspor CSV</button>
-                <button onclick="hapusSemua()" class="btn-danger">Reset Semua</button>
-            </div>
-        </div>
-
-        <div class="table-box">
-            <h3><span>✦ Log Riwayat</span></h3>
-            <div class="filter-nav">
-                <button class="filter-btn active" onclick="gantiFilter('all', this)">🌍 Semua</button>
-                <button class="filter-btn" onclick="gantiFilter('cash', this)">💵 Tunai</button>
-                <button class="filter-btn" onclick="gantiFilter('bank', this)">🏛️ Bank</button>
-                <button class="filter-btn" onclick="gantiFilter('wallet', this)">📱 E-Wallet</button>
-            </div>
-            <table>
-                <thead><tr><th>Wadah</th><th>Keterangan</th><th style="text-align: right;">Nominal</th><th>Aksi</th></tr></thead>
-                <tbody id="tabel-body"></tbody>
-            </table>
+<div class="container">
+    <header><h1>BrannTrack Pro</h1></header>
+    
+    <div class="main-box">
+        <div class="balance-val" id="total-saldo">Rp 0</div>
+        <div class="sub-wallet">
+            <div class="w-card" id="card-cash">Tunai<strong id="w-cash">Rp 0</strong></div>
+            <div class="w-card" id="card-bank">Bank<strong id="w-bank">Rp 0</strong></div>
+            <div class="w-card" id="card-wallet">E-Wallet<strong id="w-wallet">Rp 0</strong></div>
         </div>
     </div>
 
-    <script>
-        const STORAGE_KEY = 'fintrack_classic_v1';
-        const GOAL_KEY = 'fintrack_goal_classic_v1';
-        let dataTransaksi = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-        let dataGoal = JSON.parse(localStorage.getItem(GOAL_KEY)) || { name: "Belum Ditentukan", target: 0 };
-        let filterAktif = 'all';
+    <div class="form-box">
+        <form id="tx-form" onsubmit="simpanData(event)">
+            <select id="input-tipe"><option value="masuk">Pemasukan (+)</option><option value="keluar">Pengeluaran (-)</option></select>
+            <select id="input-wadah"><option value="cash">Tunai</option><option value="bank">Bank</option><option value="wallet">E-Wallet</option></select>
+            <input type="text" id="input-nominal" placeholder="Nominal (Rp)" required>
+            <input type="text" id="input-ket" placeholder="Keterangan" required>
+            <button type="submit">Konfirmasi</button>
+        </form>
+    </div>
 
-        function formatRupiah(angka) { return "Rp " + Number(angka).toLocaleString('id-ID'); }
+    <div class="table-box">
+        <table>
+            <thead><tr><th>Wadah</th><th>Ket</th><th>Nominal</th><th>Aksi</th></tr></thead>
+            <tbody id="tabel-body"></tbody>
+        </table>
+    </div>
+</div>
 
-        function simpanData(e) {
-            e.preventDefault();
-            const tipe = document.getElementById('input-tipe').value;
-            const wadah = document.getElementById('input-wadah').value;
-            const nominal = parseInt(document.getElementById('input-nominal').value) || 0;
-            const ket = document.getElementById('input-ket').value;
-            if (nominal <= 0) return alert("Masukkan nominal yang valid!");
-            dataTransaksi.push({ tipe, wadah, nominal, ket });
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(dataTransaksi));
-            document.getElementById('tx-form').reset();
-            renderUI();
-        }
+<script>
+    const STORAGE_KEY = 'fintrack_elite_v1';
+    let dataTransaksi = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
 
-        function hapusSatu(indexAsli) {
-            if(confirm("Hapus transaksi ini?")) {
-                dataTransaksi.splice(indexAsli, 1);
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(dataTransaksi));
-                renderUI();
-            }
-        }
+    // Auto-Format Rupiah saat mengetik
+    const inputNominal = document.getElementById('input-nominal');
+    inputNominal.addEventListener('input', (e) => {
+        let val = e.target.value.replace(/\D/g, '');
+        e.target.value = val ? parseInt(val).toLocaleString('id-ID') : '';
+    });
 
-        function setNewGoal() {
-            const name = document.getElementById('input-goal-name').value;
-            const target = parseInt(document.getElementById('input-goal-target').value) || 0;
-            if(!name || target <= 0) return alert("Isi target dengan benar!");
-            dataGoal = { name, target };
-            localStorage.setItem(GOAL_KEY, JSON.stringify(dataGoal));
-            renderUI();
-        }
+    function simpanData(e) {
+        e.preventDefault();
+        const nominal = parseInt(inputNominal.value.replace(/\./g, '')) || 0;
+        const tipe = document.getElementById('input-tipe').value;
+        const wadah = document.getElementById('input-wadah').value;
+        const ket = document.getElementById('input-ket').value;
 
-        function gantiFilter(tipeWadah, elemen) {
-            filterAktif = tipeWadah;
-            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-            elemen.classList.add('active');
-            renderUI();
-        }
-
-        function hapusSemua() {
-            if(confirm("Hapus seluruh log?")) {
-                dataTransaksi = [];
-                localStorage.setItem(STORAGE_KEY, '[]');
-                renderUI();
-            }
-        }
-
-        function renderUI() {
-            let totalSemua = 0, saldoWadah = { cash: 0, bank: 0, wallet: 0 };
-            const tbody = document.getElementById('tabel-body');
-            tbody.innerHTML = '';
-            dataTransaksi.forEach(tx => {
-                if(tx.tipe === 'masuk') { totalSemua += tx.nominal; saldoWadah[tx.wadah] += tx.nominal; }
-                else { totalSemua -= tx.nominal; saldoWadah[tx.wadah] -= tx.nominal; }
-            });
-            
-            // Loop terbalik untuk menampilkan yang terbaru di atas
-            dataTransaksi.slice().reverse().forEach((tx, i) => {
-                if (filterAktif !== 'all' && tx.wadah !== filterAktif) return;
-                const indexAsli = dataTransaksi.length - 1 - i;
-                const sign = tx.tipe === 'masuk' ? '+' : '-';
-                tbody.innerHTML += `<tr>
-                    <td><span class="badge-wadah">${tx.wadah.toUpperCase()}</span></td>
-                    <td>${tx.ket}</td>
-                    <td class="${tx.tipe === 'masuk' ? 'text-green' : 'text-red'}" style="text-align: right;">${sign}${formatRupiah(tx.nominal)}</td>
-                    <td style="text-align:center;"><button onclick="hapusSatu(${indexAsli})" style="background:none; border:none; color:#64748b; cursor:pointer;">🗑️</button></td>
-                </tr>`;
-            });
-
-            document.getElementById('total-saldo').innerText = formatRupiah(totalSemua);
-            document.getElementById('w-cash').innerText = formatRupiah(saldoWadah.cash);
-            document.getElementById('w-bank').innerText = formatRupiah(saldoWadah.bank);
-            document.getElementById('w-wallet').innerText = formatRupiah(saldoWadah.wallet);
-            
-            const totalAbs = Math.abs(saldoWadah.cash) + Math.abs(saldoWadah.bank) + Math.abs(saldoWadah.wallet);
-            if(totalAbs > 0) {
-                document.getElementById('bar-cash').style.width = (Math.max(0, saldoWadah.cash) / totalAbs * 100) + '%';
-                document.getElementById('bar-bank').style.width = (Math.max(0, saldoWadah.bank) / totalAbs * 100) + '%';
-                document.getElementById('bar-wallet').style.width = (Math.max(0, saldoWadah.wallet) / totalAbs * 100) + '%';
-            }
-            document.getElementById('lbl-goal-name').innerText = dataGoal.name;
-            const pct = dataGoal.target > 0 ? Math.min(100, Math.max(0, (totalSemua / dataGoal.target) * 100)) : 0;
-            document.getElementById('bar-goal').style.width = pct + '%';
-            document.getElementById('lbl-goal-progress').innerText = `${Math.floor(pct)}% Terpenuhi`;
-        }
+        if (nominal <= 0) return alert("Masukkan nominal valid!");
+        dataTransaksi.push({ tipe, wadah, nominal, ket });
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(dataTransaksi));
+        
+        document.getElementById('tx-form').reset();
+        inputNominal.focus(); // Auto-Focus
         renderUI();
-    </script>
+    }
+
+    function hapusSatu(idx) {
+        if(confirm("Hapus transaksi?")) {
+            dataTransaksi.splice(idx, 1);
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(dataTransaksi));
+            renderUI();
+        }
+    }
+
+    function renderUI() {
+        let total = 0, sWadah = { cash: 0, bank: 0, wallet: 0 };
+        const tbody = document.getElementById('tabel-body');
+        tbody.innerHTML = '';
+
+        dataTransaksi.forEach(tx => {
+            if(tx.tipe === 'masuk') { total += tx.nominal; sWadah[tx.wadah] += tx.nominal; }
+            else { total -= tx.nominal; sWadah[tx.wadah] -= tx.nominal; }
+        });
+
+        // Visual Warning & Update Saldo
+        ['cash', 'bank', 'wallet'].forEach(w => {
+            const el = document.getElementById('w-' + w);
+            const card = document.getElementById('card-' + w);
+            el.innerText = "Rp " + sWadah[w].toLocaleString('id-ID');
+            if(sWadah[w] < 0) { el.classList.add('text-minus'); card.classList.add('w-card-minus'); }
+            else { el.classList.remove('text-minus'); card.classList.remove('w-card-minus'); }
+        });
+
+        dataTransaksi.slice().reverse().forEach((tx, i) => {
+            const idx = dataTransaksi.length - 1 - i;
+            tbody.innerHTML += `<tr>
+                <td><span class="badge-wadah">${tx.wadah.toUpperCase()}</span></td>
+                <td>${tx.ket}</td>
+                <td class="${tx.tipe === 'masuk' ? 'text-green' : 'text-red'}">${tx.tipe === 'masuk' ? '+' : '-'}${tx.nominal.toLocaleString('id-ID')}</td>
+                <td><button onclick="hapusSatu(${idx})" style="background:none; color:#f43f5e;">🗑️</button></td>
+            </tr>`;
+        });
+        document.getElementById('total-saldo').innerText = "Rp " + total.toLocaleString('id-ID');
+    }
+    renderUI();
+</script>
 </body>
 </html>
