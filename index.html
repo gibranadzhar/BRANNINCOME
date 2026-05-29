@@ -28,7 +28,7 @@
             <div>
                 <div class="flex items-center gap-3">
                     <div class="h-10 w-10 rounded-xl bg-gradient-to-tr from-indigo-500 to-violet-500 flex items-center justify-center shadow-lg shadow-indigo-500/20">
-                        <i class="fa-solid fa-vault text-white text-lg"></i>
+                        <i class="fa-solid fa-wallet text-white text-lg"></i>
                     </div>
                     <h1 class="text-3xl font-bold bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">FinTrack<span class="text-xs font-semibold ml-1 px-2 py-0.5 bg-gradient-to-r from-amber-400 to-orange-500 text-slate-950 rounded-full font-bold">ULTIMATE</span></h1>
                 </div>
@@ -100,8 +100,8 @@
                 </div>
                 
                 <div class="flex items-center gap-4 border-t border-slate-800/60 pt-3 mt-3">
-                    <div class="w-14 h-14 shrink-0"><canvas id="financeChart"></canvas></div>
-                    <p class="text-xs text-slate-400 leading-relaxed">Donut chart di samping memvisualisasikan perbandingan rasio Pemasukan vs Pengeluaran saat ini.</p>
+                    <div class="w-12 h-12 shrink-0"><canvas id="financeChart"></canvas></div>
+                    <p class="text-xs text-slate-400 leading-relaxed">Visualisasi perbandingan struktur kas masuk vs keluar.</p>
                 </div>
             </div>
 
@@ -120,7 +120,7 @@
                         <div id="goal-bar" class="bg-gradient-to-r from-pink-500 to-orange-400 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
                     </div>
                 </div>
-                <p class="text-xs text-slate-500 italic mt-2">*Sisa saldo bersih Anda otomatis terhitung masuk ke pencapaian celengan ini.</p>
+                <p class="text-xs text-slate-500 italic mt-2">*Sisa saldo bersih otomatis dialokasikan ke sini.</p>
             </div>
         </div>
 
@@ -149,7 +149,7 @@
                         <label class="block text-xs font-semibold text-slate-400 mb-1">Nominal (Rp)</label>
                         <div class="relative">
                             <span class="absolute left-3.5 top-2.5 text-slate-500 text-sm font-semibold">Rp</span>
-                            <input type="text" id="tx-amount-display" oninput="formatInputRupiah(this)" required placeholder="1.000.000" class="w-full bg-slate-900 border border-slate-700/50 rounded-xl pl-10 pr-3.5 py-2.5 text-sm focus:outline-none focus:border-indigo-500 text-white font-medium">
+                            <input type="text" id="tx-amount-display" oninput="formatInputRupiah(this)" inputmode="numeric" required placeholder="1.000.000" class="w-full bg-slate-900 border border-slate-700/50 rounded-xl pl-10 pr-3.5 py-2.5 text-sm focus:outline-none focus:border-indigo-500 text-white font-medium">
                         </div>
                     </div>
                     <div>
@@ -210,11 +210,12 @@
         let privacyMode = false;
         let myChart = null;
 
-        // --- FUNGSI AUTO FORMAT RUPIAH SAAT MENGETIK ---
+        // --- CORE FORMATTER: MEMBUAT TITIK SECARA REAL-TIME SAAT MENGETIK ---
         function formatInputRupiah(input) {
-            // Hilangkan semua karakter selain angka
+            // Bersihkan semua karakter yang bukan angka
             let value = input.value.replace(/[^0-9]/g, '');
-            // Berikan titik per 3 digit angka
+            
+            // Format menjadi struktur ribuan ber-titik
             if (value !== "") {
                 input.value = new Intl.NumberFormat('id-ID').format(parseInt(value));
             } else {
@@ -230,7 +231,6 @@
         function togglePrivacyMode() {
             privacyMode = !privacyMode;
             const btn = document.getElementById('privacy-btn');
-            const txt = document.getElementById('privacy-text');
             if (privacyMode) {
                 btn.className = "bg-indigo-600 text-white border border-indigo-500 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center gap-2 cursor-pointer";
                 btn.innerHTML = `<i class="fa-solid fa-eye-slash"></i> <span>Tampilkan Saldo</span>`;
@@ -307,4 +307,5 @@
             if (filteredData.length === 0) {
                 emptyState.classList.remove('hidden');
             } else {
-                emptyS
+                emptyState.classList.add('hidden');
+                [...filteredData].
