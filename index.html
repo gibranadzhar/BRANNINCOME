@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FinTrack Pro — Enhanced Classic Edition</title>
+    <title>FinTrack Pro — Ultra Stable Edition</title>
     <style>
         /* Reset & Base Premium Theme */
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif; }
@@ -96,13 +96,11 @@
 <body>
 
     <div class="container">
-        <!-- Header Section -->
         <header>
             <h1>FinTrack Pro</h1>
             <p>Elite Premium Ledger Experience</p>
         </header>
 
-        <!-- Financial Balance Cards & Segment Progress -->
         <div id="main-dashboard" class="main-box">
             <div class="balance-header">
                 <span class="balance-title">Total Kompilasi Saldo</span>
@@ -115,7 +113,6 @@
                 <div class="w-card" style="border-left: 3px solid #10b981;">📱 E-Wallet<strong id="w-wallet">Rp 0</strong></div>
             </div>
 
-            <!-- Visual Alokasi Bar -->
             <div class="progress-container">
                 <div id="bar-cash" class="progress-bar-segment bg-cash" style="width: 0%"></div>
                 <div id="bar-bank" class="progress-bar-segment bg-bank" style="width: 0%"></div>
@@ -123,7 +120,6 @@
             </div>
         </div>
 
-        <!-- Target Tabungan / Celengan Component -->
         <div class="goal-box">
             <div class="goal-header">
                 <div class="goal-title">🎯 Target Celengan: <span id="lbl-goal-name">Atur Target Tabungan</span></div>
@@ -139,7 +135,6 @@
             </div>
         </div>
 
-        <!-- Ledger Entry Form Component -->
         <div class="form-box">
             <h3><span>✦ Alokasikan Transaksi Baru</span></h3>
             <form id="tx-form" onsubmit="simpanData(event)" class="form-group">
@@ -165,7 +160,6 @@
             </div>
         </div>
 
-        <!-- Master Ledger Table & Filters -->
         <div class="table-box">
             <h3><span>✦ Log Alur Alokasi Riwayat</span></h3>
             
@@ -193,14 +187,15 @@
     </div>
 
     <script>
-        const STORAGE_KEY = 'fintrack_classic_v1';
-        const GOAL_KEY = 'fintrack_goal_classic_v1';
+        // Menggunakan Key Baru agar terisolasi dari memori lama yang korup
+        const STORAGE_KEY = 'fintrack_final_fixed';
+        const GOAL_KEY = 'fintrack_goal_final_fixed';
         
         let dataTransaksi = [];
         let dataGoal = { name: "Belum Ditentukan", target: 0 };
         let filterAktif = 'all';
 
-        // Load Memori Bawaan
+        // Load Memori Bawaan secara aman
         try {
             dataTransaksi = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
             if(!Array.isArray(dataTransaksi)) dataTransaksi = [];
@@ -224,7 +219,6 @@
 
             if (nominal <= 0) return alert("Harap masukkan nilai dana yang valid!");
 
-            // Fitur 2: Generate Tanggal & Waktu Otomatis secara lokal
             const sekarang = new Date();
             const opsiTanggal = { day: 'numeric', month: 'short' };
             const teksTanggal = sekarang.toLocaleDateString('id-ID', opsiTanggal);
@@ -239,7 +233,6 @@
             triggerFlashAnim(tipe);
         }
 
-        // Fitur 3: Animasi Flash Ringan pada Dashboard
         function triggerFlashAnim(tipe) {
             const box = document.getElementById('main-dashboard');
             if(!box) return;
@@ -252,7 +245,6 @@
             }, 400);
         }
 
-        // Fitur 1: Fungsi Hapus Satu Transaksi Berdasarkan Index Asli
         function hapusSatuTransaksi(indexAsli) {
             if(confirm("Hapus catatan transaksi ini?")) {
                 dataTransaksi.splice(indexAsli, 1);
@@ -292,7 +284,7 @@
             const url = URL.createObjectURL(blob);
             const link = document.createElement("a");
             link.setAttribute("href", url);
-            link.setAttribute("download", "Laporan_FinTrack_Enhanced.csv");
+            link.setAttribute("download", "Laporan_FinTrack_Final.csv");
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
@@ -325,7 +317,6 @@
                 }
             });
 
-            // Balik urutan untuk tabel (terbaru di atas) tanpa merusak index asli array
             for (let i = dataTransaksi.length - 1; i >= 0; i--) {
                 const tx = dataTransaksi[i];
                 if (filterAktif !== 'all' && tx.wadah !== filterAktif) continue;
@@ -363,4 +354,11 @@
             if(document.getElementById('w-bank')) document.getElementById('w-bank').innerText = formatRupiah(saldoPerWadah.bank);
             if(document.getElementById('w-wallet')) document.getElementById('w-wallet').innerText = formatRupiah(saldoPerWadah.wallet);
 
-         
+            let jumlahAbsolut = Math.abs(saldoPerWadah.cash) + Math.abs(saldoPerWadah.bank) + Math.abs(saldoPerWadah.wallet);
+            let pctCash = 0, pctBank = 0, pctWallet = 0;
+            if(jumlahAbsolut > 0) {
+                pctCash = (Math.max(0, saldoPerWadah.cash) / jumlahAbsolut) * 100;
+                pctBank = (Math.max(0, saldoPerWadah.bank) / jumlahAbsolut) * 100;
+                pctWallet = (Math.max(0, saldoPerWadah.wallet) / jumlahAbsolut) * 100;
+            }
+     
