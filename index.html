@@ -3,82 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BrannTrack Ultimate</title>
+    <title>BrannTrack Ultimate Legendary</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        :root { --glass: rgba(255, 255, 255, 0.08); --primary: #6366f1; --danger: #f43f5e; --success: #10b981; --bg: #050505; --text: #e2e8f0; }
-        * { box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background: var(--bg); color: var(--text); padding: 10px; margin: 0; }
-        .container { max-width: 500px; margin: auto; }
-        .glass { background: var(--glass); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 15px; margin-bottom: 12px; }
-        input, select, button { width: 100%; padding: 12px; margin-bottom: 8px; border-radius: 10px; border: 1px solid #333; background: #111; color: white; }
-        button { background: var(--primary); font-weight: bold; cursor: pointer; }
-        .badge { background: #2d3748; padding: 2px 6px; border-radius: 4px; font-size: 9px; }
+        :root { 
+            --neon-blue: #00f3ff; --neon-purple: #9d00ff; 
+            --glass: rgba(255, 255, 255, 0.03); 
+            --bg: #0a0a0c; 
+        }
+        * { box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; transition: 0.3s; }
+        body { background: var(--bg); color: #fff; padding: 20px; margin: 0; display: flex; justify-content: center; }
+        .container { width: 100%; max-width: 450px; }
+        
+        /* Glassmorphism Card */
+        .card { 
+            background: var(--glass); 
+            backdrop-filter: blur(20px); 
+            border: 1px solid rgba(255,255,255,0.1); 
+            border-radius: 24px; 
+            padding: 24px; 
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        
+        h1 { font-size: 20px; text-align: center; margin-bottom: 20px; color: var(--neon-blue); text-shadow: 0 0 10px var(--neon-blue); letter-spacing: 3px; }
+        
+        input, select, button { 
+            width: 100%; padding: 15px; margin-bottom: 12px; border-radius: 16px; 
+            border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.2); color: white; outline: none;
+        }
+        button { background: linear-gradient(45deg, var(--neon-blue), var(--neon-purple)); border: none; font-weight: bold; cursor: pointer; color: white; }
+        button:active { transform: scale(0.95); }
+
+        .stat-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+        .stat-item { text-align: center; font-size: 10px; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 12px; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>BRANNTRACK ULTIMATE</h1>
+    <h1>BRANNTRACK</h1>
     
-    <!-- Dashboard Stats -->
-    <div class="glass">
-        <div class="balance-val" id="total-saldo" style="font-size:32px; font-weight:800; text-align:center;">Rp 0</div>
-        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:5px; margin-top:10px;">
-            <div class="glass" style="margin:0; text-align:center; font-size:9px;">Tunai<br><b id="w-cash">0</b></div>
-            <div class="glass" style="margin:0; text-align:center; font-size:9px;">Bank<br><b id="w-bank">0</b></div>
-            <div class="glass" style="margin:0; text-align:center; font-size:9px;">E-Wallet<br><b id="w-wallet">0</b></div>
+    <div class="card">
+        <div style="font-size:10px; text-align:center; opacity:0.6;">TOTAL SALDO</div>
+        <div id="total-saldo" style="font-size:36px; font-weight:800; text-align:center; margin:10px 0;">Rp 0</div>
+        <div class="stat-grid">
+            <div class="stat-item">Tunai<br><b id="w-cash">0</b></div>
+            <div class="stat-item">Bank<br><b id="w-bank">0</b></div>
+            <div class="stat-item">E-Wallet<br><b id="w-wallet">0</b></div>
         </div>
     </div>
 
-    <!-- Chart -->
-    <div class="glass">
+    <div class="card">
         <canvas id="myChart"></canvas>
     </div>
 
-    <!-- Input Form -->
-    <div class="glass">
+    <div class="card">
         <input type="date" id="in-date">
         <select id="in-tipe"><option value="masuk">🟢 Masuk</option><option value="keluar">🔴 Keluar</option></select>
         <select id="in-wadah"><option value="cash">💵 Tunai</option><option value="bank">🏛️ Bank</option><option value="wallet">📱 E-Wallet</option></select>
-        <input type="number" id="in-nom" placeholder="Nominal" required>
-        <input type="text" id="in-ket" placeholder="Keterangan" required>
-        <button onclick="addTx()">SIMPAN TRANSAKSI</button>
-        <button onclick="copyToAca()" style="background:var(--success);">📋 Salin Ringkasan untuk Aca</button>
+        <input type="number" id="in-nom" placeholder="Nominal (Rp)">
+        <input type="text" id="in-ket" placeholder="Keterangan">
+        <button onclick="addTx()">TAMBAH TRANSAKSI</button>
+        <button onclick="copyToAca()" style="background:transparent; border:1px solid var(--neon-blue);">📋 COPY RINGKASAN KE ACA</button>
     </div>
 
-    <!-- History -->
-    <div class="glass">
-        <input type="text" id="search" placeholder="🔍 Cari..." onkeyup="render()">
+    <div class="card" id="history-box">
+        <h2 style="font-size:14px; margin-bottom:15px;">Riwayat Terbaru</h2>
         <div id="tbl-body"></div>
     </div>
 </div>
 
 <script>
-    let txs = JSON.parse(localStorage.getItem('brann_ult')) || [];
+    let txs = JSON.parse(localStorage.getItem('brann_final')) || [];
     let myChart;
 
-    function vibrate() { if(navigator.vibrate) navigator.vibrate(50); }
-
     function addTx() {
-        vibrate();
         const nom = parseInt(document.getElementById('in-nom').value);
-        const date = document.getElementById('in-date').value || new Date().toISOString().split('T')[0];
-        txs.push({
-            tipe: document.getElementById('in-tipe').value,
-            wadah: document.getElementById('in-wadah').value,
-            nominal: nom,
-            ket: document.getElementById('in-ket').value,
-            date: date
-        });
-        localStorage.setItem('brann_ult', JSON.stringify(txs));
-        render();
-    }
+        const tipe = document.getElementById('in-tipe').value;
+        const wadah = document.getElementById('in-wadah').value;
+        
+        // Anti-Minus
+        let s = {cash:0, bank:0, wallet:0};
+        txs.forEach(t => s[t.wadah] += (t.tipe === 'masuk' ? t.nominal : -t.nominal));
+        if(tipe === 'keluar' && nom > s[wadah]) return alert("Saldo tidak cukup!");
 
-    function copyToAca() {
-        let text = "Ringkasan Keuangan Gibran:\n" + txs.map(t => `${t.date}: ${t.ket} (${t.tipe}) - Rp ${t.nominal}`).join("\n");
-        navigator.clipboard.writeText(text);
-        alert("Ringkasan berhasil disalin!");
+        txs.push({tipe, wadah, nominal: nom, ket: document.getElementById('in-ket').value, date: document.getElementById('in-date').value || new Date().toISOString().split('T')[0]});
+        localStorage.setItem('brann_final', JSON.stringify(txs));
+        render();
     }
 
     function render() {
@@ -86,27 +98,35 @@
         body.innerHTML = '';
         let total = 0, s = {cash:0, bank:0, wallet:0};
         
-        txs.slice().reverse().forEach((t, i) => {
+        txs.slice().reverse().forEach(t => {
             total += (t.tipe === 'masuk' ? t.nominal : -t.nominal);
             s[t.wadah] += (t.tipe === 'masuk' ? t.nominal : -t.nominal);
-            body.innerHTML += `<div style="padding:10px 0; border-bottom:1px solid #333"><b>${t.ket}</b><br><small>${t.date} | ${t.wadah}</small></div>`;
+            body.innerHTML += `<div style="padding:10px 0; border-bottom:1px solid rgba(255,255,255,0.05); font-size:12px;">
+                <b>${t.ket}</b><br><small>${t.date} • ${t.wadah} • ${t.tipe === 'masuk' ? '+'+t.nominal : '-'+t.nominal}</small>
+            </div>`;
         });
 
         document.getElementById('total-saldo').innerText = "Rp " + total.toLocaleString();
         document.getElementById('w-cash').innerText = s.cash.toLocaleString();
         document.getElementById('w-bank').innerText = s.bank.toLocaleString();
         document.getElementById('w-wallet').innerText = s.wallet.toLocaleString();
-        
-        updateChart();
+        updateChart([s.cash, s.bank, s.wallet]);
     }
 
-    function updateChart() {
+    function updateChart(data) {
         const ctx = document.getElementById('myChart').getContext('2d');
         if(myChart) myChart.destroy();
         myChart = new Chart(ctx, {
             type: 'doughnut',
-            data: { labels: ['Tunai', 'Bank', 'E-Wallet'], datasets: [{ data: [1, 2, 3], backgroundColor: ['#f43f5e', '#6366f1', '#10b981'] }] }
+            data: { labels: ['Tunai', 'Bank', 'E-Wallet'], datasets: [{ data: data, backgroundColor: ['#00f3ff', '#9d00ff', '#ff007a'] }] },
+            options: { plugins: { legend: { labels: { color: 'white' } } } }
         });
+    }
+
+    function copyToAca() {
+        let text = "Ringkasan Keuangan:\n" + txs.map(t => `${t.date}: ${t.ket} (${t.tipe}) - Rp ${t.nominal}`).join("\n");
+        navigator.clipboard.writeText(text);
+        alert("Data tersalin untuk Aca!");
     }
 
     render();
