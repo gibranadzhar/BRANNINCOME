@@ -5,89 +5,85 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BrannTrack Pro — Ultimate Edition</title>
     <style>
-        :root { --primary: #6366f1; --bg: #090d16; --card: rgba(30, 41, 59, 0.7); }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', system-ui, sans-serif; }
-        body { background: var(--bg); color: #f1f5f9; padding: 20px; display: flex; justify-content: center; }
-        .container { width: 100%; max-width: 600px; }
+        :root { 
+            --glass: rgba(255, 255, 255, 0.05); 
+            --primary: #6366f1; 
+            --danger: #f43f5e; 
+            --success: #10b981;
+            --bg: #050505;
+        }
+        * { box-sizing: border-box; font-family: 'Inter', system-ui; }
+        body { background: var(--bg); color: #e2e8f0; padding: 20px; display: flex; justify-content: center; }
+        .container { width: 100%; max-width: 500px; }
         
-        .card { background: var(--card); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.05); padding: 20px; border-radius: 20px; margin-bottom: 15px; }
+        /* Glassmorphism Design */
+        .glass { background: var(--glass); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); border-radius: 24px; padding: 20px; margin-bottom: 16px; box-shadow: 0 8px 32px rgba(0,0,0,0.5); }
         
-        /* Header & Balance */
-        .balance-box { text-align: center; padding: 20px 0; }
-        .balance-val { font-size: 32px; font-weight: 800; color: #fff; margin: 5px 0; }
-        .summary { display: flex; justify-content: space-around; margin-top: 15px; font-size: 12px; }
+        /* Heading */
+        h1 { font-size: 18px; color: #fff; margin-bottom: 20px; text-align: center; letter-spacing: 1px; text-transform: uppercase; }
         
-        /* Sub Wallets */
-        .wallets { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px; }
-        .w-card { background: rgba(0,0,0,0.2); padding: 10px; border-radius: 12px; text-align: center; border: 1px solid rgba(255,255,255,0.05); }
+        /* Dashboard Stats */
+        .balance-main { font-size: 42px; font-weight: 800; text-align: center; margin: 10px 0; background: linear-gradient(to right, #fff, #94a3b8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .grid-wallets { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .wallet-card { background: rgba(0,0,0,0.3); padding: 12px; border-radius: 16px; text-align: center; border: 1px solid #1e293b; }
+        .wallet-card b { display: block; font-size: 14px; margin-top: 5px; }
+        .low { border-color: var(--danger) !important; color: var(--danger); }
         
-        /* Goal Bar */
-        .goal-bar-bg { background: #0f172a; height: 10px; border-radius: 10px; overflow: hidden; margin: 10px 0; }
-        .goal-bar-fill { background: var(--primary); height: 100%; width: 0%; transition: 0.5s; }
+        /* Progress Bar */
+        .progress-bar { height: 8px; background: #1e293b; border-radius: 4px; margin: 15px 0; overflow: hidden; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--primary), #818cf8); width: 0%; transition: 0.8s; box-shadow: 0 0 10px var(--primary); }
         
-        /* Form & Table */
-        input, select { width: 100%; padding: 12px; background: #0f172a; border: 1px solid #334155; border-radius: 10px; color: #fff; margin-bottom: 8px; }
-        button { width: 100%; padding: 12px; background: var(--primary); color: #fff; border: none; border-radius: 10px; cursor: pointer; font-weight: 600; }
-        .btn-row { display: flex; gap: 10px; margin-top: 10px; }
+        /* Form & Inputs */
+        input, select { width: 100%; padding: 14px; background: #111; border: 1px solid #333; border-radius: 14px; color: #fff; margin-bottom: 10px; }
+        button { width: 100%; padding: 14px; background: var(--primary); border: none; border-radius: 14px; color: #fff; font-weight: 700; cursor: pointer; }
         
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th { font-size: 10px; color: #64748b; text-transform: uppercase; text-align: left; padding: 10px; }
-        td { padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 13px; }
-        
-        .filter-btn { padding: 5px 12px; border-radius: 6px; font-size: 11px; cursor: pointer; background: #1e293b; color: #94a3b8; }
-        .filter-btn.active { background: var(--primary); color: #fff; }
+        /* Table */
+        table { width: 100%; border-collapse: collapse; }
+        td { padding: 12px 5px; border-bottom: 1px solid #1e293b; font-size: 13px; }
+        .del-btn { color: #475569; background: none; border: none; cursor: pointer; font-size: 16px; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="balance-box">
-        <h1 style="font-size: 20px; color: var(--primary);">BrannTrack Pro</h1>
-        <div class="balance-val" id="total-saldo">Rp 0</div>
-        <div class="summary">
-            <div><small>MASUK</small><div id="sum-in" style="color:#10b981;">Rp 0</div></div>
-            <div><small>KELUAR</small><div id="sum-out" style="color:#f43f5e;">Rp 0</div></div>
-        </div>
-        <div class="wallets">
-            <div class="w-card">💵<br><strong id="w-cash">0</strong></div>
-            <div class="w-card">🏛️<br><strong id="w-bank">0</strong></div>
-            <div class="w-card">📱<br><strong id="w-wallet">0</strong></div>
+    <h1>BRANNTRACK PRO</h1>
+    
+    <div class="glass">
+        <div style="font-size: 11px; color: #64748b; text-align: center;">TOTAL SALDO BERSIH</div>
+        <div class="balance-main" id="total-saldo">Rp 0</div>
+        <div class="grid-wallets">
+            <div class="wallet-card" id="card-cash">💵<br><b id="w-cash">0</b></div>
+            <div class="wallet-card" id="card-bank">🏛️<br><b id="w-bank">0</b></div>
+            <div class="wallet-card" id="card-wallet">📱<br><b id="w-wallet">0</b></div>
         </div>
     </div>
 
-    <div class="card">
+    <div class="glass">
         <div id="lbl-goal-name" style="font-size: 12px; font-weight:600;">🎯 Target: Belum di-set</div>
-        <div class="goal-bar-bg"><div id="bar-goal" class="goal-bar-fill"></div></div>
-        <div style="display:flex; gap:5px;">
-            <input type="text" id="input-goal-name" placeholder="Target">
-            <input type="number" id="input-goal-target" placeholder="Rp">
+        <div class="progress-bar"><div id="bar-goal" class="progress-fill"></div></div>
+        <div style="display: flex; gap: 8px;">
+            <input type="text" id="input-goal-name" placeholder="Nama Target">
+            <input type="number" id="input-goal-target" placeholder="Nominal">
             <button onclick="setNewGoal()" style="width: 60px;">Set</button>
         </div>
     </div>
 
-    <div class="card">
-        <form id="tx-form" onsubmit="simpanData(event)">
+    <div class="glass">
+        <form onsubmit="simpanData(event)" id="form-tx">
             <select id="input-tipe"><option value="masuk">🟢 Masuk</option><option value="keluar">🔴 Keluar</option></select>
-            <select id="input-wadah"><option value="cash">Tunai</option><option value="bank">Bank</option><option value="wallet">E-Wallet</option></select>
-            <input type="number" id="input-nominal" placeholder="Nominal" required>
+            <select id="input-wadah"><option value="cash">💵 Tunai</option><option value="bank">🏛️ Bank</option><option value="wallet">📱 E-Wallet</option></select>
+            <input type="number" id="input-nominal" placeholder="Nominal (Rp)" required>
             <input type="text" id="input-ket" placeholder="Keterangan" required>
             <button type="submit">Konfirmasi Transaksi</button>
         </form>
-        <div class="btn-row">
-            <button onclick="eksporCSV()" style="background:#475569;">📥 CSV</button>
-            <button onclick="hapusSemua()" style="background:#991b1b;">Reset Data</button>
-        </div>
     </div>
 
-    <div class="card">
-        <div style="display:flex; gap:5px; margin-bottom:10px;">
-            <span class="filter-btn active" onclick="gantiFilter('all', this)">Semua</span>
-            <span class="filter-btn" onclick="gantiFilter('cash', this)">Tunai</span>
-            <span class="filter-btn" onclick="gantiFilter('bank', this)">Bank</span>
-            <span class="filter-btn" onclick="gantiFilter('wallet', this)">E-Wallet</span>
+    <div class="glass">
+        <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <h2 style="font-size: 14px;">Log Riwayat</h2>
+            <button onclick="hapusSemua()" style="width: auto; padding: 5px 10px; background: #333; font-size: 10px;">Reset Data</button>
         </div>
         <table>
-            <thead><tr><th>Waktu</th><th>Info</th><th>Nominal</th><th></th></tr></thead>
             <tbody id="tabel-body"></tbody>
         </table>
     </div>
@@ -96,7 +92,39 @@
 <script>
     let dataTransaksi = JSON.parse(localStorage.getItem('fintrack_pro_data')) || [];
     let dataGoal = JSON.parse(localStorage.getItem('fintrack_goal_pro')) || { name: "Target", target: 0 };
-    let filterAktif = 'all';
+
+    function renderUI() {
+        let total = 0, saldo = { cash: 0, bank: 0, wallet: 0 };
+        const tbody = document.getElementById('tabel-body');
+        tbody.innerHTML = '';
+        
+        dataTransaksi.slice().reverse().forEach((tx, i) => {
+            const val = (tx.tipe === 'masuk' ? tx.nominal : -tx.nominal);
+            total += val;
+            saldo[tx.wadah] += val;
+
+            tbody.innerHTML += `<tr>
+                <td style="color:#64748b">${tx.date}</td>
+                <td>${tx.ket}</td>
+                <td style="color:${tx.tipe==='masuk'?'var(--success)':'var(--danger)'}">${tx.tipe==='masuk'?'+':'-'}${tx.nominal.toLocaleString()}</td>
+                <td><button class="del-btn" onclick="hapusSatu(${dataTransaksi.length - 1 - i})">×</button></td>
+            </tr>`;
+        });
+
+        document.getElementById('total-saldo').innerText = "Rp " + total.toLocaleString();
+        document.getElementById('w-cash').innerText = saldo.cash.toLocaleString();
+        document.getElementById('w-bank').innerText = saldo.bank.toLocaleString();
+        document.getElementById('w-wallet').innerText = saldo.wallet.toLocaleString();
+        
+        // Indikator saldo kritis (warna merah)
+        document.getElementById('card-cash').classList.toggle('low', saldo.cash < 50000);
+        document.getElementById('card-bank').classList.toggle('low', saldo.bank < 50000);
+        document.getElementById('card-wallet').classList.toggle('low', saldo.wallet < 50000);
+
+        let pct = dataGoal.target > 0 ? Math.min(100, (total / dataGoal.target) * 100) : 0;
+        document.getElementById('bar-goal').style.width = pct + "%";
+        document.getElementById('lbl-goal-name').innerText = "🎯 Target: " + dataGoal.name;
+    }
 
     function simpanData(e) {
         e.preventDefault();
@@ -104,49 +132,15 @@
         const tipe = document.getElementById('input-tipe').value;
         const wadah = document.getElementById('input-wadah').value;
         
-        let saldoWadah = { cash: 0, bank: 0, wallet: 0 };
-        dataTransaksi.forEach(t => {
-            if(t.tipe === 'masuk') saldoWadah[t.wadah] += t.nominal;
-            else saldoWadah[t.wadah] -= t.nominal;
-        });
-
-        if (tipe === 'keluar' && nominal > saldoWadah[wadah]) return alert("⚠️ Saldo tidak cukup!");
+        let saldo = { cash: 0, bank: 0, wallet: 0 };
+        dataTransaksi.forEach(t => saldo[t.wadah] += (t.tipe === 'masuk' ? t.nominal : -t.nominal));
+        
+        if (tipe === 'keluar' && nominal > saldo[wadah]) return alert("⚠️ Saldo " + wadah + " tidak cukup!");
 
         dataTransaksi.push({ tipe, wadah, nominal, ket: document.getElementById('input-ket').value, date: new Date().toLocaleDateString('id-ID') });
         localStorage.setItem('fintrack_pro_data', JSON.stringify(dataTransaksi));
+        document.getElementById('form-tx').reset();
         renderUI();
-    }
-
-    function renderUI() {
-        let total = 0, sumIn = 0, sumOut = 0, saldo = { cash: 0, bank: 0, wallet: 0 };
-        const tbody = document.getElementById('tabel-body');
-        tbody.innerHTML = '';
-        
-        dataTransaksi.slice().reverse().forEach((tx, i) => {
-            total += (tx.tipe === 'masuk' ? tx.nominal : -tx.nominal);
-            if(tx.tipe === 'masuk') { sumIn += tx.nominal; saldo[tx.wadah] += tx.nominal; }
-            else { sumOut += tx.nominal; saldo[tx.wadah] -= tx.nominal; }
-
-            if (filterAktif === 'all' || tx.wadah === filterAktif) {
-                tbody.innerHTML += `<tr>
-                    <td style="color:#64748b">${tx.date}</td>
-                    <td>${tx.ket}</td>
-                    <td class="${tx.tipe === 'masuk'?'text-green':'text-red'}">${tx.tipe==='masuk'?'+':'-'} ${tx.nominal.toLocaleString()}</td>
-                    <td><button onclick="hapusSatu(${dataTransaksi.length - 1 - i})" style="padding:2px 5px; background:none; color:#f43f5e;">x</button></td>
-                </tr>`;
-            }
-        });
-
-        document.getElementById('total-saldo').innerText = "Rp " + total.toLocaleString();
-        document.getElementById('sum-in').innerText = "Rp " + sumIn.toLocaleString();
-        document.getElementById('sum-out').innerText = "Rp " + sumOut.toLocaleString();
-        document.getElementById('w-cash').innerText = saldo.cash.toLocaleString();
-        document.getElementById('w-bank').innerText = saldo.bank.toLocaleString();
-        document.getElementById('w-wallet').innerText = saldo.wallet.toLocaleString();
-        
-        let pct = dataGoal.target > 0 ? Math.min(100, (total / dataGoal.target) * 100) : 0;
-        document.getElementById('bar-goal').style.width = pct + "%";
-        document.getElementById('lbl-goal-name').innerText = "🎯 Target: " + dataGoal.name;
     }
 
     function setNewGoal() {
@@ -155,9 +149,7 @@
         renderUI();
     }
     function hapusSatu(i) { dataTransaksi.splice(i, 1); localStorage.setItem('fintrack_pro_data', JSON.stringify(dataTransaksi)); renderUI(); }
-    function hapusSemua() { if(confirm("Yakin reset semua data?")) { dataTransaksi = []; localStorage.setItem('fintrack_pro_data', '[]'); renderUI(); } }
-    function eksporCSV() { /* Logika ekspor CSV tetap ada */ alert("Fitur Ekspor aktif!"); }
-    function gantiFilter(f, el) { filterAktif = f; document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active')); el.classList.add('active'); renderUI(); }
+    function hapusSemua() { if(confirm("Yakin ingin menghapus semua data?")) { dataTransaksi = []; localStorage.setItem('fintrack_pro_data', '[]'); renderUI(); } }
     
     renderUI();
 </script>
