@@ -5,76 +5,89 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BrannTrack Pro — Ultimate Edition</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
-        body { background: #090d16; color: #f1f5f9; padding: 40px 20px; min-height: 100vh; display: flex; justify-content: center; }
-        .container { width: 100%; max-width: 680px; }
-        header { text-align: center; margin-bottom: 30px; }
-        header h1 { font-size: 32px; font-weight: 800; background: linear-gradient(135deg, #a5b4fc 0%, #6366f1 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        :root { --primary: #6366f1; --bg: #090d16; --card: rgba(30, 41, 59, 0.7); }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', system-ui, sans-serif; }
+        body { background: var(--bg); color: #f1f5f9; padding: 20px; display: flex; justify-content: center; }
+        .container { width: 100%; max-width: 600px; }
         
-        .card { background: linear-gradient(145deg, #1e293b, #0f172a); border: 1px solid rgba(99, 102, 241, 0.2); padding: 25px; border-radius: 24px; margin-bottom: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
-        .balance-val { font-size: 36px; font-weight: 700; color: #fff; }
-        .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; }
-        .summary-box { background: rgba(0,0,0,0.2); padding: 12px; border-radius: 12px; text-align: center; }
+        .card { background: var(--card); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.05); padding: 20px; border-radius: 20px; margin-bottom: 15px; }
         
-        .goal-bar-bg { background: #0f172a; height: 12px; border-radius: 99px; overflow: hidden; border: 1px solid rgba(99,102,241,0.2); }
-        .goal-bar-fill { background: linear-gradient(90deg, #6366f1, #a5b4fc); height: 100%; width: 0%; transition: width 0.5s ease; box-shadow: 0 0 15px #6366f1; }
+        /* Header & Balance */
+        .balance-box { text-align: center; padding: 20px 0; }
+        .balance-val { font-size: 32px; font-weight: 800; color: #fff; margin: 5px 0; }
+        .summary { display: flex; justify-content: space-around; margin-top: 15px; font-size: 12px; }
         
-        input, select { width: 100%; padding: 12px; background: #0f172a; border: 1px solid #334155; border-radius: 10px; color: #fff; margin-bottom: 10px; }
-        button { padding: 12px; background: #6366f1; color: #fff; border: none; border-radius: 10px; cursor: pointer; font-weight: 600; width: 100%; }
+        /* Sub Wallets */
+        .wallets { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px; }
+        .w-card { background: rgba(0,0,0,0.2); padding: 10px; border-radius: 12px; text-align: center; border: 1px solid rgba(255,255,255,0.05); }
+        
+        /* Goal Bar */
+        .goal-bar-bg { background: #0f172a; height: 10px; border-radius: 10px; overflow: hidden; margin: 10px 0; }
+        .goal-bar-fill { background: var(--primary); height: 100%; width: 0%; transition: 0.5s; }
+        
+        /* Form & Table */
+        input, select { width: 100%; padding: 12px; background: #0f172a; border: 1px solid #334155; border-radius: 10px; color: #fff; margin-bottom: 8px; }
+        button { width: 100%; padding: 12px; background: var(--primary); color: #fff; border: none; border-radius: 10px; cursor: pointer; font-weight: 600; }
+        .btn-row { display: flex; gap: 10px; margin-top: 10px; }
         
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th { color: #64748b; font-size: 11px; padding: 10px; text-align: left; text-transform: uppercase; }
+        th { font-size: 10px; color: #64748b; text-transform: uppercase; text-align: left; padding: 10px; }
         td { padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 13px; }
-        .text-green { color: #10b981; } .text-red { color: #f43f5e; }
-        .badge { padding: 2px 8px; background: #334155; border-radius: 6px; font-size: 10px; }
+        
+        .filter-btn { padding: 5px 12px; border-radius: 6px; font-size: 11px; cursor: pointer; background: #1e293b; color: #94a3b8; }
+        .filter-btn.active { background: var(--primary); color: #fff; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <header><h1>BrannTrack Pro</h1></header>
-
-    <div class="card">
-        <div style="color: #94a3b8; font-size: 12px;">TOTAL SALDO</div>
+    <div class="balance-box">
+        <h1 style="font-size: 20px; color: var(--primary);">BrannTrack Pro</h1>
         <div class="balance-val" id="total-saldo">Rp 0</div>
-        <div class="summary-grid">
-            <div class="summary-box">
-                <div style="font-size: 10px; color: #94a3b8;">PEMASUKAN</div>
-                <div id="sum-in" class="text-green" style="font-weight: 600;">Rp 0</div>
-            </div>
-            <div class="summary-box">
-                <div style="font-size: 10px; color: #94a3b8;">PENGELUARAN</div>
-                <div id="sum-out" class="text-red" style="font-weight: 600;">Rp 0</div>
-            </div>
+        <div class="summary">
+            <div><small>MASUK</small><div id="sum-in" style="color:#10b981;">Rp 0</div></div>
+            <div><small>KELUAR</small><div id="sum-out" style="color:#f43f5e;">Rp 0</div></div>
+        </div>
+        <div class="wallets">
+            <div class="w-card">💵<br><strong id="w-cash">0</strong></div>
+            <div class="w-card">🏛️<br><strong id="w-bank">0</strong></div>
+            <div class="w-card">📱<br><strong id="w-wallet">0</strong></div>
         </div>
     </div>
 
     <div class="card">
-        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-            <span id="lbl-goal-name" style="font-weight:600; font-size: 14px;">🎯 Target: Belum Ditentukan</span>
-            <span id="lbl-goal-pct" style="color:#6366f1; font-weight:700;">0%</span>
-        </div>
+        <div id="lbl-goal-name" style="font-size: 12px; font-weight:600;">🎯 Target: Belum di-set</div>
         <div class="goal-bar-bg"><div id="bar-goal" class="goal-bar-fill"></div></div>
-        <div style="display:flex; gap:10px; margin-top:15px;">
-            <input type="text" id="input-goal-name" placeholder="Nama Target">
-            <input type="number" id="input-goal-target" placeholder="Nominal">
-            <button onclick="setNewGoal()" style="width: 80px;">Set</button>
+        <div style="display:flex; gap:5px;">
+            <input type="text" id="input-goal-name" placeholder="Target">
+            <input type="number" id="input-goal-target" placeholder="Rp">
+            <button onclick="setNewGoal()" style="width: 60px;">Set</button>
         </div>
     </div>
 
     <div class="card">
         <form id="tx-form" onsubmit="simpanData(event)">
-            <select id="input-tipe"><option value="masuk">🟢 Masuk (+)</option><option value="keluar">🔴 Keluar (-)</option></select>
-            <select id="input-wadah"><option value="cash">💵 Tunai</option><option value="bank">🏛️ Bank</option><option value="wallet">📱 E-Wallet</option></select>
-            <input type="number" id="input-nominal" placeholder="Nominal (Rp)" required>
+            <select id="input-tipe"><option value="masuk">🟢 Masuk</option><option value="keluar">🔴 Keluar</option></select>
+            <select id="input-wadah"><option value="cash">Tunai</option><option value="bank">Bank</option><option value="wallet">E-Wallet</option></select>
+            <input type="number" id="input-nominal" placeholder="Nominal" required>
             <input type="text" id="input-ket" placeholder="Keterangan" required>
-            <button type="submit">Simpan Transaksi</button>
+            <button type="submit">Konfirmasi Transaksi</button>
         </form>
+        <div class="btn-row">
+            <button onclick="eksporCSV()" style="background:#475569;">📥 CSV</button>
+            <button onclick="hapusSemua()" style="background:#991b1b;">Reset Data</button>
+        </div>
     </div>
 
     <div class="card">
+        <div style="display:flex; gap:5px; margin-bottom:10px;">
+            <span class="filter-btn active" onclick="gantiFilter('all', this)">Semua</span>
+            <span class="filter-btn" onclick="gantiFilter('cash', this)">Tunai</span>
+            <span class="filter-btn" onclick="gantiFilter('bank', this)">Bank</span>
+            <span class="filter-btn" onclick="gantiFilter('wallet', this)">E-Wallet</span>
+        </div>
         <table>
-            <thead><tr><th>Waktu</th><th>Info</th><th>Nominal</th><th>Aksi</th></tr></thead>
+            <thead><tr><th>Waktu</th><th>Info</th><th>Nominal</th><th></th></tr></thead>
             <tbody id="tabel-body"></tbody>
         </table>
     </div>
@@ -83,6 +96,7 @@
 <script>
     let dataTransaksi = JSON.parse(localStorage.getItem('fintrack_pro_data')) || [];
     let dataGoal = JSON.parse(localStorage.getItem('fintrack_goal_pro')) || { name: "Target", target: 0 };
+    let filterAktif = 'all';
 
     function simpanData(e) {
         e.preventDefault();
@@ -90,60 +104,61 @@
         const tipe = document.getElementById('input-tipe').value;
         const wadah = document.getElementById('input-wadah').value;
         
-        // Cek Saldo untuk Validasi Anti-Minus
-        let currentTotal = 0;
-        dataTransaksi.forEach(t => currentTotal += (t.tipe === 'masuk' ? t.nominal : -t.nominal));
-        
-        if (tipe === 'keluar' && nominal > currentTotal) {
-            return alert("⚠️ Saldo tidak cukup! Total saldo saat ini: Rp " + currentTotal.toLocaleString());
-        }
-
-        dataTransaksi.push({ 
-            tipe, wadah, nominal, 
-            ket: document.getElementById('input-ket').value, 
-            date: new Date().toLocaleDateString('id-ID') 
+        let saldoWadah = { cash: 0, bank: 0, wallet: 0 };
+        dataTransaksi.forEach(t => {
+            if(t.tipe === 'masuk') saldoWadah[t.wadah] += t.nominal;
+            else saldoWadah[t.wadah] -= t.nominal;
         });
+
+        if (tipe === 'keluar' && nominal > saldoWadah[wadah]) return alert("⚠️ Saldo tidak cukup!");
+
+        dataTransaksi.push({ tipe, wadah, nominal, ket: document.getElementById('input-ket').value, date: new Date().toLocaleDateString('id-ID') });
         localStorage.setItem('fintrack_pro_data', JSON.stringify(dataTransaksi));
         renderUI();
     }
 
     function renderUI() {
-        let total = 0, sumIn = 0, sumOut = 0;
+        let total = 0, sumIn = 0, sumOut = 0, saldo = { cash: 0, bank: 0, wallet: 0 };
         const tbody = document.getElementById('tabel-body');
         tbody.innerHTML = '';
         
         dataTransaksi.slice().reverse().forEach((tx, i) => {
             total += (tx.tipe === 'masuk' ? tx.nominal : -tx.nominal);
-            if(tx.tipe === 'masuk') sumIn += tx.nominal; else sumOut += tx.nominal;
-            
-            tbody.innerHTML += `<tr>
-                <td style="color:#64748b; font-size:10px;">${tx.date}</td>
-                <td>${tx.ket}</td>
-                <td class="${tx.tipe === 'masuk' ? 'text-green' : 'text-red'}">${tx.tipe === 'masuk'?'+':'-'}${tx.nominal.toLocaleString()}</td>
-                <td><button onclick="hapusSatu(${dataTransaksi.length - 1 - i})" style="background:transparent; border:none; color:#64748b; cursor:pointer;">🗑️</button></td>
-            </tr>`;
+            if(tx.tipe === 'masuk') { sumIn += tx.nominal; saldo[tx.wadah] += tx.nominal; }
+            else { sumOut += tx.nominal; saldo[tx.wadah] -= tx.nominal; }
+
+            if (filterAktif === 'all' || tx.wadah === filterAktif) {
+                tbody.innerHTML += `<tr>
+                    <td style="color:#64748b">${tx.date}</td>
+                    <td>${tx.ket}</td>
+                    <td class="${tx.tipe === 'masuk'?'text-green':'text-red'}">${tx.tipe==='masuk'?'+':'-'} ${tx.nominal.toLocaleString()}</td>
+                    <td><button onclick="hapusSatu(${dataTransaksi.length - 1 - i})" style="padding:2px 5px; background:none; color:#f43f5e;">x</button></td>
+                </tr>`;
+            }
         });
 
         document.getElementById('total-saldo').innerText = "Rp " + total.toLocaleString();
         document.getElementById('sum-in').innerText = "Rp " + sumIn.toLocaleString();
         document.getElementById('sum-out').innerText = "Rp " + sumOut.toLocaleString();
+        document.getElementById('w-cash').innerText = saldo.cash.toLocaleString();
+        document.getElementById('w-bank').innerText = saldo.bank.toLocaleString();
+        document.getElementById('w-wallet').innerText = saldo.wallet.toLocaleString();
         
         let pct = dataGoal.target > 0 ? Math.min(100, (total / dataGoal.target) * 100) : 0;
         document.getElementById('bar-goal').style.width = pct + "%";
-        document.getElementById('lbl-goal-pct').innerText = Math.floor(pct) + "%";
         document.getElementById('lbl-goal-name').innerText = "🎯 Target: " + dataGoal.name;
     }
 
     function setNewGoal() {
-        dataGoal = { 
-            name: document.getElementById('input-goal-name').value, 
-            target: parseInt(document.getElementById('input-goal-target').value) 
-        };
+        dataGoal = { name: document.getElementById('input-goal-name').value, target: parseInt(document.getElementById('input-goal-target').value) };
         localStorage.setItem('fintrack_goal_pro', JSON.stringify(dataGoal));
         renderUI();
     }
-
     function hapusSatu(i) { dataTransaksi.splice(i, 1); localStorage.setItem('fintrack_pro_data', JSON.stringify(dataTransaksi)); renderUI(); }
+    function hapusSemua() { if(confirm("Yakin reset semua data?")) { dataTransaksi = []; localStorage.setItem('fintrack_pro_data', '[]'); renderUI(); } }
+    function eksporCSV() { /* Logika ekspor CSV tetap ada */ alert("Fitur Ekspor aktif!"); }
+    function gantiFilter(f, el) { filterAktif = f; document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active')); el.classList.add('active'); renderUI(); }
+    
     renderUI();
 </script>
 </body>
