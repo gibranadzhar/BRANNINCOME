@@ -127,7 +127,7 @@
             <button type="submit" id="btn-submit">Konfirmasi Transaksi</button>
             <button type="button" onclick="batalEdit()" id="btn-batal-edit" class="btn-secondary" style="display:none;">Batal Edit</button>
         </form>
-        <div style="display:flex; gap:8px; margin-top:10px;">
+        <div style="display:flex; gap:8px; margin-top:10px; flex-wrap:wrap;">
             <button onclick="eksporCSV()" class="btn-secondary">📥 CSV</button>
             <button onclick="eksporJSON()" class="btn-secondary">💾 Backup JSON</button>
             <button onclick="importJSON()" class="btn-secondary">📤 Import JSON</button>
@@ -158,196 +158,187 @@
 </div>
 
 <script>
-    const STORAGE_KEY = 'fintrack_ultimate_v2';
-    const GOAL_KEY = 'fintrack_goal_v2';
-    const SNAPSHOT_KEY = 'fintrack_snapshot_v2';
-    const LAST_MONTH_KEY = 'fintrack_lastmonth_v2';
-    let dataTransaksi = [];
-    let dataGoal = { name: "Belum Ditentukan", target: 0 };
-    let filterAktif = 'all';
-    let chartInstance = null;
+    (function() {
+        const STORAGE_KEY = 'fintrack_ultimate_v2';
+        const GOAL_KEY = 'fintrack_goal_v2';
+        const SNAPSHOT_KEY = 'fintrack_snapshot_v2';
+        const LAST_MONTH_KEY = 'fintrack_lastmonth_v2';
+        let dataTransaksi = [];
+        let dataGoal = { name: "Belum Ditentukan", target: 0 };
+        let filterAktif = 'all';
+        let chartInstance = null;
 
-    try {
-        dataTransaksi = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-        if(!Array.isArray(dataTransaksi)) dataTransaksi = [];
-        dataGoal = JSON.parse(localStorage.getItem(GOAL_KEY)) || { name: "Belum Ditentukan", target: 0 };
-    } catch(e) { dataTransaksi = []; dataGoal = { name: "Belum Ditentukan", target: 0 }; }
+        try {
+            dataTransaksi = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+            if(!Array.isArray(dataTransaksi)) dataTransaksi = [];
+            dataGoal = JSON.parse(localStorage.getItem(GOAL_KEY)) || { name: "Belum Ditentukan", target: 0 };
+        } catch(e) { dataTransaksi = []; dataGoal = { name: "Belum Ditentukan", target: 0 }; }
 
-    const formatRupiah = (angka) => "Rp " + Number(angka).toLocaleString('id-ID');
-    const sekarang = () => new Date();
-    const bulanIni = () => `${sekarang().getFullYear()}-${String(sekarang().getMonth()+1).padStart(2,'0')}`;
-    const timestamp = () => sekarang().toISOString();
+        const formatRupiah = (angka) => "Rp " + Number(angka).toLocaleString('id-ID');
+        const sekarang = () => new Date();
+        const bulanIni = () => `${sekarang().getFullYear()}-${String(sekarang().getMonth()+1).padStart(2,'0')}`;
+        const timestamp = () => sekarang().toISOString();
 
-    function simpanData(e) {
-        e.preventDefault();
-        const tipe = document.getElementById('input-tipe').value;
-        const wadah = document.getElementById('input-wadah').value;
-        const nominal = parseInt(document.getElementById('input-nominal').value) || 0;
-        const ket = document.getElementById('input-ket').value;
-        const kategori = document.getElementById('input-kategori').value;
-        const editIndex = parseInt(document.getElementById('edit-index').value);
-        if (nominal <= 0) return alert("Nominal harus > 0");
-        const tx = { tipe, wadah, nominal, ket, kategori, date: timestamp() };
-        if (editIndex >= 0 && editIndex < dataTransaksi.length) {
-            dataTransaksi[editIndex] = tx;
+        window.simpanData = function(e) {
+            e.preventDefault();
+            const tipe = document.getElementById('input-tipe').value;
+            const wadah = document.getElementById('input-wadah').value;
+            const nominal = parseInt(document.getElementById('input-nominal').value) || 0;
+            const ket = document.getElementById('input-ket').value;
+            const kategori = document.getElementById('input-kategori').value;
+            const editIndex = parseInt(document.getElementById('edit-index').value);
+            if (nominal <= 0) return alert("Nominal harus > 0");
+            const tx = { tipe, wadah, nominal, ket, kategori, date: timestamp() };
+            if (editIndex >= 0 && editIndex < dataTransaksi.length) {
+                dataTransaksi[editIndex] = tx;
+                document.getElementById('edit-index').value = '-1';
+                document.getElementById('btn-submit').innerText = 'Konfirmasi Transaksi';
+                document.getElementById('btn-batal-edit').style.display = 'none';
+            } else {
+                dataTransaksi.push(tx);
+            }
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(dataTransaksi));
+            document.getElementById('tx-form').reset();
+            simpanSnapshotHarian();
+            renderUI();
+        };
+
+        window.editTransaksi = function(index) {
+            const tx = dataTransaksi[index];
+            document.getElementById('input-tipe').value = tx.tipe;
+            document.getElementById('input-wadah').value = tx.wadah;
+            document.getElementById('input-kategori').value = tx.kategori || 'Lainnya';
+            document.getElementById('input-nominal').value = tx.nominal;
+            document.getElementById('input-ket').value = tx.ket;
+            document.getElementById('edit-index').value = index;
+            document.getElementById('btn-submit').innerText = 'Update Transaksi';
+            document.getElementById('btn-batal-edit').style.display = 'inline-block';
+        };
+
+        window.batalEdit = function() {
+            document.getElementById('tx-form').reset();
             document.getElementById('edit-index').value = '-1';
             document.getElementById('btn-submit').innerText = 'Konfirmasi Transaksi';
             document.getElementById('btn-batal-edit').style.display = 'none';
-        } else {
-            dataTransaksi.push(tx);
-        }
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(dataTransaksi));
-        document.getElementById('tx-form').reset();
-        simpanSnapshotHarian();
-        renderUI();
-    }
-
-    function editTransaksi(index) {
-        const tx = dataTransaksi[index];
-        document.getElementById('input-tipe').value = tx.tipe;
-        document.getElementById('input-wadah').value = tx.wadah;
-        document.getElementById('input-kategori').value = tx.kategori || 'Lainnya';
-        document.getElementById('input-nominal').value = tx.nominal;
-        document.getElementById('input-ket').value = tx.ket;
-        document.getElementById('edit-index').value = index;
-        document.getElementById('btn-submit').innerText = 'Update Transaksi';
-        document.getElementById('btn-batal-edit').style.display = 'inline-block';
-    }
-
-    function batalEdit() {
-        document.getElementById('tx-form').reset();
-        document.getElementById('edit-index').value = '-1';
-        document.getElementById('btn-submit').innerText = 'Konfirmasi Transaksi';
-        document.getElementById('btn-batal-edit').style.display = 'none';
-    }
-
-    function hapusTransaksi(index) {
-        if(confirm('Hapus transaksi ini?')) {
-            dataTransaksi.splice(index, 1);
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(dataTransaksi));
-            renderUI();
-        }
-    }
-
-    function setNewGoal() {
-        const name = document.getElementById('input-goal-name').value;
-        const target = parseInt(document.getElementById('input-goal-target').value) || 0;
-        if(!name || target <= 0) return alert("Isi target dengan benar");
-        dataGoal = { name, target };
-        localStorage.setItem(GOAL_KEY, JSON.stringify(dataGoal));
-        document.getElementById('input-goal-name').value = '';
-        document.getElementById('input-goal-target').value = '';
-        renderUI();
-    }
-
-    function hapusGoal() {
-        dataGoal = { name: "Belum Ditentukan", target: 0 };
-        localStorage.setItem(GOAL_KEY, JSON.stringify(dataGoal));
-        renderUI();
-    }
-
-    function gantiFilter(tipe, el) {
-        filterAktif = tipe;
-        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-        el.classList.add('active');
-        renderUI();
-    }
-
-    function eksporCSV() {
-        if(!dataTransaksi.length) return alert("Tidak ada data");
-        let csv = "Wadah,Tipe,Kategori,Keterangan,Nominal,Tanggal\n";
-        dataTransaksi.forEach(tx => {
-            csv += `"${tx.wadah}","${tx.tipe}","${tx.kategori||''}","${tx.ket.replace(/"/g,'""')}",${tx.nominal},"${tx.date}"\n`;
-        });
-        downloadFile(csv, 'Laporan_FinTrack.csv', 'text/csv');
-    }
-
-    function eksporJSON() {
-        const data = { transaksi: dataTransaksi, goal: dataGoal };
-        downloadFile(JSON.stringify(data, null, 2), 'Backup_FinTrack.json', 'application/json');
-    }
-
-    function importJSON() {
-        const input = document.createElement('input');
-        input.type = 'file';
-        input.accept = '.json';
-        input.onchange = (e) => {
-            const file = e.target.files[0];
-            if(!file) return;
-            const reader = new FileReader();
-            reader.onload = (ev) => {
-                try {
-                    const imported = JSON.parse(ev.target.result);
-                    if(imported.transaksi && Array.isArray(imported.transaksi)) {
-                        dataTransaksi = imported.transaksi;
-                        dataGoal = imported.goal || { name:"Belum Ditentukan", target:0 };
-                        localStorage.setItem(STORAGE_KEY, JSON.stringify(dataTransaksi));
-                        localStorage.setItem(GOAL_KEY, JSON.stringify(dataGoal));
-                        simpanSnapshotHarian();
-                        renderUI();
-                        alert('Data berhasil diimpor!');
-                    } else throw new Error('Format tidak valid');
-                } catch(err) { alert('Gagal import: ' + err.message); }
-            };
-            reader.readAsText(file);
         };
-        input.click();
-    }
 
-    function hapusSemua() {
-        if(confirm('Hapus SEMUA data?')) {
-            dataTransaksi = [];
-            dataGoal = { name:"Belum Ditentukan", target:0 };
-            localStorage.setItem(STORAGE_KEY, '[]');
+        window.hapusTransaksi = function(index) {
+            if(confirm('Hapus transaksi ini?')) {
+                dataTransaksi.splice(index, 1);
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(dataTransaksi));
+                renderUI();
+            }
+        };
+
+        window.setNewGoal = function() {
+            const name = document.getElementById('input-goal-name').value;
+            const target = parseInt(document.getElementById('input-goal-target').value) || 0;
+            if(!name || target <= 0) return alert("Isi target dengan benar");
+            dataGoal = { name, target };
             localStorage.setItem(GOAL_KEY, JSON.stringify(dataGoal));
-            localStorage.removeItem(SNAPSHOT_KEY);
+            document.getElementById('input-goal-name').value = '';
+            document.getElementById('input-goal-target').value = '';
             renderUI();
+        };
+
+        window.hapusGoal = function() {
+            dataGoal = { name: "Belum Ditentukan", target: 0 };
+            localStorage.setItem(GOAL_KEY, JSON.stringify(dataGoal));
+            renderUI();
+        };
+
+        window.gantiFilter = function(tipe, el) {
+            filterAktif = tipe;
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            el.classList.add('active');
+            renderUI();
+        };
+
+        window.eksporCSV = function() {
+            if(!dataTransaksi.length) return alert("Tidak ada data");
+            let csv = "Wadah,Tipe,Kategori,Keterangan,Nominal,Tanggal\n";
+            dataTransaksi.forEach(tx => {
+                csv += `"${tx.wadah}","${tx.tipe}","${tx.kategori||''}","${tx.ket.replace(/"/g,'""')}",${tx.nominal},"${tx.date}"\n`;
+            });
+            downloadFile(csv, 'Laporan_FinTrack.csv', 'text/csv');
+        };
+
+        window.eksporJSON = function() {
+            const data = { transaksi: dataTransaksi, goal: dataGoal };
+            downloadFile(JSON.stringify(data, null, 2), 'Backup_FinTrack.json', 'application/json');
+        };
+
+        window.importJSON = function() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                if(!file) return;
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    try {
+                        const imported = JSON.parse(ev.target.result);
+                        if(imported.transaksi && Array.isArray(imported.transaksi)) {
+                            dataTransaksi = imported.transaksi;
+                            dataGoal = imported.goal || { name:"Belum Ditentukan", target:0 };
+                            localStorage.setItem(STORAGE_KEY, JSON.stringify(dataTransaksi));
+                            localStorage.setItem(GOAL_KEY, JSON.stringify(dataGoal));
+                            simpanSnapshotHarian();
+                            renderUI();
+                            alert('Data berhasil diimpor!');
+                        } else throw new Error('Format tidak valid');
+                    } catch(err) { alert('Gagal import: ' + err.message); }
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        };
+
+        window.hapusSemua = function() {
+            if(confirm('Hapus SEMUA data?')) {
+                dataTransaksi = [];
+                dataGoal = { name:"Belum Ditentukan", target:0 };
+                localStorage.setItem(STORAGE_KEY, '[]');
+                localStorage.setItem(GOAL_KEY, JSON.stringify(dataGoal));
+                localStorage.removeItem(SNAPSHOT_KEY);
+                renderUI();
+            }
+        };
+
+        function downloadFile(content, filename, mime) {
+            const blob = new Blob([content], { type: mime });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url; a.download = filename;
+            document.body.appendChild(a); a.click();
+            document.body.removeChild(a);
         }
-    }
 
-    function downloadFile(content, filename, mime) {
-        const blob = new Blob([content], { type: mime });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url; a.download = filename;
-        document.body.appendChild(a); a.click();
-        document.body.removeChild(a);
-    }
+        function simpanSnapshotHarian() {
+            const today = new Date().toISOString().split('T')[0];
+            let snapshots = JSON.parse(localStorage.getItem(SNAPSHOT_KEY)) || {};
+            let total = 0;
+            dataTransaksi.forEach(tx => {
+                total += tx.tipe==='masuk' ? tx.nominal : -tx.nominal;
+            });
+            snapshots[today] = total;
+            localStorage.setItem(SNAPSHOT_KEY, JSON.stringify(snapshots));
+        }
 
-    function simpanSnapshotHarian() {
-        const today = new Date().toISOString().split('T')[0];
-        let snapshots = JSON.parse(localStorage.getItem(SNAPSHOT_KEY)) || {};
-        let total = 0;
-        dataTransaksi.forEach(tx => {
-            total += tx.tipe==='masuk' ? tx.nominal : -tx.nominal;
-        });
-        snapshots[today] = total;
-        localStorage.setItem(SNAPSHOT_KEY, JSON.stringify(snapshots));
-    }
+        function renderUI() {
+            try {
+                const searchText = document.getElementById('search-text')?.value.toLowerCase() || '';
+                const startDate = document.getElementById('filter-start')?.value || '';
+                const endDate = document.getElementById('filter-end')?.value || '';
 
-    function renderUI() {
-        const searchText = document.getElementById('search-text')?.value.toLowerCase() || '';
-        const startDate = document.getElementById('filter-start')?.value || '';
-        const endDate = document.getElementById('filter-end')?.value || '';
+                let filtered = [...dataTransaksi];
+                if (filterAktif !== 'all') filtered = filtered.filter(tx => tx.wadah === filterAktif);
+                if (searchText) filtered = filtered.filter(tx => tx.ket.toLowerCase().includes(searchText) || (tx.kategori||'').toLowerCase().includes(searchText));
+                if (startDate) filtered = filtered.filter(tx => tx.date >= startDate);
+                if (endDate) filtered = filtered.filter(tx => tx.date <= endDate + 'T23:59:59');
 
-        let filtered = [...dataTransaksi];
-        if (filterAktif !== 'all') filtered = filtered.filter(tx => tx.wadah === filterAktif);
-        if (searchText) filtered = filtered.filter(tx => tx.ket.toLowerCase().includes(searchText) || (tx.kategori||'').toLowerCase().includes(searchText));
-        if (startDate) filtered = filtered.filter(tx => tx.date >= startDate);
-        if (endDate) filtered = filtered.filter(tx => tx.date <= endDate + 'T23:59:59');
-
-        let totalSemua = 0, saldoPerWadah = { cash:0, bank:0, wallet:0 };
-        dataTransaksi.forEach(tx => {
-            let n = Number(tx.nominal)||0;
-            if(tx.tipe==='masuk') { totalSemua += n; saldoPerWadah[tx.wadah] += n; }
-            else { totalSemua -= n; saldoPerWadah[tx.wadah] -= n; }
-        });
-
-        document.getElementById('total-saldo').innerText = formatRupiah(totalSemua);
-        document.getElementById('w-cash').innerText = formatRupiah(saldoPerWadah.cash);
-        document.getElementById('w-bank').innerText = formatRupiah(saldoPerWadah.bank);
-        document.getElementById('w-wallet').innerText = formatRupiah(saldoPerWadah.wallet);
-        let absTotal = Math.abs(saldoPerWadah.cash)+Math.abs(saldoPerWadah.bank)+Math.abs(saldoPerWadah.wallet) || 1;
-        document.getElementById('bar-cash').style.width = (Math.max(0,saldoPerWadah.cash)/absTotal*100)+'%';
-        document.getElementById('bar-bank').style.width = (Math.max(0,saldoPerWadah.bank)/absTotal*100)+'%';
-        document.getElementBy
+                let totalSemua = 0, saldoPerWadah = { cash:0, bank:0, wallet:0 };
+                dataTransaksi.forEach(tx => {
+                    let n = Number(tx.nominal)||0;
+                    if(tx.
