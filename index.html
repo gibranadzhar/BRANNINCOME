@@ -5,32 +5,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BrannTrack Pro — Premium Elite</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif; }
         body { background: #090d16; color: #f1f5f9; padding: 20px; min-height: 100vh; display: flex; justify-content: center; }
         .container { width: 100%; max-width: 680px; }
         
-        /* Glassmorphism Styles */
+        /* Glassmorphism Components */
         .glass { background: linear-gradient(135deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.7)); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 24px; padding: 25px; margin-bottom: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
         
         header { text-align: center; margin-bottom: 30px; }
         header h1 { font-size: 28px; font-weight: 800; background: linear-gradient(135deg, #a5b4fc, #6366f1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         
         .balance-val { font-size: 36px; font-weight: 700; color: #fff; margin: 10px 0; }
-        .sub-wallet { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .sub-wallet { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px; }
         .w-card { background: rgba(15, 23, 42, 0.5); padding: 15px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.03); font-size: 11px; color: #94a3b8; }
         .w-card strong { display: block; font-size: 14px; margin-top: 5px; color: #fff; }
         
+        /* Form & Inputs */
         input, select, button { width: 100%; padding: 14px; margin: 8px 0; border-radius: 12px; border: 1px solid #1e293b; background: #0f172a; color: white; outline: none; }
         button { background: linear-gradient(135deg, #6366f1, #4f46e5); cursor: pointer; font-weight: 600; border: none; transition: 0.3s; }
-        button:hover { opacity: 0.9; transform: translateY(-2px); }
+        .btn-danger { background: transparent; border: 1px solid rgba(239, 68, 68, 0.2); color: #ef4444; }
         
-        .text-green { color: #10b981; } .text-red { color: #f43f5e; }
+        /* Status & Table */
+        .text-green { color: #10b981; font-weight: 600; } 
+        .text-red { color: #f43f5e; font-weight: 600; }
         .text-minus { color: #f43f5e !important; }
         .w-card-minus { border: 1px solid #f43f5e !important; }
         
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         th { color: #64748b; text-transform: uppercase; font-size: 10px; text-align: left; padding: 10px; }
         td { padding: 12px 10px; border-bottom: 1px solid rgba(255,255,255,0.03); font-size: 14px; }
+        .badge-wadah { background: rgba(255,255,255,0.05); padding: 4px 8px; border-radius: 6px; font-size: 10px; color: #94a3b8; }
     </style>
 </head>
 <body>
@@ -60,9 +64,10 @@
 
     <div class="glass">
         <table>
-            <thead><tr><th>Wadah</th><th>Ket</th><th>Nominal</th><th></th></tr></thead>
+            <thead><tr><th>Wadah</th><th>Ket</th><th>Nominal</th><th>Aksi</th></tr></thead>
             <tbody id="tabel-body"></tbody>
         </table>
+        <button onclick="hapusSemua()" class="btn-danger" style="margin-top:15px;">Reset Semua Data</button>
     </div>
 </div>
 
@@ -70,6 +75,7 @@
     const STORAGE_KEY = 'fintrack_elite_v1';
     let dataTransaksi = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
 
+    // Fitur: Auto-Format Rupiah saat mengetik
     const inputNominal = document.getElementById('input-nominal');
     inputNominal.addEventListener('input', (e) => {
         let val = e.target.value.replace(/\D/g, '');
@@ -86,8 +92,9 @@
         if (nominal <= 0) return alert("Masukkan nominal valid!");
         dataTransaksi.push({ tipe, wadah, nominal, ket });
         localStorage.setItem(STORAGE_KEY, JSON.stringify(dataTransaksi));
+        
         document.getElementById('tx-form').reset();
-        inputNominal.focus();
+        inputNominal.focus(); // Fitur: Auto-Focus
         renderUI();
     }
 
@@ -95,6 +102,14 @@
         if(confirm("Hapus transaksi ini?")) {
             dataTransaksi.splice(idx, 1);
             localStorage.setItem(STORAGE_KEY, JSON.stringify(dataTransaksi));
+            renderUI();
+        }
+    }
+
+    function hapusSemua() {
+        if(confirm("Hapus seluruh log?")) {
+            dataTransaksi = [];
+            localStorage.setItem(STORAGE_KEY, '[]');
             renderUI();
         }
     }
@@ -109,6 +124,7 @@
             else { total -= tx.nominal; sWadah[tx.wadah] -= tx.nominal; }
         });
 
+        // Fitur: Visual Warning (Saldo Merah jika Minus)
         ['cash', 'bank', 'wallet'].forEach(w => {
             const el = document.getElementById('w-' + w);
             const card = document.getElementById('card-' + w);
@@ -120,10 +136,10 @@
         dataTransaksi.slice().reverse().forEach((tx, i) => {
             const idx = dataTransaksi.length - 1 - i;
             tbody.innerHTML += `<tr>
-                <td style="font-size:10px;">${tx.wadah.toUpperCase()}</td>
+                <td><span class="badge-wadah">${tx.wadah.toUpperCase()}</span></td>
                 <td>${tx.ket}</td>
                 <td class="${tx.tipe === 'masuk' ? 'text-green' : 'text-red'}">${tx.tipe === 'masuk' ? '+' : '-'}${tx.nominal.toLocaleString('id-ID')}</td>
-                <td><button onclick="hapusSatu(${idx})" style="background:none; padding:5px; color:#64748b;">✕</button></td>
+                <td><button onclick="hapusSatu(${idx})" style="background:none; border:none; color:#64748b; cursor:pointer;">🗑️</button></td>
             </tr>`;
         });
         document.getElementById('total-saldo').innerText = "Rp " + total.toLocaleString('id-ID');
