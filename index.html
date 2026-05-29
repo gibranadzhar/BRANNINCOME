@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FinTrack Pro — Classic Edition</title>
+    <title>FinTrack Pro — Enhanced Classic Edition</title>
     <style>
         /* Reset & Base Premium Theme */
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif; }
@@ -16,11 +16,17 @@
         header p { font-size: 13px; color: #64748b; margin-top: 6px; letter-spacing: 1px; text-transform: uppercase; }
         
         /* Glassmorphic Balance Dashboard Card */
-        .main-box { background: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.7) 100%); border: 1px solid rgba(255, 255, 255, 0.06); padding: 30px; border-radius: 24px; margin-bottom: 25px; backdrop-filter: blur(12px); box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
+        .main-box { background: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.7) 100%); border: 1px solid rgba(255, 255, 255, 0.06); padding: 30px; border-radius: 24px; margin-bottom: 25px; backdrop-filter: blur(12px); box-shadow: 0 20px 40px rgba(0,0,0,0.3); transition: background 0.3s ease; }
         .balance-header { display: flex; justify-content: space-between; align-items: center; }
         .balance-title { font-size: 13px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
-        .balance-val { font-size: 38px; font-weight: 700; margin: 8px 0 20px 0; color: #ffffff; letter-spacing: -1px; }
+        .balance-val { font-size: 38px; font-weight: 700; margin: 8px 0 20px 0; color: #ffffff; letter-spacing: -1px; transition: color 0.3s ease; }
         
+        /* Gimmick Animasi Flash */
+        .flash-masuk { background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(15, 23, 42, 0.7) 100%) !important; }
+        .flash-masuk .balance-val { color: #10b981; }
+        .flash-keluar { background: linear-gradient(135deg, rgba(244, 63, 94, 0.15) 0%, rgba(15, 23, 42, 0.7) 100%) !important; }
+        .flash-keluar .balance-val { color: #f43f5e; }
+
         /* Sub Wallets Grid */
         .sub-wallet { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; border-top: 1px solid rgba(255, 255, 255, 0.05); padding-top: 20px; margin-bottom: 20px; }
         .w-card { background: rgba(15, 23, 42, 0.5); padding: 14px; border-radius: 14px; text-align: left; font-size: 12px; color: #94a3b8; border: 1px solid rgba(255, 255, 255, 0.03); }
@@ -79,18 +85,25 @@
         /* Typography Status Utility */
         .text-green { color: #10b981; font-weight: 600; }
         .text-red { color: #f43f5e; font-weight: 600; }
-        .badge-wadah { background: rgba(255,255,255,0.05); padding: 4px 8px; border-radius: 6px; font-size: 12px; color: #94a3b8; }
+        .badge-wadah { background: rgba(255,255,255,0.05); padding: 4px 8px; border-radius: 6px; font-size: 11px; color: #94a3b8; }
+        .text-date { font-size: 11px; color: #475569; display: block; margin-top: 2px; }
+        
+        /* Trash Button Style */
+        .btn-trash { background: transparent; color: #64748b; border: none; padding: 4px 8px; font-size: 14px; cursor: pointer; border-radius: 6px; transition: all 0.2s; box-shadow: none; width: auto; }
+        .btn-trash:hover { color: #ef4444; background: rgba(239, 68, 68, 0.1); transform: none; box-shadow: none; }
     </style>
 </head>
 <body>
 
     <div class="container">
+        <!-- Header Section -->
         <header>
             <h1>FinTrack Pro</h1>
             <p>Elite Premium Ledger Experience</p>
         </header>
 
-        <div class="main-box">
+        <!-- Financial Balance Cards & Segment Progress -->
+        <div id="main-dashboard" class="main-box">
             <div class="balance-header">
                 <span class="balance-title">Total Kompilasi Saldo</span>
             </div>
@@ -102,6 +115,7 @@
                 <div class="w-card" style="border-left: 3px solid #10b981;">📱 E-Wallet<strong id="w-wallet">Rp 0</strong></div>
             </div>
 
+            <!-- Visual Alokasi Bar -->
             <div class="progress-container">
                 <div id="bar-cash" class="progress-bar-segment bg-cash" style="width: 0%"></div>
                 <div id="bar-bank" class="progress-bar-segment bg-bank" style="width: 0%"></div>
@@ -109,6 +123,7 @@
             </div>
         </div>
 
+        <!-- Target Tabungan / Celengan Component -->
         <div class="goal-box">
             <div class="goal-header">
                 <div class="goal-title">🎯 Target Celengan: <span id="lbl-goal-name">Atur Target Tabungan</span></div>
@@ -124,6 +139,7 @@
             </div>
         </div>
 
+        <!-- Ledger Entry Form Component -->
         <div class="form-box">
             <h3><span>✦ Alokasikan Transaksi Baru</span></h3>
             <form id="tx-form" onsubmit="simpanData(event)" class="form-group">
@@ -149,6 +165,7 @@
             </div>
         </div>
 
+        <!-- Master Ledger Table & Filters -->
         <div class="table-box">
             <h3><span>✦ Log Alur Alokasi Riwayat</span></h3>
             
@@ -166,6 +183,7 @@
                             <th>Alokasi</th>
                             <th>Keterangan</th>
                             <th style="text-align: right;">Nominal Mutasi</th>
+                            <th style="text-align: center; width: 50px;">Aksi</th>
                         </tr>
                     </thead>
                     <tbody id="tabel-body"></tbody>
@@ -206,11 +224,41 @@
 
             if (nominal <= 0) return alert("Harap masukkan nilai dana yang valid!");
 
-            dataTransaksi.push({ tipe, wadah, nominal, ket });
+            // Fitur 2: Generate Tanggal & Waktu Otomatis secara lokal
+            const sekarang = new Date();
+            const opsiTanggal = { day: 'numeric', month: 'short' };
+            const teksTanggal = sekarang.toLocaleDateString('id-ID', opsiTanggal);
+            const teksJam = sekarang.toTimeString().split(' ')[0].substring(0, 5);
+            const stringWaktu = `${teksTanggal}, ${teksJam}`;
+
+            dataTransaksi.push({ tipe, wadah, nominal, ket, waktu: stringWaktu });
             localStorage.setItem(STORAGE_KEY, JSON.stringify(dataTransaksi));
             
             document.getElementById('tx-form').reset();
             renderUI();
+            triggerFlashAnim(tipe);
+        }
+
+        // Fitur 3: Animasi Flash Ringan pada Dashboard
+        function triggerFlashAnim(tipe) {
+            const box = document.getElementById('main-dashboard');
+            if(!box) return;
+
+            const kelasFlash = (tipe === 'masuk') ? 'flash-masuk' : 'flash-keluar';
+            box.classList.add(kelasFlash);
+
+            setTimeout(() => {
+                box.classList.remove(kelasFlash);
+            }, 400);
+        }
+
+        // Fitur 1: Fungsi Hapus Satu Transaksi Berdasarkan Index Asli
+        function hapusSatuTransaksi(indexAsli) {
+            if(confirm("Hapus catatan transaksi ini?")) {
+                dataTransaksi.splice(indexAsli, 1);
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(dataTransaksi));
+                renderUI();
+            }
         }
 
         function setNewGoal() {
@@ -235,15 +283,16 @@
 
         function eksporCSV() {
             if(dataTransaksi.length === 0) return alert("Tidak ada data transaksi!");
-            let isiCSV = "Alokasi,Arus Transaksi,Keterangan,Nominal Mutasi\n";
+            let isiCSV = "Tanggal,Alokasi,Arus Transaksi,Keterangan,Nominal Mutasi\n";
             dataTransaksi.forEach(tx => {
-                isiCSV += `"${tx.wadah.toUpperCase()}","${tx.tipe.toUpperCase()}","${tx.ket.replace(/"/g, '""')}",${tx.nominal}\n`;
+                const tgl = tx.waktu || "-";
+                isiCSV += `"${tgl}","${tx.wadah.toUpperCase()}","${tx.tipe.toUpperCase()}","${tx.ket.replace(/"/g, '""')}",${tx.nominal}\n`;
             });
             const blob = new Blob([isiCSV], { type: 'text/csv;charset=utf-8;' });
             const url = URL.createObjectURL(blob);
             const link = document.createElement("a");
             link.setAttribute("href", url);
-            link.setAttribute("download", "Laporan_FinTrack_Classic.csv");
+            link.setAttribute("download", "Laporan_FinTrack_Enhanced.csv");
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
@@ -276,14 +325,17 @@
                 }
             });
 
-            dataTransaksi.slice().reverse().forEach(tx => {
-                if (filterAktif !== 'all' && tx.wadah !== filterAktif) return;
+            // Balik urutan untuk tabel (terbaru di atas) tanpa merusak index asli array
+            for (let i = dataTransaksi.length - 1; i >= 0; i--) {
+                const tx = dataTransaksi[i];
+                if (filterAktif !== 'all' && tx.wadah !== filterAktif) continue;
 
                 if(tbody) {
                     let nom = Number(tx.nominal) || 0;
                     let kelasNominal = 'text-green';
                     let tanda = '+ ';
                     let labelWadah = tx.wadah === 'bank' ? 'Bank' : tx.wadah === 'wallet' ? 'E-Wallet' : 'Tunai';
+                    let infoWaktu = tx.waktu || "Baru saja";
 
                     if(tx.tipe === 'keluar') {
                         kelasNominal = 'text-red';
@@ -293,47 +345,22 @@
                     tbody.innerHTML += `
                         <tr>
                             <td><span class="badge-wadah">${labelWadah}</span></td>
-                            <td style="font-weight: 500;">${tx.ket}</td>
+                            <td style="font-weight: 500;">
+                                ${tx.ket}
+                                <span class="text-date">📅 ${infoWaktu}</span>
+                            </td>
                             <td class="${kelasNominal}" style="text-align: right;">${tanda}${formatRupiah(nom)}</td>
+                            <td style="text-align: center;">
+                                <button class="btn-trash" onclick="hapusSatuTransaksi(${i})" title="Hapus catatan ini">🗑️</button>
+                            </td>
                         </tr>
                     `;
                 }
-            });
+            }
 
             if(document.getElementById('total-saldo')) document.getElementById('total-saldo').innerText = formatRupiah(totalSemua);
             if(document.getElementById('w-cash')) document.getElementById('w-cash').innerText = formatRupiah(saldoPerWadah.cash);
             if(document.getElementById('w-bank')) document.getElementById('w-bank').innerText = formatRupiah(saldoPerWadah.bank);
             if(document.getElementById('w-wallet')) document.getElementById('w-wallet').innerText = formatRupiah(saldoPerWadah.wallet);
 
-            let jumlahAbsolut = Math.abs(saldoPerWadah.cash) + Math.abs(saldoPerWadah.bank) + Math.abs(saldoPerWadah.wallet);
-            let pctCash = 0, pctBank = 0, pctWallet = 0;
-            if(jumlahAbsolut > 0) {
-                pctCash = (Math.max(0, saldoPerWadah.cash) / jumlahAbsolut) * 100;
-                pctBank = (Math.max(0, saldoPerWadah.bank) / jumlahAbsolut) * 100;
-                pctWallet = (Math.max(0, saldoPerWadah.wallet) / jumlahAbsolut) * 100;
-            }
-            document.getElementById('bar-cash').style.width = pctCash + '%';
-            document.getElementById('bar-bank').style.width = pctBank + '%';
-            document.getElementById('bar-wallet').style.width = pctWallet + '%';
-
-            document.getElementById('lbl-goal-name').innerText = dataGoal.name;
-            if (dataGoal.target > 0) {
-                let hitungPersenGoal = Math.floor((totalSemua / dataGoal.target) * 100);
-                if(hitungPersenGoal < 0) hitungPersenGoal = 0;
-                if(hitungPersenGoal > 100) hitungPersenGoal = 100;
-
-                document.getElementById('bar-goal').style.width = hitungPersenGoal + '%';
-                document.getElementById('lbl-goal-progress').innerText = `${hitungPersenGoal}% Terpenuhi (${formatRupiah(totalSemua)} / ${formatRupiah(dataGoal.target)})`;
-            } else {
-                document.getElementById('bar-goal').style.width = '0%';
-                document.getElementById('lbl-goal-progress').innerText = '0% Terpenuhi';
-            }
-        }
-
-        window.addEventListener('DOMContentLoaded', () => {
-            renderUI();
-        });
-    </script>
-</body>
-</html>
-
+         
