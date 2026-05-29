@@ -217,7 +217,7 @@
             e.preventDefault();
             const type = document.getElementById('tx-type').value;
             const wallet = document.getElementById('tx-wallet-select').value;
-            const amount = parseInt(document.getElementById('tx-amount').value);
+            const amount = parseInt(document.getElementById('tx-amount').value) || 0;
             const cat = document.getElementById('tx-cat').value;
             const dateStr = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
 
@@ -227,6 +227,8 @@
                 document.getElementById('form-tx').reset();
                 if ("vibrate" in navigator) navigator.vibrate(100);
                 updateUI();
+            } else {
+                alert("Masukkan nominal yang valid!");
             }
         }
 
@@ -240,7 +242,6 @@
             if (confirm("Yakin hapus semua data?")) { txs = []; localStorage.setItem('fintrack_data', '[]'); updateUI(); }
         }
 
-        // FITUR BARU: Logika Ekspor Data Ke File CSV
         function exportCSV() {
             if (txs.length === 0) return alert("Belum ada data transaksi.");
             let csv = "Tanggal,Dompet,Tipe,Kategori,Nominal\n";
@@ -265,19 +266,21 @@
             const searchQuery = document.getElementById('search-tx').value.toLowerCase();
             tbody.innerHTML = '';
 
-            // Hitung akumulasi statistik & sub-dompet
+            // Hitung akumulasi saldo secara presisi dengan tipe data Number murni
             txs.forEach(tx => {
-                let currentWallet = tx.wallet || 'cash'; // default fallback
+                let currentWallet = tx.wallet || 'cash';
+                let txAmount = parseInt(tx.amount) || 0;
+
                 if (tx.type === 'income') {
-                    inc += tx.amount;
-                    wBalances[currentWallet] += tx.amount;
-                } else {
-                    exp += tx.amount;
-                    wBalances[currentWallet] -= tx.amount;
+                    inc += txAmount;
+                    wBalances[currentWallet] += txAmount;
+                } else if (tx.type === 'expense') {
+                    exp += txAmount;
+                    wBalances[currentWallet] -= txAmount;
                 }
             });
 
-            // Merender data tabel riwayat dengan filter & search
+            // Render baris tabel berdasarkan pencarian & filter
             txs.slice().reverse().forEach(tx => {
                 if (filterType !== 'all' && tx.type !== filterType) return;
                 if (searchQuery && !tx.cat.toLowerCase().includes(searchQuery)) return;
@@ -289,5 +292,4 @@
                         <td class="p-3 opacity-70">${tx.date || '-'}</td>
                         <td class="p-3 font-semibold opacity-90">${walletLabel}</td>
                         <td class="p-3">${tx.type === 'income' ? '<span class="text-emerald-400"><i class="fa-solid fa-arrow-down mr-1"></i>Masuk</span>' : '<span class="text-rose-400"><i class="fa-solid fa-arrow-up mr-1"></i>Keluar</span>'}</td>
-                        <td class="p-3 font-medium">${tx.cat}</td>
-                        <td class="p-3 font-mono
+        
