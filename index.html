@@ -20,9 +20,9 @@
         .balance-header { display: flex; justify-content: space-between; align-items: center; }
         .balance-title { font-size: 13px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
         
-        /* Feature 2: Eye Button Toggle Incognito */
+        /* Eye Button Toggle Incognito */
         .btn-eye { background: transparent; border: none; color: #64748b; cursor: pointer; font-size: 18px; padding: 5px; transition: color 0.2s; width: auto; box-shadow: none; }
-        .btn-eye:hover { color: #a5b4fc; transform: none; }
+        .btn-eye:hover { color: #a5b4fc; }
         
         .balance-val { font-size: 38px; font-weight: 700; margin: 8px 0 20px 0; color: #ffffff; letter-spacing: -1px; }
         
@@ -54,13 +54,13 @@
         h3 { font-size: 16px; font-weight: 600; color: #cbd5e1; margin-bottom: 18px; display: flex; align-items: center; gap: 8px; }
         .form-group { display: flex; flex-direction: column; gap: 14px; }
         
-        /* Feature 4: Mutasi Layout Utility */
+        /* Mutasi Layout Utility */
         .transfer-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         
-        /* Feature 1: Quick Nominal Shortcuts */
+        /* Quick Nominal Shortcuts */
         .shortcut-group { display: flex; gap: 8px; flex-wrap: wrap; margin-top: -4px; }
         .btn-shortcut { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); padding: 6px 12px; border-radius: 8px; color: #cbd5e1; font-size: 12px; cursor: pointer; width: auto; box-shadow: none; font-weight: 500; }
-        .btn-shortcut:hover { background: rgba(99, 102, 241, 0.15); border-color: #6366f1; color: #a5b4fc; transform: none; }
+        .btn-shortcut:hover { background: rgba(99, 102, 241, 0.15); border-color: #6366f1; color: #a5b4fc; }
 
         /* Input Styling */
         select, input { width: 100%; padding: 14px 16px; background: #0f172a; border: 1px solid #1e293b; border-radius: 12px; color: #fff; font-size: 15px; transition: all 0.2s; outline: none; }
@@ -72,9 +72,9 @@
         
         .action-footer-btns { display: flex; gap: 10px; margin-top: 12px; }
         .btn-secondary { background: rgba(255,255,255,0.05); color: #cbd5e1; border: 1px solid rgba(255,255,255,0.05); box-shadow: none; }
-        .btn-secondary:hover { background: rgba(255,255,255,0.1); transform: translateY(-1px); box-shadow: none; }
+        .btn-secondary:hover { background: rgba(255,255,255,0.1); transform: translateY(-1px); }
         .btn-danger { background: transparent; border: 1px solid rgba(239, 68, 68, 0.2); color: #ef4444; box-shadow: none; }
-        .btn-danger:hover { background: rgba(239, 68, 68, 0.06); border-color: #ef4444; transform: none; box-shadow: none; }
+        .btn-danger:hover { background: rgba(239, 68, 68, 0.06); border-color: #ef4444; }
         
         /* Filter Nav System */
         .filter-nav { display: flex; gap: 8px; margin-bottom: 15px; overflow-x: auto; padding-bottom: 5px; }
@@ -109,7 +109,6 @@
         <div class="main-box">
             <div class="balance-header">
                 <span class="balance-title">Total Kompilasi Saldo</span>
-                <!-- Feature 2: Sensor Toggle Button -->
                 <button onclick="toggleSensor()" class="btn-eye" id="eye-icon" title="Mode Samaran">👁️</button>
             </div>
             <div class="balance-val" id="total-saldo">Rp 0</div>
@@ -148,15 +147,12 @@
         <div class="form-box">
             <h3><span>✦ Alokasikan Transaksi Baru</span></h3>
             <form id="tx-form" onsubmit="simpanData(event)" class="form-group">
-                <!-- Dropdown Utama -->
                 <select id="input-tipe" onchange="handleTipeChange()">
                     <option value="masuk">🟢 Arus Pemasukan (+)</option>
                     <option value="keluar">🔴 Arus Pengeluaran (-)</option>
-                    <!-- Feature 4: Opsi Mutasi Baru -->
                     <option value="transfer">🔄 Transfer Antar Wadah</option>
                 </select>
                 
-                <!-- Input Dompet Dinamis -->
                 <div id="wadah-normal-container">
                     <select id="input-wadah">
                         <option value="cash">💵 Tempatkan di Uang Tunai</option>
@@ -165,7 +161,6 @@
                     </select>
                 </div>
                 
-                <!-- Feature 4: Form Input Khusus Mutasi (Tersembunyi Awalnya) -->
                 <div id="wadah-transfer-container" class="transfer-row" style="display: none;">
                     <select id="input-dari">
                         <option value="cash">💵 Dari Uang Tunai</option>
@@ -181,7 +176,6 @@
                 
                 <div>
                     <input type="number" id="input-nominal" placeholder="Nominal Dana (Rp)" required>
-                    <!-- Feature 1: Quick Shortcut Nominal Buttons -->
                     <div class="shortcut-group" style="margin-top: 8px;">
                         <button type="button" class="btn-shortcut" onclick="tambahNominal(10000)">+10k</button>
                         <button type="button" class="btn-shortcut" onclick="tambahNominal(20000)">+20k</button>
@@ -227,14 +221,14 @@
     </div>
 
     <script>
-        const STORAGE_KEY = 'fintrack_elite_v1';
-        const GOAL_KEY = 'fintrack_goal_elite_v1';
-        const SENSOR_KEY = 'fintrack_sensor_v1';
+        const STORAGE_KEY = 'fintrack_elite_v2';
+        const GOAL_KEY = 'fintrack_goal_elite_v2';
+        const SENSOR_KEY = 'fintrack_sensor_v2';
         
         let dataTransaksi = [];
         let dataGoal = { name: "Belum Ditentukan", target: 0 };
         let filterAktif = 'all';
-        let isSensored = false; // Feature 2 State
+        let isSensored = false;
 
         // Load Memori
         try {
@@ -248,7 +242,6 @@
             isSensored = false;
         }
 
-        // Feature 2: Sensor Toggle Logic
         function toggleSensor() {
             isSensored = !isSensored;
             localStorage.setItem(SENSOR_KEY, isSensored);
@@ -261,14 +254,12 @@
             return "Rp " + Number(angka).toLocaleString('id-ID');
         };
 
-        // Feature 1: Shortcut Button Injector
         function tambahNominal(nilai) {
             const input = document.getElementById('input-nominal');
             let valSekarang = parseInt(input.value) || 0;
             input.value = valSekarang + nilai;
         }
 
-        // Feature 4: Form View Switcher
         function handleTipeChange() {
             const tipe = document.getElementById('input-tipe').value;
             if(tipe === 'transfer') {
@@ -289,7 +280,6 @@
 
             if (nominal <= 0) return alert("Harap masukkan nilai dana yang valid!");
 
-            // Feature 4: Save Logic Handler untuk Transfer
             if(tipe === 'transfer') {
                 const dari = document.getElementById('input-dari').value;
                 const ke = document.getElementById('input-ke').value;
@@ -303,7 +293,7 @@
 
             localStorage.setItem(STORAGE_KEY, JSON.stringify(dataTransaksi));
             document.getElementById('tx-form').reset();
-            handleTipeChange(); // Balikkan form view ke mode standard
+            handleTipeChange();
             renderUI();
         }
 
@@ -353,4 +343,20 @@
             }
         }
 
- 
+        function renderUI() {
+            let totalSemua = 0;
+            let saldoPerWadah = { cash: 0, bank: 0, wallet: 0 };
+            const tbody = document.getElementById('tabel-body');
+            if(tbody) tbody.innerHTML = '';
+
+            dataTransaksi.forEach(tx => {
+                let nom = Number(tx.nominal) || 0;
+                if(tx.tipe === 'masuk') {
+                    totalSemua += nom;
+                    saldoPerWadah[tx.wadah] += nom;
+                } else if(tx.tipe === 'keluar') {
+                    totalSemua -= nom;
+                    saldoPerWadah[tx.wadah] -= nom;
+                } else if(tx.tipe === 'transfer') {
+                    saldoPerWadah[tx.dari] -= nom;
+                
