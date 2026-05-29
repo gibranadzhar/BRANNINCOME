@@ -3,253 +3,203 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FinTrack Pro - Dashboard</title>
+    <title>FinTrack Pro - Ultimate</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: radial-gradient(circle at top right, #1e1b4b, #0f172a, #020617); }
-        .glass-card { background: rgba(30, 41, 59, 0.4); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        body { font-family: sans-serif; transition: all 0.3s ease; }
+        .theme-cyber { background: radial-gradient(circle at top right, #1e1b4b, #0f172a, #020617); color: #f1f5f9; }
+        .theme-mint { background: radial-gradient(circle at top right, #064e3b, #022c22, #010605); color: #f1f5f9; }
+        .theme-light { background: #f8fafc; color: #0f172a; }
+        .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .theme-light .glass { background: rgba(255, 255, 255, 0.8); border: 1px solid rgba(0, 0, 0, 0.1); }
+        .budget-alert { animation: blink 1s infinite; border: 2px solid #ef4444; }
+        @keyframes blink { 50% { box-shadow: 0 0 15px rgba(239, 68, 68, 0.5); } }
     </style>
 </head>
-<body class="text-slate-100 min-h-screen antialiased">
-    <div class="max-w-6xl mx-auto px-4 py-8">
-        <!-- Header -->
-        <header class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4 border-b border-slate-800/60 pb-6">
-            <div>
-                <div class="flex items-center gap-3">
-                    <div class="h-10 w-10 rounded-xl bg-gradient-to-tr from-indigo-500 to-violet-500 flex items-center justify-center shadow-lg">
-                        <i class="fa-solid fa-vault text-white text-lg"></i>
-                    </div>
-                    <h1 class="text-3xl font-bold bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">FinTrack<span class="text-xs font-semibold ml-1 px-2 py-0.5 bg-gradient-to-r from-amber-400 to-orange-500 text-slate-950 rounded-full">PRO</span></h1>
-                </div>
-                <p class="text-slate-400 text-sm mt-2">Ringkasan Keuangan Gabungan</p>
+<body class="theme-cyber min-h-screen p-4 md:p-8">
+
+    <div class="max-w-5xl mx-auto space-y-6">
+        
+        <header class="flex flex-col md:flex-row justify-between items-center gap-4 glass p-4 rounded-2xl">
+            <h1 class="text-2xl font-bold bg-gradient-to-r from-indigo-400 to-pink-400 bg-clip-text text-transparent">FinTrack PRO</h1>
+            <div class="flex gap-2">
+                <button onclick="setTheme('theme-cyber')" class="px-3 py-1 bg-indigo-900 rounded-lg text-xs font-bold text-white cursor-pointer hover:bg-indigo-800">Cyber</button>
+                <button onclick="setTheme('theme-mint')" class="px-3 py-1 bg-emerald-900 rounded-lg text-xs font-bold text-white cursor-pointer hover:bg-emerald-800">Mint</button>
+                <button onclick="setTheme('theme-light')" class="px-3 py-1 bg-slate-200 rounded-lg text-xs font-bold text-slate-800 cursor-pointer hover:bg-slate-300">Light</button>
             </div>
-            <button onclick="exportToCSV()" class="bg-slate-800/80 hover:bg-slate-700 text-indigo-400 border border-indigo-500/30 px-4 py-2.5 rounded-xl text-sm font-semibold cursor-pointer">
-                <i class="fa-solid fa-file-arrow-down"></i> Rekap CSV
-            </button>
         </header>
 
-        <!-- Menu Navigasi Antar Halaman Terpisah -->
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
-            <a href="index.html" class="p-4 rounded-xl text-sm font-bold flex items-center justify-center gap-2 bg-slate-800 text-white border border-slate-700 shadow-md">
-                <i class="fa-solid fa-layer-group"></i> Ringkasan
-            </a>
-            <a href="cash.html" class="p-4 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 bg-slate-900/50 text-slate-400 hover:text-white border border-slate-800/60 hover:border-slate-700 transition-all">
-                💵 Uang Tunai
-            </a>
-            <a href="bank.html" class="p-4 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 bg-slate-900/50 text-slate-400 hover:text-white border border-slate-800/60 hover:border-slate-700 transition-all">
-                🏛️ Rekening Bank
-            </a>
-            <a href="ewallet.html" class="p-4 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 bg-slate-900/50 text-slate-400 hover:text-white border border-slate-800/60 hover:border-slate-700 transition-all">
-                📱 E-Wallet
-            </a>
-        </div>
-
-        <!-- Dashboard Angka -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div class="glass-card rounded-2xl p-6">
-                <p class="text-slate-400 text-xs font-semibold uppercase tracking-wider flex items-center gap-2"><span class="h-2 w-2 rounded-full bg-indigo-400"></span>Total Saldo Bersih</p>
-                <h3 id="total-balance" class="text-3xl font-bold mt-3 text-white">Rp 0</h3>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div class="glass p-5 rounded-2xl">
+                <p class="text-xs opacity-70 uppercase tracking-wider">Total Saldo</p>
+                <h3 id="val-balance" class="text-2xl font-bold mt-1">Rp 0</h3>
             </div>
-            <div class="glass-card rounded-2xl p-6 border-emerald-500/10">
-                <p class="text-emerald-400 text-xs font-semibold uppercase tracking-wider flex items-center gap-2"><span class="h-2 w-2 rounded-full bg-emerald-400"></span>Total Pemasukan</p>
-                <h3 id="total-income" class="text-3xl font-bold mt-3 text-emerald-400">+ Rp 0</h3>
+            <div class="glass p-5 rounded-2xl">
+                <p class="text-xs text-emerald-400 uppercase tracking-wider">Pemasukan</p>
+                <h3 id="val-income" class="text-2xl font-bold mt-1 text-emerald-400">Rp 0</h3>
             </div>
-            <div class="glass-card rounded-2xl p-6 border-rose-500/10">
-                <p class="text-rose-400 text-xs font-semibold uppercase tracking-wider flex items-center gap-2"><span class="h-2 w-2 rounded-full bg-rose-400"></span>Total Pengeluaran</p>
-                <h3 id="total-expense" class="text-3xl font-bold mt-3 text-rose-400">- Rp 0</h3>
+            <div id="card-expense" class="glass p-5 rounded-2xl">
+                <p class="text-xs text-rose-400 uppercase tracking-wider">Pengeluaran</p>
+                <h3 id="val-expense" class="text-2xl font-bold mt-1 text-rose-400">Rp 0</h3>
+            </div>
+            <div class="glass p-5 rounded-2xl flex flex-col justify-center">
+                <p class="text-xs text-amber-400 uppercase tracking-wider mb-2">Limit Bulanan</p>
+                <input type="number" id="input-budget" oninput="saveBudget()" placeholder="Set Limit..." class="w-full bg-transparent border-b border-slate-500 outline-none text-lg">
             </div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <!-- Form Input Catatan (Updated Smart Form) -->
-            <div class="glass-card rounded-2xl p-6 h-fit">
-                <h2 class="text-xl font-bold mb-4 text-white">Tambah Catatan</h2>
-                <form id="tx-form" onsubmit="addTransaction(event)" class="space-y-3.5">
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-400 mb-1">Jenis Transaksi</label>
-                        <select id="tx-type" onchange="handleTypeChange()" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-xs text-white">
-                            <option value="income">🟢 Masuk (+)</option>
-                            <option value="expense">🔴 Keluar (-)</option>
-                            <option value="transfer">🔄 Pindah Saldo (Transfer)</option>
-                        </select>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="space-y-6">
+                <div class="glass p-4 rounded-2xl">
+                    <h2 class="text-sm font-bold mb-2 opacity-80">🧮 Kalkulator Mini</h2>
+                    <input type="text" id="calc-display" disabled class="w-full bg-slate-900/50 text-right p-2 rounded-lg mb-2 border border-slate-700 text-white">
+                    <div class="grid grid-cols-4 gap-1 text-sm">
+                        <button onclick="calc('7')" class="p-2 bg-slate-800 rounded hover:bg-slate-700 text-white">7</button>
+                        <button onclick="calc('8')" class="p-2 bg-slate-800 rounded hover:bg-slate-700 text-white">8</button>
+                        <button onclick="calc('9')" class="p-2 bg-slate-800 rounded hover:bg-slate-700 text-white">9</button>
+                        <button onclick="calc('/')" class="p-2 bg-indigo-900 rounded hover:bg-indigo-800 text-white">/</button>
+                        <button onclick="calc('4')" class="p-2 bg-slate-800 rounded hover:bg-slate-700 text-white">4</button>
+                        <button onclick="calc('5')" class="p-2 bg-slate-800 rounded hover:bg-slate-700 text-white">5</button>
+                        <button onclick="calc('6')" class="p-2 bg-slate-800 rounded hover:bg-slate-700 text-white">6</button>
+                        <button onclick="calc('*')" class="p-2 bg-indigo-900 rounded hover:bg-indigo-800 text-white">x</button>
+                        <button onclick="calc('1')" class="p-2 bg-slate-800 rounded hover:bg-slate-700 text-white">1</button>
+                        <button onclick="calc('2')" class="p-2 bg-slate-800 rounded hover:bg-slate-700 text-white">2</button>
+                        <button onclick="calc('3')" class="p-2 bg-slate-800 rounded hover:bg-slate-700 text-white">3</button>
+                        <button onclick="calc('-')" class="p-2 bg-indigo-900 rounded hover:bg-indigo-800 text-white">-</button>
+                        <button onclick="calc('C')" class="p-2 bg-rose-900 rounded hover:bg-rose-800 text-white">C</button>
+                        <button onclick="calc('0')" class="p-2 bg-slate-800 rounded hover:bg-slate-700 text-white">0</button>
+                        <button onclick="calc('=')" class="p-2 bg-emerald-700 rounded hover:bg-emerald-600 font-bold text-white">=</button>
+                        <button onclick="calc('+')" class="p-2 bg-indigo-900 rounded hover:bg-indigo-800 text-white">+</button>
                     </div>
+                </div>
 
-                    <!-- Pilihan Dompet Dinamis -->
-                    <div id="wallet-selection-container" class="grid grid-cols-2 gap-3">
-                        <div id="source-wallet-block">
-                            <label id="wallet-label-1" class="block text-xs font-semibold text-slate-400 mb-1">Tujuan Dompet</label>
-                            <select id="tx-wallet" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-xs text-white">
-                                <option value="cash">💵 Uang Tunai (Cash)</option>
-                                <option value="bank">🏛️ Rekening Bank</option>
-                                <option value="ewallet">📱 E-Wallet / QRIS</option>
-                            </select>
-                        </div>
-                        <div id="target-wallet-block" class="hidden">
-                            <label class="block text-xs font-semibold text-slate-400 mb-1">Ke Dompet Tujuan</label>
-                            <select id="tx-target-wallet" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-xs text-white">
-                                <option value="cash">💵 Uang Tunai (Cash)</option>
-                                <option value="bank" selected>🏛️ Rekening Bank</option>
-                                <option value="ewallet">📱 E-Wallet / QRIS</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <!-- Nominal Input & Shortcut Tombol Cepat -->
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-400 mb-1">Nominal (Rp)</label>
-                        <div class="relative mb-2">
-                            <span class="absolute left-3.5 top-2.5 text-slate-500 text-sm font-semibold">Rp</span>
-                            <input type="number" id="tx-amount" required placeholder="10000" class="w-full bg-slate-900 border border-slate-700 rounded-xl pl-10 pr-3.5 py-2.5 text-sm text-white">
-                        </div>
-                        <!-- Tombol Shortcut Cepat -->
-                        <div class="flex flex-wrap gap-1.5">
-                            <button type="button" onclick="quickAmount(10000)" class="px-2 py-1 bg-slate-800 text-[10px] text-slate-300 rounded-md hover:bg-slate-700 cursor-pointer">+10k</button>
-                            <button type="button" onclick="quickAmount(20000)" class="px-2 py-1 bg-slate-800 text-[10px] text-slate-300 rounded-md hover:bg-slate-700 cursor-pointer">+20k</button>
-                            <button type="button" onclick="quickAmount(50000)" class="px-2 py-1 bg-slate-800 text-[10px] text-slate-300 rounded-md hover:bg-slate-700 cursor-pointer">+50k</button>
-                            <button type="button" onclick="quickAmount(100000)" class="px-2 py-1 bg-slate-800 text-[10px] text-slate-300 rounded-md hover:bg-slate-700 cursor-pointer">+100k</button>
-                            <button type="button" onclick="quickAmount(0, true)" class="px-2 py-1 bg-rose-950 text-rose-400 text-[10px] rounded-md hover:bg-rose-900 cursor-pointer">Clear</button>
-                        </div>
-                    </div>
-
-                    <!-- Kategori input -->
-                    <div id="category-container">
-                        <label class="block text-xs font-semibold text-slate-400 mb-1">Kategori</label>
-                        <input type="text" id="tx-category" placeholder="Makanan, Gaji, dll" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white">
-                    </div>
-
-                    <button type="submit" class="w-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white font-bold py-3 rounded-xl text-xs cursor-pointer">Simpan Transaksi</button>
+                <form id="form-tx" onsubmit="addTx(event)" class="glass p-5 rounded-2xl space-y-3">
+                    <select id="tx-type" class="w-full bg-slate-900/50 border border-slate-700 rounded p-2 text-sm text-white outline-none">
+                        <option value="income">🟢 Pemasukan (+)</option>
+                        <option value="expense">🔴 Pengeluaran (-)</option>
+                    </select>
+                    <input type="number" id="tx-amount" required placeholder="Nominal (Rp)" class="w-full bg-slate-900/50 border border-slate-700 rounded p-2 text-sm text-white outline-none">
+                    <input type="text" id="tx-cat" required placeholder="Kategori (cth: Makan, Gaji)" class="w-full bg-slate-900/50 border border-slate-700 rounded p-2 text-sm text-white outline-none">
+                    <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white p-2 rounded text-sm font-bold cursor-pointer">Simpan</button>
                 </form>
             </div>
 
-            <!-- Chart & Info Mini -->
-            <div class="lg:col-span-2 glass-card rounded-2xl p-6 flex flex-col items-center justify-center gap-6">
-                <h2 class="text-xl font-bold text-white self-start">Struktur Analisis Keseluruhan</h2>
-                <div class="w-48 h-48"><canvas id="financeChart"></canvas></div>
-                <button onclick="clearAllData()" class="text-xs text-rose-400/80 hover:text-rose-400 flex items-center gap-1 cursor-pointer mt-auto self-end">
-                    <i class="fa-regular fa-trash-can"></i> Reset Semua Data
-                </button>
+            <div class="lg:col-span-2 glass p-5 rounded-2xl">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="font-bold opacity-80">Riwayat Transaksi</h2>
+                    <button onclick="clearData()" class="text-xs bg-rose-900/50 text-rose-400 px-3 py-1 rounded hover:bg-rose-900 cursor-pointer">Reset Semua</button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm">
+                        <thead>
+                            <tr class="border-b border-slate-700/50 opacity-70">
+                                <th class="p-2">Tipe</th>
+                                <th class="p-2">Kategori</th>
+                                <th class="p-2">Nominal</th>
+                                <th class="p-2 text-center">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-body">
+                            </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
-        let transactions = JSON.parse(localStorage.getItem('fintrack_ult_tx')) || [];
-        let myChart = null;
+        // INISIALISASI DATA
+        let txs = JSON.parse(localStorage.getItem('fintrack_data')) || [];
+        
+        const fmtRp = (num) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(num);
 
-        function formatRupiah(number) {
-            return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(number);
+        // FUNGSI TEMA
+        function setTheme(theme) {
+            document.body.className = `${theme} min-h-screen p-4 md:p-8`;
+            localStorage.setItem('fintrack_theme', theme);
         }
 
-        // FUNGSI SHORTCUT TOMBOL NOMINAL
-        function quickAmount(val, clear = false) {
-            const input = document.getElementById('tx-amount');
-            if (clear) {
-                input.value = '';
-            } else {
-                let currentVal = parseInt(input.value) || 0;
-                input.value = currentVal + val;
-            }
+        // FUNGSI LIMIT BUDGET
+        function saveBudget() {
+            localStorage.setItem('fintrack_budget', document.getElementById('input-budget').value);
+            updateUI();
         }
 
-        // FUNGSI MENGUBAH FORM JIKA TRANSFER TERPILIH
-        function handleTypeChange() {
-            const type = document.getElementById('tx-type').value;
-            const label1 = document.getElementById('wallet-label-1');
-            const targetBlock = document.getElementById('target-wallet-block');
-            const catContainer = document.getElementById('category-container');
-            const catInput = document.getElementById('tx-category');
-
-            if (type === 'transfer') {
-                label1.innerText = "Dari Dompet (Asal)";
-                targetBlock.classList.remove('hidden');
-                catContainer.classList.add('hidden');
-                catInput.required = false;
-            } else {
-                label1.innerText = "Tujuan Dompet";
-                targetBlock.classList.add('hidden');
-                catContainer.classList.remove('hidden');
-                catInput.required = true;
-            }
+        // FUNGSI KALKULATOR
+        function calc(val) {
+            const disp = document.getElementById('calc-display');
+            if (val === 'C') disp.value = '';
+            else if (val === '=') {
+                try { disp.value = eval(disp.value) || ''; } 
+                catch (e) { disp.value = 'Error'; setTimeout(()=>disp.value='', 1000); }
+            } else { disp.value += val; }
         }
 
-        function initChart(income, expense) {
-            const ctx = document.getElementById('financeChart').getContext('2d');
-            if (myChart) myChart.destroy();
-            const chartData = (income === 0 && expense === 0) ? [1, 0] : [income, expense];
-            myChart = new Chart(ctx, {
-                type: 'doughnut',
-                data: { datasets: [{ data: chartData, backgroundColor: ['#10b981', '#f43f5e'], borderWidth: 0 }] },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, cutout: '75%' }
-            });
-        }
-
-        function updateDOM() {
-            let income = 0, expense = 0;
-            
-            // Note: Data transfer tidak merubah total pemasukan/pengeluaran gabungan global, 
-            // karena uangnya hanya berpindah kantong internal.
-            transactions.forEach(tx => {
-                let amt = parseInt(tx.amount);
-                if (tx.type === 'income') income += amt;
-                else if (tx.type === 'expense') expense += amt;
-            });
-
-            document.getElementById('total-balance').innerText = formatRupiah(income - expense);
-            document.getElementById('total-income').innerText = `+ ${formatRupiah(income)}`;
-            document.getElementById('total-expense').innerText = `- ${formatRupiah(expense)}`;
-            initChart(income, expense);
-            localStorage.setItem('fintrack_ult_tx', JSON.stringify(transactions));
-        }
-
-        function addTransaction(e) {
+        // FUNGSI TAMBAH DATA
+        function addTx(e) {
             e.preventDefault();
             const type = document.getElementById('tx-type').value;
             const amount = parseInt(document.getElementById('tx-amount').value);
-            
-            if (isNaN(amount) || amount <= 0) return alert("Nominal harus valid!");
+            const cat = document.getElementById('tx-cat').value;
 
-            if (type === 'transfer') {
-                const sourceWallet = document.getElementById('tx-wallet').value;
-                const targetWallet = document.getElementById('tx-target-wallet').value;
-
-                if (sourceWallet === targetWallet) {
-                    return alert("Dompet asal dan dompet tujuan transfer tidak boleh sama!");
-                }
-
-                // Sistem Otomatis: Membuat 2 record mutasi agar terbaca di halaman masing-masing
-                transactions.push({ type: 'expense', wallet: sourceWallet, amount: amount, category: `Pindah Saldo ke ${targetWallet.toUpperCase()}` });
-                transactions.push({ type: 'income', wallet: targetWallet, amount: amount, category: `Terima Saldo dari ${sourceWallet.toUpperCase()}` });
-            } else {
-                const wallet = document.getElementById('tx-wallet').value;
-                const category = document.getElementById('tx-category').value.trim();
-                transactions.push({ type, wallet, amount, category });
+            if (amount > 0) {
+                txs.push({ id: Date.now(), type, amount, cat });
+                localStorage.setItem('fintrack_data', JSON.stringify(txs));
+                document.getElementById('form-tx').reset();
+                if ("vibrate" in navigator) navigator.vibrate(100);
+                updateUI();
             }
-
-            updateDOM();
-            document.getElementById('tx-form').reset();
-            handleTypeChange(); // kembalikan form ke mode default
-            alert("Berhasil disimpan!");
         }
 
-        function clearAllData() {
-            if (confirm("Reset ulang seluruh sistem catatan keuangan?")) { transactions = []; updateDOM(); }
+        // FUNGSI HAPUS SATUAN
+        function deleteTx(id) {
+            txs = txs.filter(tx => tx.id !== id);
+            localStorage.setItem('fintrack_data', JSON.stringify(txs));
+            updateUI();
         }
 
-        function exportToCSV() {
-            if (transactions.length === 0) return alert("Tidak ada data untuk diekspor.");
-            let csvContent = "data:text/csv;charset=utf-8,Dompet,Jenis,Kategori,Nominal\n";
-            transactions.forEach(tx => { csvContent += `${tx.wallet},${tx.type === 'income'?'Masuk':'Keluar'},"${tx.category}",${tx.amount}\n`; });
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", `FinTrack_All_Report.csv`);
-            document.body.appendChild(link); link.click(); document.body.removeChild(link);
+        function clearData() {
+            if (confirm("Yakin hapus semua data?")) { txs = []; localStorage.setItem('fintrack_data', '[]'); updateUI(); }
         }
 
-        updateDOM();
+        // FUNGSI UPDATE TAMPILAN
+        function updateUI() {
+            let inc = 0, exp = 0;
+            const tbody = document.getElementById('history-body');
+            tbody.innerHTML = '';
+
+            txs.forEach(tx => {
+                if (tx.type === 'income') inc += tx.amount; else exp += tx.amount;
+                
+                // Render Tabel
+                tbody.innerHTML += `
+                    <tr class="border-b border-slate-700/30">
+                        <td class="p-2">${tx.type === 'income' ? '🟢' : '🔴'}</td>
+                        <td class="p-2">${tx.cat}</td>
+                        <td class="p-2 font-mono ${tx.type === 'income' ? 'text-emerald-400' : 'text-rose-400'}">${fmtRp(tx.amount)}</td>
+                        <td class="p-2 text-center">
+                            <button onclick="deleteTx(${tx.id})" class="text-rose-500 hover:text-rose-300 cursor-pointer">✕</button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            // Update Angka
+            document.getElementById('val-balance').innerText = fmtRp(inc - exp);
+            document.getElementById('val-income').innerText = `+ ${fmtRp(inc)}`;
+            document.getElementById('val-expense').innerText = `- ${fmtRp(exp)}`;
+
+            // Logika Alarm Limit Budget
+            const limit = parseInt(localStorage.getItem('fintrack_budget')) || 0;
+            const expCard = document.getElementById('card-expense');
+            if (limit > 0 && exp > limit) expCard.classList.add('budget-alert');
+            else expCard.classList.remove('budget-alert');
+        }
+
+        // LOAD SAAT REFRESH
+        document.body.className = localStorage.getItem('fintrack_theme') || 'theme-cyber min-h-screen p-4 md:p-8';
+        document.getElementById('input-budget').value = localStorage.getItem('fintrack_budget') || '';
+        updateUI();
     </script>
 </body>
 </html>
