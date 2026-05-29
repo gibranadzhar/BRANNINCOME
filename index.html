@@ -41,27 +41,18 @@
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             <div class="glass-card rounded-2xl p-6 relative overflow-hidden group">
-                <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform duration-300">
-                    <i class="fa-solid fa-scale-balanced text-6xl text-white"></i>
-                </div>
                 <p class="text-slate-400 text-xs font-semibold uppercase tracking-wider flex items-center gap-2">
                     <span class="h-2 w-2 rounded-full bg-indigo-400"></span>Total Saldo
                 </p>
                 <h3 id="total-balance" class="text-3xl font-bold mt-3 text-white tracking-tight">Rp 0</h3>
             </div>
             <div class="glass-card rounded-2xl p-6 relative overflow-hidden group border-emerald-500/10">
-                <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform duration-300">
-                    <i class="fa-solid fa-arrow-trend-up text-6xl text-emerald-400"></i>
-                </div>
                 <p class="text-emerald-400 text-xs font-semibold uppercase tracking-wider flex items-center gap-2">
                     <span class="h-2 w-2 rounded-full bg-emerald-400"></span>Total Pemasukan
                 </p>
                 <h3 id="total-income" class="text-3xl font-bold mt-3 text-emerald-400 tracking-tight">+ Rp 0</h3>
             </div>
             <div class="glass-card rounded-2xl p-6 relative overflow-hidden group border-rose-500/10">
-                <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform duration-300">
-                    <i class="fa-solid fa-arrow-trend-down text-6xl text-rose-400"></i>
-                </div>
                 <p class="text-rose-400 text-xs font-semibold uppercase tracking-wider flex items-center gap-2">
                     <span class="h-2 w-2 rounded-full bg-rose-400"></span>Total Pengeluaran
                 </p>
@@ -78,23 +69,19 @@
                 <div class="w-full bg-slate-900/60 border border-slate-800 rounded-full h-4 overflow-hidden p-0.5">
                     <div id="ratio-bar" class="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 h-full rounded-full transition-all duration-700" style="width: 0%"></div>
                 </div>
-                <p class="text-xs text-slate-500 mt-2 italic">*Usahakan pengeluaran tidak melebihi 80% dari total pemasukan Anda.</p>
             </div>
 
-            <div class="glass-card rounded-2xl p-4 flex flex-col items-center justify-center min-h-[160px]">
+            <div class="glass-card rounded-2xl p-4 flex flex-col items-center justify-center min-h-[140px]">
                 <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Struktur Kas</h4>
-                <div class="w-28 h-28">
+                <div class="w-24 h-24">
                     <canvas id="financeChart"></canvas>
                 </div>
             </div>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div class="glass-card rounded-2xl p-6 h-fit relative">
-                <div class="absolute -top-3 left-6 bg-gradient-to-r from-indigo-500 to-purple-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-md">
-                    Input Data
-                </div>
-                <h2 class="text-xl font-bold mb-5 mt-2 text-white">Tambah Transaksi</h2>
+            <div class="glass-card rounded-2xl p-6 h-fit">
+                <h2 class="text-xl font-bold mb-5 text-white">Tambah Transaksi</h2>
                 <form id="tx-form" onsubmit="addTransaction(event)" class="space-y-4">
                     <div>
                         <label class="block text-xs font-semibold text-slate-400 mb-1.5">Jenis Transaksi</label>
@@ -106,33 +93,31 @@
                     <div>
                         <label class="block text-xs font-semibold text-slate-400 mb-1.5">Nominal (Rp)</label>
                         <div class="relative">
-                            <span class="absolute left-3.5 top-3.5 text-slate-500 text-sm font-semibold">Rp</span>
-                            <input type="number" id="tx-amount" required placeholder="0" class="w-full bg-slate-900/80 border border-slate-700/50 rounded-xl pl-10 pr-3.5 py-3 text-sm focus:outline-none focus:border-indigo-500 text-white transition-colors">
+                            <span class="absolute left-3.5 top-3 text-slate-500 text-sm font-semibold">Rp</span>
+                            <input type="number" id="tx-amount" required placeholder="0" class="w-full bg-slate-900/80 border border-slate-700/50 rounded-xl pl-10 pr-3.5 py-2.5 text-sm focus:outline-none focus:border-indigo-500 text-white">
                         </div>
                     </div>
                     <div>
                         <label class="block text-xs font-semibold text-slate-400 mb-1.5">Kategori</label>
-                        <input type="text" id="tx-category" required placeholder="Contoh: Gaji, Makanan, Liburan" class="w-full bg-slate-900/80 border border-slate-700/50 rounded-xl px-3.5 py-3 text-sm focus:outline-none focus:border-indigo-500 text-white transition-colors">
+                        <input type="text" id="tx-category" required placeholder="Contoh: Gaji, Makanan" class="w-full bg-slate-900/80 border border-slate-700/50 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-indigo-500 text-white">
                     </div>
                     <div>
                         <label class="block text-xs font-semibold text-slate-400 mb-1.5">Keterangan / Catatan</label>
-                        <input type="text" id="tx-desc" placeholder="Opsional (misal: Bonus projek, beli kopi)" class="w-full bg-slate-900/80 border border-slate-700/50 rounded-xl px-3.5 py-3 text-sm focus:outline-none focus:border-indigo-500 text-white transition-colors">
+                        <input type="text" id="tx-desc" placeholder="Opsional" class="w-full bg-slate-900/80 border border-slate-700/50 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-indigo-500 text-white">
                     </div>
-                    <button type="submit" class="w-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:opacity-90 text-white font-bold py-3.5 rounded-xl text-sm transition-all duration-300 shadow-lg shadow-indigo-500/20 active:scale-[0.98] mt-4 cursor-pointer">
-                        <i class="fa-solid fa-plus mr-1"></i> Simpan Catatan
+                    <button type="submit" class="w-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:opacity-90 text-white font-bold py-3 rounded-xl text-sm transition-all duration-300 shadow-lg shadow-indigo-500/20 active:scale-[0.98] cursor-pointer">
+                        Simpan Catatan
                     </button>
                 </form>
             </div>
 
             <div class="lg:col-span-2 glass-card rounded-2xl p-6 flex flex-col">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-                    <div>
-                        <h2 class="text-xl font-bold text-white">Riwayat Transaksi</h2>
-                    </div>
-                    <div class="flex gap-1 bg-slate-900/60 p-1 rounded-xl border border-slate-800/80 self-end sm:self-auto text-xs">
-                        <button onclick="filterTransactions('all')" id="btn-filter-all" class="px-3 py-1.5 rounded-lg font-medium text-white bg-slate-800 cursor-pointer transition-all">Semua</button>
-                        <button onclick="filterTransactions('income')" id="btn-filter-income" class="px-3 py-1.5 rounded-lg font-medium text-slate-400 hover:text-white cursor-pointer transition-all">Pemasukan</button>
-                        <button onclick="filterTransactions('expense')" id="btn-filter-expense" class="px-3 py-1.5 rounded-lg font-medium text-slate-400 hover:text-white cursor-pointer transition-all">Pengeluaran</button>
+                    <h2 class="text-xl font-bold text-white">Riwayat Transaksi</h2>
+                    <div class="flex gap-1 bg-slate-900/60 p-1 rounded-xl border border-slate-800/80 text-xs">
+                        <button onclick="filterTransactions('all')" id="btn-filter-all" class="px-3 py-1.5 rounded-lg font-medium text-white bg-slate-800 cursor-pointer">Semua</button>
+                        <button onclick="filterTransactions('income')" id="btn-filter-income" class="px-3 py-1.5 rounded-lg font-medium text-slate-400 hover:text-white cursor-pointer">Pemasukan</button>
+                        <button onclick="filterTransactions('expense')" id="btn-filter-expense" class="px-3 py-1.5 rounded-lg font-medium text-slate-400 hover:text-white cursor-pointer">Pengeluaran</button>
                     </div>
                 </div>
                 
@@ -152,12 +137,12 @@
                     
                     <div id="empty-state" class="text-center py-16 text-slate-500 flex flex-col items-center justify-center gap-3 hidden">
                         <i class="fa-regular fa-folder-open text-4xl text-slate-600"></i>
-                        <p>Belum ada catatan transaksi pada filter ini.</p>
+                        <p>Belum ada catatan transaksi.</p>
                     </div>
                 </div>
                 
                 <div class="mt-4 pt-4 border-t border-slate-800/60 flex justify-end">
-                    <button onclick="clearAllData()" class="text-xs text-rose-400/80 hover:text-rose-400 flex items-center gap-1 transition-colors cursor-pointer">
+                    <button onclick="clearAllData()" class="text-xs text-rose-400/80 hover:text-rose-400 flex items-center gap-1 cursor-pointer">
                         <i class="fa-regular fa-trash-can"></i> Hapus Semua Data
                     </button>
                 </div>
@@ -174,15 +159,10 @@
             return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(number);
         }
 
-        // Inisialisasi Chart.js
         function initChart(income, expense) {
             const ctx = document.getElementById('financeChart').getContext('2d');
-            
-            if (myChart) {
-                myChart.destroy(); // Hancurkan chart lama sebelum membuat yang baru
-            }
+            if (myChart) myChart.destroy();
 
-            // Jika tidak ada data, beri nilai default agar chart tidak kosong melongpong
             const chartData = (income === 0 && expense === 0) ? [1, 0] : [income, expense];
             const chartColors = (income === 0 && expense === 0) ? ['#334155', '#334155'] : ['#10b981', '#f43f5e'];
 
@@ -193,7 +173,6 @@
                         data: chartData,
                         backgroundColor: chartColors,
                         borderWidth: 0,
-                        hoverOffset: 4
                     }]
                 },
                 options: {
@@ -207,17 +186,12 @@
 
         function filterTransactions(filterType) {
             currentFilter = filterType;
-            
-            // Atur gaya aktif tombol filter
             ['all', 'income', 'expense'].forEach(f => {
                 const btn = document.getElementById(`btn-filter-${f}`);
-                if (f === filterType) {
-                    btn.className = "px-3 py-1.5 rounded-lg font-medium text-white bg-slate-800 cursor-pointer transition-all";
-                } else {
-                    btn.className = "px-3 py-1.5 rounded-lg font-medium text-slate-400 hover:text-white cursor-pointer transition-all";
-                }
+                btn.className = f === filterType 
+                    ? "px-3 py-1.5 rounded-lg font-medium text-white bg-slate-800 cursor-pointer" 
+                    : "px-3 py-1.5 rounded-lg font-medium text-slate-400 hover:text-white cursor-pointer";
             });
-
             updateDOM();
         }
 
@@ -229,42 +203,31 @@
             let totalIncome = 0;
             let totalExpense = 0;
 
-            // Hitung total agregat dari SEMUA data (tidak terpengaruh filter)
+            // Perhitungan Akumulasi Data Utama
             transactions.forEach(tx => {
                 if (tx.type === 'income') totalIncome += tx.amount;
                 if (tx.type === 'expense') totalExpense += tx.amount;
             });
 
-            // Filter data yang akan ditampilkan di tabel
-            const filteredData = transactions.filter(tx => {
-                if (currentFilter === 'all') return true;
-                return tx.type === currentFilter;
-            });
+            // Filter Tampilan Tabel
+            const filteredData = transactions.filter(tx => currentFilter === 'all' ? true : tx.type === currentFilter);
 
             if (filteredData.length === 0) {
                 emptyState.classList.remove('hidden');
             } else {
                 emptyState.classList.add('hidden');
-                
-                // Tampilkan data (Urutan terbaru di atas)
                 [...filteredData].reverse().forEach((tx) => {
-                    // Temukan index asli di array utama untuk fungsi hapus
                     const originalIndex = transactions.findIndex(t => t === tx);
-
                     const row = document.createElement('tr');
-                    row.className = "hover:bg-slate-800/20 transition-all duration-150 group";
+                    row.className = "hover:bg-slate-800/20 transition-all";
                     row.innerHTML = `
-                        <td class="px-4 py-4">
-                            <span class="bg-slate-900/80 text-slate-300 border border-slate-700/30 px-2.5 py-1 rounded-lg text-xs font-semibold">
-                                ${tx.category}
-                            </span>
-                        </td>
-                        <td class="px-4 py-4 text-slate-400 max-w-[180px] truncate">${tx.desc || '<span class="text-slate-600">-</span>'}</td>
+                        <td class="px-4 py-4"><span class="bg-slate-900/80 text-slate-300 border border-slate-700/30 px-2.5 py-1 rounded-lg text-xs font-semibold">${tx.category}</span></td>
+                        <td class="px-4 py-4 text-slate-400 max-w-[180px] truncate">${tx.desc || '-'}</td>
                         <td class="px-4 py-4 text-right font-bold ${tx.type === 'income' ? 'text-emerald-400' : 'text-rose-400'}">
                             ${tx.type === 'income' ? '+' : '-'} ${formatRupiah(tx.amount).replace('Rp', '')}
                         </td>
                         <td class="px-4 py-4 text-center">
-                            <button onclick="deleteTransaction(${originalIndex})" class="text-slate-600 hover:text-rose-400 p-1.5 rounded-lg hover:bg-rose-500/10 transition-all cursor-pointer opacity-40 group-hover:opacity-100">
+                            <button onclick="deleteTransaction(${originalIndex})" class="text-slate-600 hover:text-rose-400 p-1.5 rounded-lg transition-all cursor-pointer">
                                 <i class="fa-regular fa-trash-can"></i>
                             </button>
                         </td>
@@ -273,39 +236,25 @@
                 });
             }
 
-            // Hitung saldo bersih
+            // Update UI Card & Progress Bar
             const balance = totalIncome - totalExpense;
-
-            // Update Dashboard UI
             document.getElementById('total-balance').innerText = formatRupiah(balance);
             document.getElementById('total-income').innerText = `+ ${formatRupiah(totalIncome)}`;
             document.getElementById('total-expense').innerText = `- ${formatRupiah(totalExpense)}`;
 
-            // Update Progress Bar Rasio Anggaran
             const ratioBar = document.getElementById('ratio-bar');
             const ratioText = document.getElementById('ratio-text');
             if (totalIncome > 0) {
                 const percentage = Math.min((totalExpense / totalIncome) * 100, 100).toFixed(0);
                 ratioBar.style.width = `${percentage}%`;
                 ratioText.innerText = `${percentage}% Terpakai`;
-                
-                if (percentage > 80) {
-                    ratioBar.className = "bg-gradient-to-r from-rose-500 to-red-500 h-full rounded-full transition-all duration-700";
-                    ratioText.className = "font-bold text-rose-400 animate-pulse";
-                } else {
-                    ratioBar.className = "bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 h-full rounded-full transition-all duration-700";
-                    ratioText.className = "font-bold text-indigo-400";
-                }
+                ratioBar.className = percentage > 80 ? "bg-gradient-to-r from-rose-500 to-red-500 h-full rounded-full" : "bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 h-full rounded-full";
             } else {
                 ratioBar.style.width = '0%';
                 ratioText.innerText = totalExpense > 0 ? 'Boros (Pemasukan Rp0)' : '0%';
-                ratioText.className = totalExpense > 0 ? "font-bold text-rose-400" : "font-bold text-indigo-400";
             }
 
-            // Update Donut Chart
             initChart(totalIncome, totalExpense);
-
-            // Simpan ke Local Storage
             localStorage.setItem('fintrack_pro_data', JSON.stringify(transactions));
         }
 
@@ -331,13 +280,28 @@
         }
 
         function clearAllData() {
-            if(confirm("Apakah Anda yakin ingin menghapus seluruh riwayat transaksi keuangan Anda? Tindakan ini tidak dapat dibatalkan.")) {
+            if(confirm("Hapus seluruh riwayat transaksi keuangan?")) {
                 transactions = [];
                 updateDOM();
             }
         }
 
         function exportToCSV() {
-            if (transactions.length === 0) return alert("Tidak ada data transaksi yang dapat diekspor.");
-            
-            let csvContent = "data:text/csv;charset=utf-8,Jenis T
+            if (transactions.length === 0) return alert("Tidak ada data untuk diekspor.");
+            let csvContent = "data:text/csv;charset=utf-8,Jenis Transaksi,Kategori,Catatan,Nominal\n";
+            transactions.forEach(tx => {
+                csvContent += `${tx.type === 'income' ? 'Pemasukan' : 'Pengeluaran'},"${tx.category}","${tx.desc || '-'}",${tx.amount}\n`;
+            });
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `Report_Keuangan.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        updateDOM();
+    </script>
+</body>
+</html>
