@@ -3,354 +3,200 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FinTrack Pro - Ultimate Stable Edition</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>FinTrack Pro - Simpel & Anti-Crash</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #0b0f19; color: #f1f5f9; padding: 30px; min-height: 100vh; font-size: 16px; }
-        .container { max-width: 1300px; margin: 0 auto; }
+        /* CSS Dasar Baku & Rapi */
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
+        body { background: #0f172a; color: #f8fafc; padding: 20px; }
+        .container { max-width: 700px; margin: 0 auto; }
         
-        /* Header Layout */
-        header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 25px; border-bottom: 2px solid #1e293b; margin-bottom: 35px; }
-        h1 { font-size: 32px; color: #818cf8; font-weight: 700; display: flex; align-items: center; gap: 12px; }
-        .pro-badge { background: linear-gradient(90deg, #fbbf24, #f59e0b); color: #020617; font-size: 12px; padding: 4px 10px; border-radius: 20px; margin-left: 8px; font-weight: bold; }
+        header { text-align: center; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 2px solid #334155; }
+        h1 { color: #818cf8; }
         
-        /* Dashboard Stats Cards */
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-bottom: 25px; }
-        .card { background: rgba(30, 41, 59, 0.5); border: 1px solid rgba(255,255,255,0.08); padding: 25px; border-radius: 20px; backdrop-filter: blur(10px); position: relative; }
-        .card p { font-size: 14px; color: #94a3b8; text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px; }
-        .card h3 { font-size: 30px; margin-top: 10px; font-weight: 700; letter-spacing: -0.5px; transition: filter 0.2s; }
+        /* Kartu Tampilan Saldo */
+        .main-box { background: #1e293b; padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #475569; }
+        .balance-title { font-size: 14px; color: #94a3b8; text-transform: uppercase; }
+        .balance-val { font-size: 32px; font-weight: bold; margin: 10px 0; color: #ffffff; }
         
-        /* Incognito Blur Security */
-        .blur-active .amount-hide { filter: blur(8px); pointer-events: none; user-select: none; }
-        .btn-eye { background: none; border: none; color: #818cf8; font-size: 20px; cursor: pointer; position: absolute; top: 25px; right: 25px; }
-        .btn-eye:hover { color: #a5b4fc; }
+        .sub-wallet { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px; }
+        .w-card { background: #0f172a; padding: 10px; border-radius: 8px; text-align: center; font-size: 13px; border: 1px solid #334155; }
+        .w-card strong { display: block; font-size: 15px; margin-top: 5px; color: #38bdf8; }
         
-        /* Wallet Grid */
-        .wallets-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 35px; }
-        .wallet-box { background: rgba(15, 23, 42, 0.6); border: 1px solid #1e293b; padding: 18px; border-radius: 14px; text-align: center; font-size: 15px; }
-        .wallet-box strong { font-size: 18px; display: block; margin-top: 4px; transition: filter 0.2s; }
+        /* Form Input */
+        .form-box { background: #1e293b; padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #475569; }
+        h3 { margin-bottom: 15px; font-size: 18px; color: #cbd5e1; }
         
-        /* Split Workspace Layout */
-        .main-layout { display: grid; grid-template-columns: 1fr; gap: 25px; }
-        @media(min-width: 992px) { .main-layout { grid-template-columns: 380px 1fr; } }
+        .form-group { display: flex; flex-direction: column; gap: 12px; }
+        select, input { width: 100%; padding: 12px; background: #0f172a; border: 1px solid #475569; border-radius: 8px; color: #fff; font-size: 15px; }
         
-        /* Input & Form Control */
-        .form-group { display: flex; flex-direction: column; gap: 15px; }
-        h4 { font-size: 18px; font-weight: 700; }
-        select, input, textarea { width: 100%; background: #0f172a; border: 1px solid #334155; padding: 14px 16px; border-radius: 12px; color: #fff; font-size: 15px; outline: none; font-family: inherit; }
-        select:focus, input:focus { border-color: #6366f1; }
-        button.btn-submit { background: linear-gradient(135deg, #6366f1, #a855f7); color: white; border: none; padding: 14px; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 15px; margin-top: 5px; }
-        button.btn-submit:hover { opacity: 0.9; }
+        button { width: 100%; padding: 12px; background: #6366f1; color: #fff; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 15px; }
+        button:hover { background: #4f46e5; }
         
-        /* Quick Amount Shortcuts */
-        .quick-box { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
-        .quick-box button { background: #1e293b; border: none; color: #cbd5e1; font-size: 12px; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-weight: 500; }
-        .quick-box button:hover { background: #334155; }
+        .btn-danger { background: #ef4444; margin-top: 10px; padding: 8px; font-size: 13px; }
+        .btn-danger:hover { background: #dc2626; }
         
-        /* Data Table Presentation */
-        .table-container { overflow-x: auto; margin-top: 20px; }
-        table { width: 100%; border-collapse: collapse; text-align: left; font-size: 15px; }
-        th { padding: 14px; color: #94a3b8; border-bottom: 2px solid #334155; font-weight: 600; }
-        td { padding: 16px 14px; border-bottom: 1px solid rgba(51,65,85,0.4); }
+        /* Tabel Riwayat */
+        .table-box { background: #1e293b; padding: 20px; border-radius: 12px; border: 1px solid #475569; overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        th, td { padding: 12px; border-bottom: 1px solid #334155; font-size: 14px; }
+        th { color: #94a3b8; }
         
-        .text-green { color: #10b981; }
-        .text-red { color: #f43f5e; }
-        .text-amber { color: #fbbf24; }
-        .text-blue { color: #3b82f6; }
-        
-        /* Table Controls Bar */
-        .table-header { display: flex; justify-content: space-between; align-items: center; gap: 15px; flex-wrap: wrap; }
-        .search-filters { display: flex; gap: 10px; }
-        .search-filters input, .search-filters select { width: auto; padding: 10px 16px; }
-        
-        /* Action Utility Buttons */
-        .btn-action { background: #1e293b; border: 1px solid #334155; color: #818cf8; padding: 10px 18px; border-radius: 10px; font-size: 14px; cursor: pointer; font-weight: bold; }
-        .btn-action:hover { background: #334155; }
-        .btn-reset { background: rgba(244, 63, 94, 0.1); border: 1px solid rgba(244, 63, 94, 0.2); color: #f43f5e; margin-top: 20px; padding: 10px 16px; border-radius: 10px; font-size: 13px; cursor: pointer; font-weight: 600; }
-        .btn-reset:hover { background: rgba(244, 63, 94, 0.2); }
-        
-        /* Chart Side-by-Side Flex */
-        .chart-layout-box { display: flex; flex-direction: column; gap: 20px; }
-        @media(min-width: 600px) { .chart-layout-box { flex-direction: row; } .chart-layout-box > .card { flex: 1; } }
-        .chart-container { display: flex; align-items: center; justify-content: center; gap: 25px; padding: 20px; flex-wrap: wrap; }
-        .svg-donut { transform: rotate(-90deg); shrink: 0; }
-        
-        /* Goal Progress Items */
-        .goal-container { margin-top: 15px; display: flex; flex-direction: column; gap: 12px; }
-        .goal-card { background: #0f172a; border: 1px solid #1e293b; padding: 15px; border-radius: 12px; }
-        .goal-info { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 8px; color: #94a3b8; }
-        .goal-progress-bar { width: 100%; background: #1e293b; height: 10px; border-radius: 5px; overflow: hidden; }
-        .goal-progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #3b82f6, #6366f1); transition: width 0.4s ease; }
-        
-        /* Encrypted Backup Area */
-        .backup-area { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
-        .backup-area textarea { font-family: monospace; font-size: 12px; height: 80px; resize: none; background: #020617; }
+        .text-green { color: #10b981; font-weight: bold; }
+        .text-red { color: #f43f5e; font-weight: bold; }
     </style>
 </head>
-<body id="app-body">
+<body>
+
     <div class="container">
-        
         <header>
-            <div>
-                <h1><i class="fa-solid fa-vault"></i> FinTrack<span class="pro-badge">PRO</span></h1>
-            </div>
-            <button onclick="exportCSV()" class="btn-action"><i class="fa-solid fa-file-csv"></i> Unduh CSV</button>
+            <h1>FinTrack PRO</h1>
+            <p style="font-size: 12px; color: #94a3b8;">Versi Super Stabil & Ringan</p>
         </header>
 
-        <div class="stats-grid">
-            <div class="card">
-                <p>Total Saldo Akumulasi</p>
-                <h3 id="val-balance" class="amount-hide" style="color: #fff;">Rp 0</h3>
-                <button type="button" onclick="toggleIncognito()" class="btn-eye" id="eye-icon"><i class="fa-solid fa-eye"></i></button>
-            </div>
-            <div class="card">
-                <p style="color: #10b981;">Pemasukan Bulanan</p>
-                <h3 id="val-income" class="text-green amount-hide">+ Rp 0</h3>
-            </div>
-            <div class="card">
-                <p style="color: #f43f5e;">Pengeluaran Bulanan</p>
-                <h3 id="val-expense" class="text-red amount-hide">- Rp 0</h3>
-            </div>
-        </div>
-
-        <div class="wallets-grid">
-            <div class="wallet-box">💵 Kantong Tunai <strong id="w-cash" class="amount-hide">Rp 0</strong></div>
-            <div class="wallet-box">🏛️ Rekening Bank <strong id="w-bank" class="amount-hide">Rp 0</strong></div>
-            <div class="wallet-box">📱 Saldo E-Wallet <strong id="w-wallet" class="amount-hide">Rp 0</strong></div>
-        </div>
-
-        <div class="main-layout">
+        <div class="main-box">
+            <span class="balance-title">Total Saldo Bersih</span>
+            <div class="balance-val" id="total-saldo">Rp 0</div>
             
-            <div style="display: flex; flex-direction: column; gap: 25px;">
-                
-                <div class="card">
-                    <h4 style="margin-bottom: 15px;"><i class="fa-solid fa-plus-circle text-green"></i> Input Keuangan</h4>
-                    <form id="form-tx" onsubmit="addTx(event)" class="form-group">
-                        <select id="tx-type" onchange="handleTypeChange()">
-                            <option value="income">🟢 Pemasukan (+)</option>
-                            <option value="expense">🔴 Pengeluaran (-)</option>
-                            <option value="goal_save">🔵 Alokasikan Tabungan (-)</option>
-                            <option value="transfer">🔄 Mutasi Internal (Transfer Saldo)</option>
-                        </select>
-                        
-                        <select id="tx-wallet-select">
-                            <option value="cash">💵 Dari Uang Tunai / Kantong</option>
-                            <option value="bank">🏛️ Dari Rekening Bank</option>
-                            <option value="wallet">📱 Dari E-Wallet / QRIS</option>
-                        </select>
-
-                        <select id="tx-wallet-target" style="display: none; border-color: #3b82f6;">
-                            <option value="cash">➡️ Ke Uang Tunai</option>
-                            <option value="bank">➡️ Ke Rekening Bank</option>
-                            <option value="wallet">➡️ Ke E-Wallet</option>
-                        </select>
-
-                        <select id="tx-goal-select" style="display: none; border-color: #fbbf24;"></select>
-
-                        <div>
-                            <input type="number" id="tx-amount" required placeholder="Nominal Angka (Rp)">
-                            <div class="quick-box">
-                                <button type="button" onclick="quickAmount(20000)">+20k</button>
-                                <button type="button" onclick="quickAmount(50000)">+50k</button>
-                                <button type="button" onclick="quickAmount(100000)">+100k</button>
-                                <button type="button" onclick="quickAmount(0, true)" style="color:#f43f5e;">Clear</button>
-                            </div>
-                        </div>
-
-                        <input type="text" id="tx-cat" required placeholder="Kategori Keterangan (Makan, Gaji, dll)">
-                        
-                        <button type="submit" class="btn-submit">Simpan Transaksi</button>
-                    </form>
-                </div>
-
-                <div class="card" style="border-color: rgba(59, 130, 246, 0.2);">
-                    <h4 style="margin-bottom: 12px;"><i class="fa-solid fa-bullseye" style="color: #3b82f6;"></i> Target Tabungan</h4>
-                    <form id="form-goal" onsubmit="addGoal(event)" class="form-group" style="gap: 10px;">
-                        <input type="text" id="goal-name" required placeholder="Nama impian (cth: Sepatu, PC)">
-                        <input type="number" id="goal-target" required placeholder="Target Dana (Rp)">
-                        <button type="submit" class="btn-submit" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8); padding: 10px;">Tambah Impian</button>
-                    </form>
-                </div>
-
-                <div class="card" style="border-color: rgba(168, 85, 247, 0.2);">
-                    <h4><i class="fa-solid fa-database" style="color: #a855f7;"></i> Data Backup & Restore</h4>
-                    <div class="backup-area">
-                        <button type="button" onclick="generateBackup()" class="btn-action" style="font-size:12px; padding:8px;"><i class="fa-solid fa-copy"></i> Buat & Salin Kode Backup</button>
-                        <textarea id="backup-box" placeholder="Tempel kode teks cadangan di sini untuk mengembalikan data..."></textarea>
-                        <button type="button" onclick="restoreBackup()" class="btn-submit" style="background:#a855f7; padding:8px; font-size:12px; margin:0;">Import & Restore Data</button>
-                    </div>
-                </div>
+            <div class="sub-wallet">
+                <div class="w-card">💵 Tunai<strong id="w-cash">Rp 0</strong></div>
+                <div class="w-card">🏛️ Bank<strong id="w-bank">Rp 0</strong></div>
+                <div class="w-card">📱 E-Wallet<strong id="w-wallet">Rp 0</strong></div>
             </div>
+        </div>
 
-            <div style="display: flex; flex-direction: column; gap: 25px;">
+        <div class="form-box">
+            <h3>Input Transaksi Baru</h3>
+            <form id="tx-form" onsubmit="simpanData(event)" class="form-group">
+                <select id="input-tipe">
+                    <option value="masuk">🟢 Pemasukan (+)</option>
+                    <option value="keluar">🔴 Pengeluaran (-)</option>
+                </select>
                 
-                <div class="chart-layout-box">
-                    <div class="card chart-container">
-                        <svg width="140" height="140" class="svg-donut">
-                            <circle cx="70" cy="70" r="50" fill="transparent" stroke="#1e293b" stroke-width="18"/>
-                            <circle id="slice-income" cx="70" cy="70" r="50" fill="transparent" stroke="#10b981" stroke-width="18" stroke-dasharray="314.1" stroke-dashoffset="314.1"/>
-                            <circle id="slice-expense" cx="70" cy="70" r="50" fill="transparent" stroke="#f43f5e" stroke-width="18" stroke-dasharray="314.1" stroke-dashoffset="314.1"/>
-                        </svg>
-                        <div>
-                            <h4 style="margin-bottom: 5px;">Proporsi Kas</h4>
-                            <p style="font-size: 12px; margin-bottom: 5px;">Rasio masuk vs keluar eksternal.</p>
-                            <button type="button" onclick="clearData()" class="btn-reset"><i class="fa-regular fa-trash-can"></i> Reset Semua Data</button>
-                        </div>
-                    </div>
+                <select id="input-wadah">
+                    <option value="cash">💵 Kantong Tunai</option>
+                    <option value="bank">🏛️ Rekening Bank</option>
+                    <option value="wallet">📱 Saldo E-Wallet</option>
+                </select>
+                
+                <input type="number" id="input-nominal" placeholder="Nominal Angka (Contoh: 50000)" required>
+                <input type="text" id="input-ket" placeholder="Keterangan / Kategori (Contoh: Gaji, Makan)" required>
+                
+                <button type="submit">Simpan Transaksi</button>
+            </form>
+            <button onclick="hapusSemua()" class="btn-danger">Hapus/Reset Semua Memori</button>
+        </div>
 
-                    <div class="card">
-                        <h4><i class="fa-solid fa-piggy-bank" style="color: #6366f1;"></i> Celengan Impian</h4>
-                        <div class="goal-container" id="goals-list-box"></div>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="table-header">
-                        <h4><i class="fa-solid fa-list-ul"></i> Riwayat Alur Keuangan</h4>
-                        <div class="search-filters">
-                            <input type="text" id="search-tx" oninput="updateUI()" placeholder="🔍 Cari deskripsi...">
-                            <select id="filter-type" onchange="updateUI()">
-                                <option value="all">Semua Jenis</option>
-                                <option value="income">🟢 Masuk</option>
-                                <option value="expense">🔴 Keluar</option>
-                                <option value="goal_save">🔵 Celengan</option>
-                                <option value="transfer">🔄 Mutasi</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="table-container">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Tanggal</th>
-                                    <th>Wadah Dompet</th>
-                                    <th>Tipe Alur</th>
-                                    <th>Kategori Deskripsi</th>
-                                    <th>Nominal Uang</th>
-                                    <th style="text-align: center;">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody id="history-body"></tbody>
-                        </table>
-                    </div>
-                </div>
-
-            </div>
+        <div class="table-box">
+            <h3>Riwayat Transaksi</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Dompet</th>
+                        <th>Tipe</th>
+                        <th>Keterangan</th>
+                        <th>Nominal</th>
+                    </tr>
+                </thead>
+                <tbody id="tabel-body"></tbody>
+            </table>
         </div>
     </div>
 
     <script>
-        // Master Storage Keys (Menggunakan Kunci Baru Terpadu Spesifik v100)
-        const KEY_TXS = 'ft_master_v100_txs';
-        const KEY_GOALS = 'ft_master_v100_goals';
-        const KEY_INCOG = 'ft_master_v100_incog';
+        // Menggunakan Key Storage Baru agar bersih dari sisa data eror sebelumnya
+        const STORAGE_KEY = 'fintrack_clean_v1';
+        let dataTransaksi = [];
 
-        let txs = [];
-        let goals = [];
-        let incognito = false;
-        
-        // Pengaman Terbuka Mengantisipasi Data Rusak
+        // Memuat data aman saat pertama kali halaman dibuka
         try {
-            txs = JSON.parse(localStorage.getItem(KEY_TXS)) || [];
-            goals = JSON.parse(localStorage.getItem(KEY_GOALS)) || [];
-            incognito = JSON.parse(localStorage.getItem(KEY_INCOG)) || false;
-            
-            if (!Array.isArray(txs)) txs = [];
-            if (!Array.isArray(goals)) goals = [];
+            dataTransaksi = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+            if(!Array.isArray(dataTransaksi)) dataTransaksi = [];
         } catch(e) {
-            console.error("Data lama tidak kompatibel, sistem melakukan penyegaran otomatis.");
-            txs = []; goals = []; incognito = false;
+            dataTransaksi = [];
         }
 
-        const fmtRp = (num) => "Rp " + Number(num).toLocaleString('id-ID');
+        const formatRupiah = (angka) => "Rp " + Number(angka).toLocaleString('id-ID');
 
-        function toggleIncognito() {
-            incognito = !incognito;
-            localStorage.setItem(KEY_INCOG, JSON.stringify(incognito));
-            applyIncognitoUI();
-        }
-
-        function applyIncognitoUI() {
-            const body = document.getElementById('app-body');
-            const icon = document.getElementById('eye-icon');
-            if (!body || !icon) return;
+        function simpanData(e) {
+            e.preventDefault();
             
-            if (incognito) {
-                body.classList.add('blur-active');
-                icon.innerHTML = '<i class="fa-solid fa-eye-slash" style="color:#f43f5e;"></i>';
-            } else {
-                body.classList.remove('blur-active');
-                icon.innerHTML = '<i class="fa-solid fa-eye"></i>';
-            }
-        }
+            const tipe = document.getElementById('input-tipe').value;
+            const wadah = document.getElementById('input-wadah').value;
+            const nominal = parseInt(document.getElementById('input-nominal').value) || 0;
+            const ket = document.getElementById('input-ket').value;
 
-        function handleTypeChange() {
-            const typeEl = document.getElementById('tx-type');
-            const goalSelect = document.getElementById('tx-goal-select');
-            const targetSelect = document.getElementById('tx-wallet-target');
-            
-            if(!typeEl || !goalSelect || !targetSelect) return;
-            
-            const type = typeEl.value;
-            goalSelect.style.display = 'none';
-            targetSelect.style.display = 'none';
-
-            if (type === 'goal_save') {
-                goalSelect.style.display = 'block';
-                populateGoalDropdown();
-            } else if (type === 'transfer') {
-                targetSelect.style.display = 'block';
-            }
-        }
-
-        function populateGoalDropdown() {
-            const select = document.getElementById('tx-goal-select');
-            if(!select) return;
-            select.innerHTML = '';
-            if (goals.length === 0) {
-                select.innerHTML = '<option value="">(Buat Target Celengan Terlebih Dahulu!)</option>';
+            if (nominal <= 0) {
+                alert("Masukkan nominal angka yang benar!");
                 return;
             }
-            goals.forEach(g => {
-                select.innerHTML += `<option value="${g.id}">🎯 Celengan: ${g.name}</option>`;
-            });
-        }
 
-        function quickAmount(val, clear = false) {
-            const input = document.getElementById('tx-amount');
-            if(!input) return;
-            if (clear) input.value = '';
-            else input.value = (Number(input.value) || 0) + val;
-        }
-
-        function addGoal(e) {
-            e.preventDefault();
-            const nameEl = document.getElementById('goal-name');
-            const targetEl = document.getElementById('goal-target');
-            if(!nameEl || !targetEl) return;
-
-            const name = nameEl.value;
-            const target = parseInt(targetEl.value) || 0;
+            // Tambahkan data baru ke array
+            dataTransaksi.push({ tipe, wadah, nominal, ket });
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(dataTransaksi));
             
-            if (target > 0) {
-                goals.push({ id: Date.now(), name, target, current: 0 });
-                localStorage.setItem(KEY_GOALS, JSON.stringify(goals));
-                document.getElementById('form-goal').reset();
-                handleTypeChange();
-                updateUI();
+            // Reset form input
+            document.getElementById('tx-form').reset();
+            
+            // Perbarui tampilan
+            renderUI();
+        }
+
+        function hapusSemua() {
+            if(confirm("Apakah Anda yakin ingin menghapus seluruh riwayat saldo?")) {
+                dataTransaksi = [];
+                localStorage.setItem(STORAGE_KEY, '[]');
+                renderUI();
             }
         }
 
-        function addTx(e) {
-            e.preventDefault();
-            const typeEl = document.getElementById('tx-type');
-            const walletEl = document.getElementById('tx-wallet-select');
-            const targetEl = document.getElementById('tx-wallet-target');
-            const amountEl = document.getElementById('tx-amount');
-            const catEl = document.getElementById('tx-cat');
-            const goalIdEl = document.getElementById('tx-goal-select');
+        function renderUI() {
+            let totalSemua = 0;
+            let saldoPerWadah = { cash: 0, bank: 0, wallet: 0 };
+            
+            const tbody = document.getElementById('tabel-body');
+            if(tbody) tbody.innerHTML = '';
 
-            if(!typeEl || !walletEl || !targetEl || !amountEl || !catEl || !goalIdE
+            // Hitung akumulasi kalkulasi saldo murni
+            dataTransaksi.forEach(tx => {
+                let nom = Number(tx.nominal) || 0;
+                if (tx.tipe === 'masuk') {
+                    totalSemua += nom;
+                    saldoPerWadah[tx.wadah] += nom;
+                } else {
+                    totalSemua -= nom;
+                    saldoPerWadah[tx.wadah] -= nom;
+                }
+
+                // Masukkan baris data ke dalam tabel riwayat
+                if(tbody) {
+                    const labelTipe = tx.tipe === 'masuk' ? '<span class="text-green">Masuk</span>' : '<span class="text-red">Keluar</span>';
+                    const kelasNominal = tx.tipe === 'masuk' ? 'text-green' : 'text-red';
+                    const tanda = tx.tipe === 'masuk' ? '+ ' : '- ';
+                    const labelWadah = tx.wadah === 'bank' ? '🏛️ Bank' : tx.wadah === 'wallet' ? '📱 E-Wallet' : '💵 Tunai';
+
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${labelWadah}</td>
+                            <td>${labelTipe}</td>
+                            <td>${tx.ket}</td>
+                            <td class="${kelasNominal}">${tanda}${formatRupiah(nom)}</td>
+                        </tr>
+                    `;
+                }
+            });
+
+            // Pasang hasil kalkulasi ke elemen teks HTML secara presisi
+            if(document.getElementById('total-saldo')) document.getElementById('total-saldo').innerText = formatRupiah(totalSemua);
+            if(document.getElementById('w-cash')) document.getElementById('w-cash').innerText = formatRupiah(saldoPerWadah.cash);
+            if(document.getElementById('w-bank')) document.getElementById('w-bank').innerText = formatRupiah(saldoPerWadah.bank);
+            if(document.getElementById('w-wallet')) document.getElementById('w-wallet').innerText = formatRupiah(saldoPerWadah.wallet);
+        }
+
+        // Jalankan UI segera setelah halaman selesai memuat komponen HTML
+        window.addEventListener('DOMContentLoaded', () => {
+            renderUI();
+        });
+    </script>
+</body>
+</html>
+
