@@ -64,38 +64,62 @@
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <!-- Form Input Catatan -->
+            <!-- Form Input Catatan (Updated Smart Form) -->
             <div class="glass-card rounded-2xl p-6 h-fit">
                 <h2 class="text-xl font-bold mb-4 text-white">Tambah Catatan</h2>
                 <form id="tx-form" onsubmit="addTransaction(event)" class="space-y-3.5">
-                    <div class="grid grid-cols-2 gap-3">
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-400 mb-1">Jenis</label>
-                            <select id="tx-type" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-xs text-white">
-                                <option value="income">🟢 Masuk (+)</option>
-                                <option value="expense">🔴 Keluar (-)</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-400 mb-1">Tujuan Dompet</label>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 mb-1">Jenis Transaksi</label>
+                        <select id="tx-type" onchange="handleTypeChange()" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-xs text-white">
+                            <option value="income">🟢 Masuk (+)</option>
+                            <option value="expense">🔴 Keluar (-)</option>
+                            <option value="transfer">🔄 Pindah Saldo (Transfer)</option>
+                        </select>
+                    </div>
+
+                    <!-- Pilihan Dompet Dinamis -->
+                    <div id="wallet-selection-container" class="grid grid-cols-2 gap-3">
+                        <div id="source-wallet-block">
+                            <label id="wallet-label-1" class="block text-xs font-semibold text-slate-400 mb-1">Tujuan Dompet</label>
                             <select id="tx-wallet" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-xs text-white">
                                 <option value="cash">💵 Uang Tunai (Cash)</option>
                                 <option value="bank">🏛️ Rekening Bank</option>
                                 <option value="ewallet">📱 E-Wallet / QRIS</option>
                             </select>
                         </div>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-400 mb-1">Nominal (Rp)</label>
-                        <div class="relative">
-                            <span class="absolute left-3.5 top-2.5 text-slate-500 text-sm font-semibold">Rp</span>
-                            <input type="number" id="tx-amount" required placeholder="100000" class="w-full bg-slate-900 border border-slate-700 rounded-xl pl-10 pr-3.5 py-2.5 text-sm text-white">
+                        <div id="target-wallet-block" class="hidden">
+                            <label class="block text-xs font-semibold text-slate-400 mb-1">Ke Dompet Tujuan</label>
+                            <select id="tx-target-wallet" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-xs text-white">
+                                <option value="cash">💵 Uang Tunai (Cash)</option>
+                                <option value="bank" selected>🏛️ Rekening Bank</option>
+                                <option value="ewallet">📱 E-Wallet / QRIS</option>
+                            </select>
                         </div>
                     </div>
+
+                    <!-- Nominal Input & Shortcut Tombol Cepat -->
                     <div>
-                        <label class="block text-xs font-semibold text-slate-400 mb-1">Kategori</label>
-                        <input type="text" id="tx-category" required placeholder="Makanan, Gaji, dll" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white">
+                        <label class="block text-xs font-semibold text-slate-400 mb-1">Nominal (Rp)</label>
+                        <div class="relative mb-2">
+                            <span class="absolute left-3.5 top-2.5 text-slate-500 text-sm font-semibold">Rp</span>
+                            <input type="number" id="tx-amount" required placeholder="10000" class="w-full bg-slate-900 border border-slate-700 rounded-xl pl-10 pr-3.5 py-2.5 text-sm text-white">
+                        </div>
+                        <!-- Tombol Shortcut Cepat -->
+                        <div class="flex flex-wrap gap-1.5">
+                            <button type="button" onclick="quickAmount(10000)" class="px-2 py-1 bg-slate-800 text-[10px] text-slate-300 rounded-md hover:bg-slate-700 cursor-pointer">+10k</button>
+                            <button type="button" onclick="quickAmount(20000)" class="px-2 py-1 bg-slate-800 text-[10px] text-slate-300 rounded-md hover:bg-slate-700 cursor-pointer">+20k</button>
+                            <button type="button" onclick="quickAmount(50000)" class="px-2 py-1 bg-slate-800 text-[10px] text-slate-300 rounded-md hover:bg-slate-700 cursor-pointer">+50k</button>
+                            <button type="button" onclick="quickAmount(100000)" class="px-2 py-1 bg-slate-800 text-[10px] text-slate-300 rounded-md hover:bg-slate-700 cursor-pointer">+100k</button>
+                            <button type="button" onclick="quickAmount(0, true)" class="px-2 py-1 bg-rose-950 text-rose-400 text-[10px] rounded-md hover:bg-rose-900 cursor-pointer">Clear</button>
+                        </div>
                     </div>
+
+                    <!-- Kategori input -->
+                    <div id="category-container">
+                        <label class="block text-xs font-semibold text-slate-400 mb-1">Kategori</label>
+                        <input type="text" id="tx-category" placeholder="Makanan, Gaji, dll" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white">
+                    </div>
+
                     <button type="submit" class="w-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white font-bold py-3 rounded-xl text-xs cursor-pointer">Simpan Transaksi</button>
                 </form>
             </div>
@@ -119,6 +143,38 @@
             return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(number);
         }
 
+        // FUNGSI SHORTCUT TOMBOL NOMINAL
+        function quickAmount(val, clear = false) {
+            const input = document.getElementById('tx-amount');
+            if (clear) {
+                input.value = '';
+            } else {
+                let currentVal = parseInt(input.value) || 0;
+                input.value = currentVal + val;
+            }
+        }
+
+        // FUNGSI MENGUBAH FORM JIKA TRANSFER TERPILIH
+        function handleTypeChange() {
+            const type = document.getElementById('tx-type').value;
+            const label1 = document.getElementById('wallet-label-1');
+            const targetBlock = document.getElementById('target-wallet-block');
+            const catContainer = document.getElementById('category-container');
+            const catInput = document.getElementById('tx-category');
+
+            if (type === 'transfer') {
+                label1.innerText = "Dari Dompet (Asal)";
+                targetBlock.classList.remove('hidden');
+                catContainer.classList.add('hidden');
+                catInput.required = false;
+            } else {
+                label1.innerText = "Tujuan Dompet";
+                targetBlock.classList.add('hidden');
+                catContainer.classList.remove('hidden');
+                catInput.required = true;
+            }
+        }
+
         function initChart(income, expense) {
             const ctx = document.getElementById('financeChart').getContext('2d');
             if (myChart) myChart.destroy();
@@ -132,10 +188,13 @@
 
         function updateDOM() {
             let income = 0, expense = 0;
+            
+            // Note: Data transfer tidak merubah total pemasukan/pengeluaran gabungan global, 
+            // karena uangnya hanya berpindah kantong internal.
             transactions.forEach(tx => {
                 let amt = parseInt(tx.amount);
                 if (tx.type === 'income') income += amt;
-                else expense += amt;
+                else if (tx.type === 'expense') expense += amt;
             });
 
             document.getElementById('total-balance').innerText = formatRupiah(income - expense);
@@ -148,14 +207,31 @@
         function addTransaction(e) {
             e.preventDefault();
             const type = document.getElementById('tx-type').value;
-            const wallet = document.getElementById('tx-wallet').value;
             const amount = parseInt(document.getElementById('tx-amount').value);
-            const category = document.getElementById('tx-category').value.trim();
+            
+            if (isNaN(amount) || amount <= 0) return alert("Nominal harus valid!");
 
-            transactions.push({ type, wallet, amount, category });
+            if (type === 'transfer') {
+                const sourceWallet = document.getElementById('tx-wallet').value;
+                const targetWallet = document.getElementById('tx-target-wallet').value;
+
+                if (sourceWallet === targetWallet) {
+                    return alert("Dompet asal dan dompet tujuan transfer tidak boleh sama!");
+                }
+
+                // Sistem Otomatis: Membuat 2 record mutasi agar terbaca di halaman masing-masing
+                transactions.push({ type: 'expense', wallet: sourceWallet, amount: amount, category: `Pindah Saldo ke ${targetWallet.toUpperCase()}` });
+                transactions.push({ type: 'income', wallet: targetWallet, amount: amount, category: `Terima Saldo dari ${sourceWallet.toUpperCase()}` });
+            } else {
+                const wallet = document.getElementById('tx-wallet').value;
+                const category = document.getElementById('tx-category').value.trim();
+                transactions.push({ type, wallet, amount, category });
+            }
+
             updateDOM();
             document.getElementById('tx-form').reset();
-            alert("Transaksi berhasil ditambahkan!");
+            handleTypeChange(); // kembalikan form ke mode default
+            alert("Berhasil disimpan!");
         }
 
         function clearAllData() {
