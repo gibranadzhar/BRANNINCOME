@@ -172,9 +172,16 @@
     </div>
 
     <script>
-        let txs = JSON.parse(localStorage.getItem('fintrack_data')) || [];
+        // Gunakan try-catch agar inisialisasi awal kebal error data lama
+        let txs = [];
+        try {
+            txs = JSON.parse(localStorage.getItem('fintrack_data')) || [];
+            if(!Array.isArray(txs)) txs = [];
+        } catch(e) {
+            txs = [];
+        }
+        
         let myChart = null;
-
         const fmtRp = (num) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(num);
 
         function setTheme(theme) {
@@ -203,14 +210,16 @@
         }
 
         function initChart(inc, exp) {
-            const ctx = document.getElementById('financeChart').getContext('2d');
-            if (myChart) myChart.destroy();
-            const data = (inc === 0 && exp === 0) ? [1, 0] : [inc, exp];
-            myChart = new Chart(ctx, {
-                type: 'doughnut',
-                data: { datasets: [{ data: data, backgroundColor: ['#10b981', '#f43f5e'], borderWidth: 0 }] },
-                options: { responsive: true, maintainAspectRatio: false, cutout: '75%' }
-            });
+            try {
+                const ctx = document.getElementById('financeChart').getContext('2d');
+                if (myChart) myChart.destroy();
+                const data = (inc === 0 && exp === 0) ? [1, 0] : [inc, exp];
+                myChart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: { datasets: [{ data: data, backgroundColor: ['#10b981', '#f43f5e'], borderWidth: 0 }] },
+                    options: { responsive: true, maintainAspectRatio: false, cutout: '75%' }
+                });
+            } catch (err) { console.log("Chart Error: ", err); }
         }
 
         function addTx(e) {
@@ -225,7 +234,6 @@
                 txs.push({ id: Date.now(), type, wallet, amount, cat, date: dateStr });
                 localStorage.setItem('fintrack_data', JSON.stringify(txs));
                 document.getElementById('form-tx').reset();
-                if ("vibrate" in navigator) navigator.vibrate(100);
                 updateUI();
             } else {
                 alert("Masukkan nominal yang valid!");
@@ -239,7 +247,11 @@
         }
 
         function clearData() {
-            if (confirm("Yakin hapus semua data?")) { txs = []; localStorage.setItem('fintrack_data', '[]'); updateUI(); }
+            if (confirm("Yakin hapus semua data?")) { 
+                txs = []; 
+                localStorage.setItem('fintrack_data', '[]'); 
+                updateUI(); 
+            }
         }
 
         function exportCSV() {
@@ -266,21 +278,23 @@
             const searchQuery = document.getElementById('search-tx').value.toLowerCase();
             tbody.innerHTML = '';
 
-            // Hitung akumulasi saldo secara presisi dengan tipe data Number murni
+            // Pengaman tingkat tinggi saat looping hitung saldo murni angka
             txs.forEach(tx => {
-                let currentWallet = tx.wallet || 'cash';
-                let txAmount = parseInt(tx.amount) || 0;
+                try {
+                    let currentWallet = tx.wallet || 'cash';
+                    let txAmount = parseInt(tx.amount) || 0;
 
-                if (tx.type === 'income') {
-                    inc += txAmount;
-                    wBalances[currentWallet] += txAmount;
-                } else if (tx.type === 'expense') {
-                    exp += txAmount;
-                    wBalances[currentWallet] -= txAmount;
-                }
+                    if (tx.type === 'income') {
+                        inc += txAmount;
+                        wBalances[currentWallet] += txAmount;
+                    } else if (tx.type === 'expense') {
+                        exp += txAmount;
+                        wBalances[currentWallet] -= txAmount;
+                    }
+                } catch(e) { console.log("Row skip error: ", e); }
             });
 
-            // Render baris tabel berdasarkan pencarian & filter
+            // Merender baris tabel riwayat
             txs.slice().reverse().forEach(tx => {
                 if (filterType !== 'all' && tx.type !== filterType) return;
                 if (searchQuery && !tx.cat.toLowerCase().includes(searchQuery)) return;
@@ -288,8 +302,4 @@
                 const walletLabel = tx.wallet === 'bank' ? '🏛️ Bank' : tx.wallet === 'wallet' ? '📱 E-Wallet' : '💵 Tunai';
 
                 tbody.innerHTML += `
-                    <tr class="border-b border-slate-700/30 hover:bg-slate-800/20 transition-colors text-white">
-                        <td class="p-3 opacity-70">${tx.date || '-'}</td>
-                        <td class="p-3 font-semibold opacity-90">${walletLabel}</td>
-                        <td class="p-3">${tx.type === 'income' ? '<span class="text-emerald-400"><i class="fa-solid fa-arrow-down mr-1"></i>Masuk</span>' : '<span class="text-rose-400"><i class="fa-solid fa-arrow-up mr-1"></i>Keluar</span>'}</td>
-        
+                    <tr class="border-b border-slate-700/30 hover:bg-slate-800/20 transition-
