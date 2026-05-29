@@ -35,15 +35,20 @@
                 <h1 class="text-3xl font-bold bg-gradient-to-r from-indigo-400 to-pink-400 bg-clip-text text-transparent">FinTrack<span class="text-xs font-semibold ml-1 px-2 py-0.5 bg-gradient-to-r from-amber-400 to-orange-500 text-slate-950 rounded-full">PRO</span></h1>
             </div>
             
-            <div class="flex items-center gap-2 bg-slate-900/50 p-1.5 rounded-xl border border-slate-700/50">
-                <button onclick="setTheme('theme-cyber')" class="px-3 py-1.5 rounded-lg text-xs font-bold text-indigo-400 hover:bg-slate-800 cursor-pointer"><i class="fa-solid fa-moon"></i> Cyber</button>
-                <button onclick="setTheme('theme-light')" class="px-3 py-1.5 rounded-lg text-xs font-bold text-amber-500 hover:bg-slate-800 cursor-pointer"><i class="fa-solid fa-sun"></i> Light</button>
+            <div class="flex items-center gap-3">
+                <button onclick="exportCSV()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-indigo-400 border border-indigo-500/20 text-xs font-bold rounded-xl cursor-pointer">
+                    <i class="fa-solid fa-file-csv mr-1"></i> Unduh CSV
+                </button>
+                <div class="flex items-center gap-2 bg-slate-900/50 p-1.5 rounded-xl border border-slate-700/50">
+                    <button onclick="setTheme('theme-cyber')" class="px-3 py-1.5 rounded-lg text-xs font-bold text-indigo-400 hover:bg-slate-800 cursor-pointer"><i class="fa-solid fa-moon"></i> Cyber</button>
+                    <button onclick="setTheme('theme-light')" class="px-3 py-1.5 rounded-lg text-xs font-bold text-amber-500 hover:bg-slate-800 cursor-pointer"><i class="fa-solid fa-sun"></i> Light</button>
+                </div>
             </div>
         </header>
 
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
             <div class="glass-card rounded-2xl p-5">
-                <p class="text-slate-400 text-xs font-semibold uppercase flex items-center gap-2"><span class="h-2 w-2 rounded-full bg-indigo-400"></span>Saldo</p>
+                <p class="text-slate-400 text-xs font-semibold uppercase flex items-center gap-2"><span class="h-2 w-2 rounded-full bg-indigo-400"></span>Total Saldo</p>
                 <h3 id="val-balance" class="text-2xl font-bold mt-2 text-white">Rp 0</h3>
             </div>
             <div class="glass-card rounded-2xl p-5 border-emerald-500/10">
@@ -60,8 +65,13 @@
             </div>
         </div>
 
+        <div class="grid grid-cols-3 gap-4 mb-8 text-center text-xs">
+            <div class="glass-card p-3 rounded-xl"><span class="opacity-70">💵 Tunai:</span> <span id="w-cash" class="font-bold text-white">Rp 0</span></div>
+            <div class="glass-card p-3 rounded-xl"><span class="opacity-70">🏛️ Bank:</span> <span id="w-bank" class="font-bold text-white">Rp 0</span></div>
+            <div class="glass-card p-3 rounded-xl"><span class="opacity-70">📱 E-Wallet:</span> <span id="w-wallet" class="font-bold text-white">Rp 0</span></div>
+        </div>
+
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
-            
             <div class="space-y-6 lg:col-span-1">
                 <div class="glass-card rounded-2xl p-5">
                     <h2 class="font-bold mb-4 text-white text-sm"><i class="fa-solid fa-plus-circle text-indigo-400"></i> Catat Transaksi</h2>
@@ -71,6 +81,12 @@
                             <option value="expense">🔴 Pengeluaran (-)</option>
                         </select>
                         
+                        <select id="tx-wallet-select" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white outline-none">
+                            <option value="cash">💵 Uang Tunai</option>
+                            <option value="bank">🏛️ Rekening Bank</option>
+                            <option value="wallet">📱 E-Wallet / QRIS</option>
+                        </select>
+
                         <div>
                             <input type="number" id="tx-amount" required placeholder="Nominal (Rp)" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white outline-none mb-1.5">
                             <div class="flex flex-wrap gap-1">
@@ -82,42 +98,41 @@
                         </div>
 
                         <input type="text" id="tx-cat" required placeholder="Kategori (Makan, Gaji)" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white outline-none">
-                        <button type="submit" class="w-full bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-bold py-2.5 rounded-xl text-xs cursor-pointer shadow-lg shadow-indigo-500/20">Simpan</button>
+                        <button type="submit" class="w-full bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-bold py-2.5 rounded-xl text-xs cursor-pointer">Simpan</button>
                     </form>
                 </div>
 
                 <div class="glass-card rounded-2xl p-4">
                     <h2 class="font-bold mb-3 text-white text-sm"><i class="fa-solid fa-calculator text-indigo-400"></i> Kalkulator</h2>
-                    <input type="text" id="calc-display" disabled class="w-full bg-slate-900 text-right p-2 rounded-xl mb-3 border border-slate-700 text-white font-mono text-sm tracking-wider">
+                    <input type="text" id="calc-display" disabled class="w-full bg-slate-900 text-right p-2 rounded-xl mb-3 border border-slate-700 text-white font-mono text-sm">
                     <div class="grid grid-cols-4 gap-1.5">
-                        <button onclick="calc('7')" class="p-2 bg-slate-800 rounded-lg hover:bg-slate-700 text-white text-xs font-bold cursor-pointer">7</button>
-                        <button onclick="calc('8')" class="p-2 bg-slate-800 rounded-lg hover:bg-slate-700 text-white text-xs font-bold cursor-pointer">8</button>
-                        <button onclick="calc('9')" class="p-2 bg-slate-800 rounded-lg hover:bg-slate-700 text-white text-xs font-bold cursor-pointer">9</button>
-                        <button onclick="calc('/')" class="p-2 bg-indigo-900/80 rounded-lg hover:bg-indigo-700 text-indigo-300 text-xs font-bold cursor-pointer">/</button>
-                        <button onclick="calc('4')" class="p-2 bg-slate-800 rounded-lg hover:bg-slate-700 text-white text-xs font-bold cursor-pointer">4</button>
-                        <button onclick="calc('5')" class="p-2 bg-slate-800 rounded-lg hover:bg-slate-700 text-white text-xs font-bold cursor-pointer">5</button>
-                        <button onclick="calc('6')" class="p-2 bg-slate-800 rounded-lg hover:bg-slate-700 text-white text-xs font-bold cursor-pointer">6</button>
-                        <button onclick="calc('*')" class="p-2 bg-indigo-900/80 rounded-lg hover:bg-indigo-700 text-indigo-300 text-xs font-bold cursor-pointer">x</button>
-                        <button onclick="calc('1')" class="p-2 bg-slate-800 rounded-lg hover:bg-slate-700 text-white text-xs font-bold cursor-pointer">1</button>
-                        <button onclick="calc('2')" class="p-2 bg-slate-800 rounded-lg hover:bg-slate-700 text-white text-xs font-bold cursor-pointer">2</button>
-                        <button onclick="calc('3')" class="p-2 bg-slate-800 rounded-lg hover:bg-slate-700 text-white text-xs font-bold cursor-pointer">3</button>
-                        <button onclick="calc('-')" class="p-2 bg-indigo-900/80 rounded-lg hover:bg-indigo-700 text-indigo-300 text-xs font-bold cursor-pointer">-</button>
-                        <button onclick="calc('C')" class="p-2 bg-rose-900/80 rounded-lg hover:bg-rose-700 text-rose-300 text-xs font-bold cursor-pointer">C</button>
-                        <button onclick="calc('0')" class="p-2 bg-slate-800 rounded-lg hover:bg-slate-700 text-white text-xs font-bold cursor-pointer">0</button>
-                        <button onclick="calc('=')" class="p-2 bg-emerald-600 rounded-lg hover:bg-emerald-500 text-white text-xs font-bold cursor-pointer">=</button>
-                        <button onclick="calc('+')" class="p-2 bg-indigo-900/80 rounded-lg hover:bg-indigo-700 text-indigo-300 text-xs font-bold cursor-pointer">+</button>
+                        <button onclick="calc('7')" class="p-2 bg-slate-800 rounded-lg text-white text-xs font-bold cursor-pointer">7</button>
+                        <button onclick="calc('8')" class="p-2 bg-slate-800 rounded-lg text-white text-xs font-bold cursor-pointer">8</button>
+                        <button onclick="calc('9')" class="p-2 bg-slate-800 rounded-lg text-white text-xs font-bold cursor-pointer">9</button>
+                        <button onclick="calc('/')" class="p-2 bg-indigo-900/80 rounded-lg text-indigo-300 text-xs font-bold cursor-pointer">/</button>
+                        <button onclick="calc('4')" class="p-2 bg-slate-800 rounded-lg text-white text-xs font-bold cursor-pointer">4</button>
+                        <button onclick="calc('5')" class="p-2 bg-slate-800 rounded-lg text-white text-xs font-bold cursor-pointer">5</button>
+                        <button onclick="calc('6')" class="p-2 bg-slate-800 rounded-lg text-white text-xs font-bold cursor-pointer">6</button>
+                        <button onclick="calc('*')" class="p-2 bg-indigo-900/80 rounded-lg text-indigo-300 text-xs font-bold cursor-pointer">x</button>
+                        <button onclick="calc('1')" class="p-2 bg-slate-800 rounded-lg text-white text-xs font-bold cursor-pointer">1</button>
+                        <button onclick="calc('2')" class="p-2 bg-slate-800 rounded-lg text-white text-xs font-bold cursor-pointer">2</button>
+                        <button onclick="calc('3')" class="p-2 bg-slate-800 rounded-lg text-white text-xs font-bold cursor-pointer">3</button>
+                        <button onclick="calc('-')" class="p-2 bg-indigo-900/80 rounded-lg text-indigo-300 text-xs font-bold cursor-pointer">-</button>
+                        <button onclick="calc('C')" class="p-2 bg-rose-900/80 rounded-lg text-rose-300 text-xs font-bold cursor-pointer">C</button>
+                        <button onclick="calc('0')" class="p-2 bg-slate-800 rounded-lg text-white text-xs font-bold cursor-pointer">0</button>
+                        <button onclick="calc('=')" class="p-2 bg-emerald-600 rounded-lg text-white text-xs font-bold cursor-pointer">=</button>
+                        <button onclick="calc('+')" class="p-2 bg-indigo-900/80 rounded-lg text-indigo-300 text-xs font-bold cursor-pointer">+</button>
                     </div>
                 </div>
             </div>
 
             <div class="lg:col-span-3 space-y-6">
-                
                 <div class="glass-card rounded-2xl p-6 flex flex-col sm:flex-row items-center gap-8 justify-center">
                     <div class="w-40 h-40"><canvas id="financeChart"></canvas></div>
                     <div class="text-center sm:text-left">
                         <h2 class="text-lg font-bold text-white mb-2">Analisis Keuangan</h2>
-                        <p class="text-xs text-slate-400 max-w-xs">Grafik visual dari perbandingan total pemasukan dan pengeluaran kamu bulan ini.</p>
-                        <button onclick="clearData()" class="mt-4 text-xs bg-rose-950/40 text-rose-400 border border-rose-900/30 px-3 py-1.5 rounded-lg hover:bg-rose-900/40 cursor-pointer transition-all"><i class="fa-regular fa-trash-can"></i> Reset Semua Data</button>
+                        <p class="text-xs text-slate-400 max-w-xs">Perbandingan grafik total pemasukan dan pengeluaran keseluruhan dompet.</p>
+                        <button onclick="clearData()" class="mt-4 text-xs bg-rose-950/40 text-rose-400 border border-rose-900/30 px-3 py-1.5 rounded-lg hover:bg-rose-900/40 cursor-pointer"><i class="fa-regular fa-trash-can"></i> Reset Semua Data</button>
                     </div>
                 </div>
 
@@ -125,11 +140,15 @@
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4">
                         <h2 class="font-bold text-white text-sm"><i class="fa-solid fa-list-ul text-indigo-400"></i> Riwayat Terakhir</h2>
                         
-                        <select id="filter-type" onchange="updateUI()" class="bg-slate-900 border border-slate-700 rounded-xl px-3 py-1.5 text-xs text-white outline-none min-w-[120px]">
-                            <option value="all">📁 Semua Tipe</option>
-                            <option value="income">🟢 Pemasukan</option>
-                            <option value="expense">🔴 Pengeluaran</option>
-                        </select>
+                        <div class="flex flex-wrap gap-2 w-full sm:w-auto">
+                            <input type="text" id="search-tx" oninput="updateUI()" placeholder="🔍 Cari kategori..." class="bg-slate-900 border border-slate-700 rounded-xl px-3 py-1.5 text-xs text-white outline-none w-full sm:w-44">
+                            
+                            <select id="filter-type" onchange="updateUI()" class="bg-slate-900 border border-slate-700 rounded-xl px-3 py-1.5 text-xs text-white outline-none min-w-[110px]">
+                                <option value="all">📁 Semua Tipe</option>
+                                <option value="income">🟢 Pemasukan</option>
+                                <option value="expense">🔴 Pengeluaran</option>
+                            </select>
+                        </div>
                     </div>
                     
                     <div class="overflow-x-auto">
@@ -137,18 +156,17 @@
                             <thead>
                                 <tr class="border-b border-slate-700/50 text-slate-400">
                                     <th class="p-3 font-semibold">Tanggal</th>
+                                    <th class="p-3 font-semibold">Dompet</th>
                                     <th class="p-3 font-semibold">Tipe</th>
                                     <th class="p-3 font-semibold">Kategori</th>
                                     <th class="p-3 font-semibold">Nominal</th>
                                     <th class="p-3 font-semibold text-center">Aksi</th>
                                 </tr>
                             </thead>
-                            <tbody id="history-body">
-                                </tbody>
+                            <tbody id="history-body"></tbody>
                         </table>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
@@ -169,7 +187,6 @@
             updateUI();
         }
 
-        // FITUR BARU: Logika Shortcut Nominal
         function quickAmount(val, clear = false) {
             const input = document.getElementById('tx-amount');
             if (clear) { input.value = ''; } 
@@ -199,14 +216,13 @@
         function addTx(e) {
             e.preventDefault();
             const type = document.getElementById('tx-type').value;
+            const wallet = document.getElementById('tx-wallet-select').value;
             const amount = parseInt(document.getElementById('tx-amount').value);
             const cat = document.getElementById('tx-cat').value;
-            
-            // FITUR BARU: Membuat Label Tanggal Otomatis
             const dateStr = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
 
             if (amount > 0) {
-                txs.push({ id: Date.now(), type, amount, cat, date: dateStr });
+                txs.push({ id: Date.now(), type, wallet, amount, cat, date: dateStr });
                 localStorage.setItem('fintrack_data', JSON.stringify(txs));
                 document.getElementById('form-tx').reset();
                 if ("vibrate" in navigator) navigator.vibrate(100);
@@ -224,49 +240,54 @@
             if (confirm("Yakin hapus semua data?")) { txs = []; localStorage.setItem('fintrack_data', '[]'); updateUI(); }
         }
 
+        // FITUR BARU: Logika Ekspor Data Ke File CSV
+        function exportCSV() {
+            if (txs.length === 0) return alert("Belum ada data transaksi.");
+            let csv = "Tanggal,Dompet,Tipe,Kategori,Nominal\n";
+            txs.forEach(t => {
+                csv += `${t.date || '-'},${t.wallet},${t.type === 'income' ? 'Masuk' : 'Keluar'},"${t.cat}",${t.amount}\n`;
+            });
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.setAttribute("download", "Rekap_FinTrack_PRO.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
         function updateUI() {
             let inc = 0, exp = 0;
+            let wBalances = { cash: 0, bank: 0, wallet: 0 };
+            
             const tbody = document.getElementById('history-body');
-            const filterValue = document.getElementById('filter-type').value;
+            const filterType = document.getElementById('filter-type').value;
+            const searchQuery = document.getElementById('search-tx').value.toLowerCase();
             tbody.innerHTML = '';
 
-            // Hitung total global untuk statistik card & chart
+            // Hitung akumulasi statistik & sub-dompet
             txs.forEach(tx => {
-                if (tx.type === 'income') inc += tx.amount; else exp += tx.amount;
+                let currentWallet = tx.wallet || 'cash'; // default fallback
+                if (tx.type === 'income') {
+                    inc += tx.amount;
+                    wBalances[currentWallet] += tx.amount;
+                } else {
+                    exp += tx.amount;
+                    wBalances[currentWallet] -= tx.amount;
+                }
             });
 
-            // Filter riwayat saat rendering tabel
+            // Merender data tabel riwayat dengan filter & search
             txs.slice().reverse().forEach(tx => {
-                if (filterValue !== 'all' && tx.type !== filterValue) return;
+                if (filterType !== 'all' && tx.type !== filterType) return;
+                if (searchQuery && !tx.cat.toLowerCase().includes(searchQuery)) return;
+
+                const walletLabel = tx.wallet === 'bank' ? '🏛️ Bank' : tx.wallet === 'wallet' ? '📱 E-Wallet' : '💵 Tunai';
 
                 tbody.innerHTML += `
                     <tr class="border-b border-slate-700/30 hover:bg-slate-800/20 transition-colors text-white">
                         <td class="p-3 opacity-70">${tx.date || '-'}</td>
+                        <td class="p-3 font-semibold opacity-90">${walletLabel}</td>
                         <td class="p-3">${tx.type === 'income' ? '<span class="text-emerald-400"><i class="fa-solid fa-arrow-down mr-1"></i>Masuk</span>' : '<span class="text-rose-400"><i class="fa-solid fa-arrow-up mr-1"></i>Keluar</span>'}</td>
                         <td class="p-3 font-medium">${tx.cat}</td>
-                        <td class="p-3 font-mono font-bold ${tx.type === 'income' ? 'text-emerald-400' : 'text-rose-400'}">${fmtRp(tx.amount)}</td>
-                        <td class="p-3 text-center">
-                            <button onclick="deleteTx(${tx.id})" class="text-rose-500 hover:text-rose-400 cursor-pointer p-1"><i class="fa-solid fa-trash-can"></i></button>
-                        </td>
-                    </tr>
-                `;
-            });
-
-            document.getElementById('val-balance').innerText = fmtRp(inc - exp);
-            document.getElementById('val-income').innerText = `+ ${fmtRp(inc)}`;
-            document.getElementById('val-expense').innerText = `- ${fmtRp(exp)}`;
-
-            initChart(inc, exp);
-
-            const limit = parseInt(localStorage.getItem('fintrack_budget')) || 0;
-            const expCard = document.getElementById('card-expense');
-            if (limit > 0 && exp > limit) expCard.classList.add('budget-alert');
-            else expCard.classList.remove('budget-alert');
-        }
-
-        document.body.className = localStorage.getItem('fintrack_theme') || 'theme-cyber min-h-screen antialiased';
-        document.getElementById('input-budget').value = localStorage.getItem('fintrack_budget') || '';
-        updateUI();
-    </script>
-</body>
-</html>
+                        <td class="p-3 font-mono
